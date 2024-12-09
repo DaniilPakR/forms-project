@@ -8,7 +8,18 @@ let externalContextReference = null
 
 export default function GlobalContextProvider({children}) {
 
-  const ctxValue = {}
+  const [isLogged, setIsLogged] = useState(false);
+  const [currentUser, setCurrentUser] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const ctxValue = {
+    isLogged,
+    setIsLogged,
+    currentUser,
+    setCurrentUser,
+    isAdmin,
+    setIsAdmin,
+  }
 
   externalContextReference = ctxValue;
 

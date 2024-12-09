@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "forms-project-c77c1",
     "public": "build",
     "ignore": [
       "firebase.json",

@@ -9,7 +9,7 @@ let externalContextReference = null
 export default function GlobalContextProvider({children}) {
 
   const [isLogged, setIsLogged] = useState(false);
-  const [currentUser, setCurrentUser] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const ctxValue = {

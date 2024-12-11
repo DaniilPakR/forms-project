@@ -8,12 +8,15 @@ export default function HomePage() {
   function createForm() {
     const id = uuidv4()
     console.log(id);
-    navigate(`/form/${id}`)
+    navigate(`/cform/${id}`)
   }
 
   return (
     <div>
       Home Page
+      <button onClick={createForm}>
+        Create Form
+      </button>
     </div>
   )
 }

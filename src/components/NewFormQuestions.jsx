@@ -5,19 +5,39 @@ import { FormControl } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import ShortTextIcon from "@mui/icons-material/ShortText";
+import SubjectIcon from "@mui/icons-material/Subject";
+import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+
+import NewFormOptions from "./NewFormOptions";
 
 export default function NewFormQuestions({
   questions,
   onDeleteQuestion,
   onUpdateQuestion,
+  onUpdateOptions,
+  onDeleteOption,
+  onDuplicateQuestion,
 }) {
   return (
     <>
       {questions.map((question, index) => {
         return (
-          <div key={question.id} className="flex flex-col gap-2">
+          <div key={question.id} className="flex flex-col gap-2 border-t border-dashed border-black pt-3">
             <div className="flex flex-row items-center justify-between">
-              <h1 className="underline">Question {index + 1}</h1>
+              <h1 className="text-nowrap text-xl font-semibold">
+                Question {index + 1}
+              </h1>
               <FormControl sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="question-type">Type</InputLabel>
                 <Select
@@ -26,12 +46,49 @@ export default function NewFormQuestions({
                   value={question.questionType}
                   label="Type"
                   onChange={(e) =>
-                    onUpdateQuestion(question.id, "questionType", e.target.value)
+                    onUpdateQuestion(
+                      question.id,
+                      "questionType",
+                      e.target.value
+                    )
                   }
                 >
-                  <MenuItem value="multiple-choice">Multiple Choice</MenuItem>
-                  <MenuItem value="checkboxes">Checkboxes</MenuItem>
-                  <MenuItem value="short-answer">Short Answer</MenuItem>
+                  <MenuItem
+                    value="short-answer"
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <ShortTextIcon className="text-gray-500" />
+                    <span className="text-gray-800 ml-2">Short Answer</span>
+                  </MenuItem>
+                  <MenuItem
+                    value="paragraph"
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <SubjectIcon className="text-gray-500" />
+                    <span className="text-gray-800 ml-2">Paragraph</span>
+                  </MenuItem>
+                  <MenuItem
+                    value="multiple-choice"
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <RadioButtonCheckedIcon className="text-gray-500" />
+                    <span className="text-gray-800 ml-2">Multiple Choice</span>
+                  </MenuItem>
+                  <MenuItem
+                    value="checkboxes"
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <CheckBoxIcon className="text-gray-500" />
+                    <span className="text-gray-800 ml-2">Checkboxes</span>
+                  </MenuItem>
+
+                  <MenuItem
+                    value="dropdown"
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <ArrowDropDownCircleIcon className="text-gray-500" />
+                    <span className="text-gray-800 ml-2">Dropdown</span>
+                  </MenuItem>
                 </Select>
               </FormControl>
             </div>
@@ -44,30 +101,44 @@ export default function NewFormQuestions({
                 onUpdateQuestion(question.id, "questionTitle", e.target.value)
               }
             />
-            <div className="flex flex-row justify-between items-center">
-              <button
-                onClick={() =>
-                  onUpdateQuestion(question.id, "required", !question.required)
-                }
-                className={`flex flex-row items-center gap-2 px-3 lg:px-4 py-2 bg-${
-                  question.required ? "green" : "gray"
-                }-500 text-white font-medium rounded hover:bg-${
-                  question.required ? "green" : "gray"
-                }-600 focus:ring focus:ring-blue-300`}
-              >
-                <FontAwesomeIcon
-                  className="mt-1"
-                  icon={question.required ? faToggleOn : faToggleOff}
+            <NewFormOptions
+              onDeleteOption={onDeleteOption}
+              onUpdateOptions={onUpdateOptions}
+              question={question}
+              onUpdateQuestion={onUpdateQuestion}
+            />
+            <div className="flex flex-row justify-end items-center">
+              <Tooltip placement="top" title="Duplicate question">
+                <IconButton onClick={() => onDuplicateQuestion(question.id)}>
+                  <ContentCopyIcon />
+                </IconButton>
+              </Tooltip>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={question.required}
+                      onChange={() =>
+                        onUpdateQuestion(
+                          question.id,
+                          "required",
+                          !question.required
+                        )
+                      }
+                      color="primary" // You can adjust the color as needed
+                    />
+                  }
+                  label="Required"
                 />
-                <p>Required</p>
-              </button>
-              <button
-                className="flex flex-row items-center gap-2 px-3 lg:px-4 py-2 bg-red-500 text-white font-medium rounded hover:bg-red-600 focus:ring focus:ring-blue-300"
+              </FormGroup>
+              <Button
+                color={"error"}
+                variant="outlined"
+                startIcon={<DeleteIcon />}
                 onClick={() => onDeleteQuestion(question.id)}
               >
-                <FontAwesomeIcon icon={faSquareMinus} />
-                <p>Delete</p>
-              </button>
+                Delete
+              </Button>
             </div>
           </div>
         );

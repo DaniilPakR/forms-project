@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SendIcon from "@mui/icons-material/Send";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
@@ -9,42 +13,43 @@ export default function FormCreationPage() {
   const [formDescription, setFormDescription] = useState("");
   const [formQuestions, setFormQuestions] = useState([
     {
-      questionTitle: "",
+      questionTitle: "Untitled Question",
       id: uuidv4(),
-      questionType: "multiple-choice",
+      questionType: "short-answer",
       required: false,
       options: [
         {
-          text: "",
+          optionText: "Option 1",
+          optionId: uuidv4(),
         },
       ],
     },
   ]);
 
-  const addQuestion = () => {
+  const handleAddQuestion = () => {
     setFormQuestions((prevFormQuestions) => [
       ...prevFormQuestions,
       {
-        questionTitle: "",
+        questionTitle: "Untitled Question",
         id: uuidv4(),
-        questionType: "multiple-choice",
+        questionType: "short-answer",
         required: false,
         options: [
           {
-            text: "",
+            optionText: null,
           },
         ],
       },
     ]);
   };
 
-  const deleteQuestion = (id) => {
+  const handleDeleteQuestion = (id) => {
     setFormQuestions((prevFormQuestions) =>
       prevFormQuestions.filter((question) => question.id !== id)
     );
   };
 
-  const updateQuestion = (id, key, value) => {
+  const handleUpdateQuestion = (id, key, value) => {
     setFormQuestions((prevFormQuestions) =>
       prevFormQuestions.map((question) =>
         question.id === id ? { ...question, [key]: value } : question
@@ -52,29 +57,96 @@ export default function FormCreationPage() {
     );
   };
 
+  const handleUpdateOptions = (id, idx, value) => {
+    let foundQuestion = formQuestions.find((question) => question.id === id);
+    foundQuestion.options[idx].optionText = value;
+    setFormQuestions((prevFormQuestions) =>
+      prevFormQuestions.map((question) =>
+        question.id === id ? foundQuestion : question
+      )
+    );
+  };
+
+  const handleDeleteOption = (questionId, optionId) => {
+    setFormQuestions((prevFormQuestions) =>
+      prevFormQuestions.map((question) =>
+        question.id === questionId
+          ? {
+              ...question,
+              options: question.options.filter(
+                (option) => option.optionId !== optionId
+              ),
+            }
+          : question
+      )
+    );
+  };
+
+  const handleDuplicateQuestion = (questionId) => {
+    setFormQuestions((prevFormQuestions) => {
+      const questionToDuplicate = prevFormQuestions.find(
+        (question) => question.id === questionId
+      );
+
+      if (!questionToDuplicate) return prevFormQuestions;
+
+      const duplicatedQuestion = {
+        ...questionToDuplicate,
+        id: uuidv4(),
+        options: questionToDuplicate.options.map((option) => ({
+          ...option,
+          optionId: uuidv4(),
+        })),
+      };
+
+      return [...prevFormQuestions, duplicatedQuestion];
+    });
+  };
+
+  console.log(formQuestions);
+
   return (
     <div className="flex flex-col items-center mt-5">
-      <div className="w-4/5 lg:w-1/2 border border-solid bg-white rounded-md border-blue-500 py-4 px-5 gap-3 flex flex-col">
+      <div className="w-4/5 lg:w-1/2 border border-solid bg-white rounded-md border-black py-4 px-5 gap-3 flex flex-col">
         <h1 className="text-center text-xl border-b border-black pb-2">Form</h1>
-        <h1 className="underline">Header</h1>
+        <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
         <NewFormHeader
           title={formTitle}
           setTitle={setFormTitle}
           description={formDescription}
           setDescription={setFormDescription}
         />
-        <h1 className="underline">Questions</h1>
+        <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
         <NewFormQuestions
           questions={formQuestions}
-          onDeleteQuestion={deleteQuestion}
-          onUpdateQuestion={updateQuestion}
+          onDeleteQuestion={handleDeleteQuestion}
+          onUpdateQuestion={handleUpdateQuestion}
+          onUpdateOptions={handleUpdateOptions}
+          onDeleteOption={handleDeleteOption}
+          onDuplicateQuestion={handleDuplicateQuestion}
         />
-        <button
-          className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600 focus:ring focus:ring-blue-300"
-          onClick={addQuestion}
-        >
-          Add Question
-        </button>
+        <div className="w-full">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddQuestion}
+            sx={{
+              textTransform: "none",
+              width: "100%",
+            }}
+            startIcon={<AddIcon />}
+          >
+            Add Question
+          </Button>
+        </div>
+        <div className="flex flex-row justify-between items-center">
+          <Button variant="outlined" startIcon={<DeleteIcon />}>
+            Cancel
+          </Button>
+          <Button variant="contained" endIcon={<SendIcon />}>
+            Upload
+          </Button>
+        </div>
       </div>
     </div>
   );

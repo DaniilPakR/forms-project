@@ -5,13 +5,15 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 import { useParams } from "react-router-dom";
+import { DndContext, closestCorners } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function FormCreationPage() {
-  const [form, setForm] = useState(null)
+  const [form, setForm] = useState(null);
   const { id: pageId } = useParams();
   const { currentUser } = useContext(GlobalContext);
   let currentUserId;
@@ -19,10 +21,11 @@ export default function FormCreationPage() {
     currentUserId = currentUser["id"];
   }
 
-  const [formId, setFormId] = useState()
+  const [formId, setFormId] = useState();
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
-  const [formDescriptionMarkdown, setFormDescriptionMarkdown] = useState("normal");
+  const [formDescriptionMarkdown, setFormDescriptionMarkdown] =
+    useState("normal");
   const [formTitleMarkdown, setFormTitleMarkdown] = useState([]);
   const [formTopic, setFormTopic] = useState("topic");
   const [formTags, setFormTags] = useState([]);
@@ -63,7 +66,7 @@ export default function FormCreationPage() {
         setFormImage(data["image_url"]);
         setIsPublic(data["is_public"]);
         setFormQuestions(data.questions);
-        setFormId(data.form_id)
+        setFormId(data.form_id);
       } catch (err) {
         console.error("Error fetching form:", err.message);
       }
@@ -80,7 +83,7 @@ export default function FormCreationPage() {
         question_id: uuidv4(),
         question_type: "short-answer",
         is_required: false,
-        position: 1,
+        position: prevFormQuestions.length + 1,
         show_in_results: false,
         options: [
           {
@@ -93,10 +96,18 @@ export default function FormCreationPage() {
     ]);
   };
 
-  const handleDeleteQuestion = (id) => {
-    setFormQuestions((prevFormQuestions) =>
-      prevFormQuestions.filter((question) => question.question_id !== id)
-    );
+  const handleDeleteQuestion = (questionId) => {
+    setFormQuestions((prevFormQuestions) => {
+      const filteredQuestions = prevFormQuestions.filter(
+        (q) => q.question_id !== questionId
+      );
+
+      // Reassign positions after deletion
+      return filteredQuestions.map((q, index) => ({
+        ...q,
+        position: index,
+      }));
+    });
   };
 
   const handleUpdateQuestion = (id, key, value) => {
@@ -148,6 +159,7 @@ export default function FormCreationPage() {
       const duplicatedQuestion = {
         ...questionToDuplicate,
         question_id: uuidv4(),
+        position: prevFormQuestions.length + 1,
         options: questionToDuplicate.options.map((option) => ({
           ...option,
           option_id: uuidv4(),
@@ -170,12 +182,33 @@ export default function FormCreationPage() {
         isPublic,
         currentUserId,
         pageId,
-        formId
+        formId,
+        formTitleMarkdown
       });
       alert("Form uploaded successfully!");
     } catch (error) {
       alert("Failed to upload the form. Please try again.");
     }
+  };
+
+  const handleDragEnd = ({ active, over }) => {
+    if (!over || active.id === over.id) return;
+
+    setFormQuestions((prevFormQuestions) => {
+      const oldIndex = prevFormQuestions.findIndex(
+        (q) => q.position === active.id
+      );
+      const newIndex = prevFormQuestions.findIndex(
+        (q) => q.position === over.id
+      );
+
+      // Update positions to reflect the new order
+      const updatedQuestions = arrayMove(prevFormQuestions, oldIndex, newIndex);
+      return updatedQuestions.map((q, index) => ({
+        ...q,
+        position: index, // Reassign positions
+      }));
+    });
   };
 
   return (
@@ -198,14 +231,19 @@ export default function FormCreationPage() {
           setFormTopic={setFormTopic}
         />
         <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
-        <NewFormQuestions
-          questions={formQuestions}
-          onDeleteQuestion={handleDeleteQuestion}
-          onUpdateQuestion={handleUpdateQuestion}
-          onUpdateOptions={handleUpdateOptions}
-          onDeleteOption={handleDeleteOption}
-          onDuplicateQuestion={handleDuplicateQuestion}
-        />
+        <DndContext
+          onDragEnd={handleDragEnd}
+          collisionDetection={closestCorners}
+        >
+          <NewFormQuestions
+            questions={formQuestions}
+            onDeleteQuestion={handleDeleteQuestion}
+            onUpdateQuestion={handleUpdateQuestion}
+            onUpdateOptions={handleUpdateOptions}
+            onDeleteOption={handleDeleteOption}
+            onDuplicateQuestion={handleDuplicateQuestion}
+          />
+        </DndContext>
         <div className="w-full">
           <Button
             variant="contained"
@@ -248,11 +286,13 @@ export async function action(formData) {
     isPublic,
     currentUserId,
     pageId,
-    formId // Form ID is needed for editing
+    formId,
+    formTitleMarkdown // Form ID is needed for editing
   } = formData;
 
   const updatedForm = {
     title: formTitle,
+    titlemarkdown: formTitleMarkdown,
     description: formDescription,
     descriptionmarkdown: formDescriptionMarkdown,
     topic: formTopic,
@@ -264,12 +304,12 @@ export async function action(formData) {
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
-      options: question.options.map(option => ({
+      options: question.options.map((option) => ({
         optionId: option.option_id, // Include the ID if available
         optionText: option.option_text,
       })),
     })),
-    pageId
+    pageId,
   };
 
   try {

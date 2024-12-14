@@ -5,15 +5,16 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 import { useParams } from "react-router-dom";
+import { DndContext, closestCorners } from "@dnd-kit/core";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export default function FormCreationPage() {
   const { id: pageId } = useParams();
   const { currentUser } = useContext(GlobalContext);
-  console.log(currentUser);
   let currentUserId;
   if (currentUser) {
     currentUserId = currentUser["id"];
@@ -40,6 +41,7 @@ export default function FormCreationPage() {
           option_text: "Option 1",
           option_id: uuidv4(),
           is_correct: false,
+          position: 1,
         },
       ],
     },
@@ -53,23 +55,32 @@ export default function FormCreationPage() {
         question_id: uuidv4(),
         question_type: "short-answer",
         is_required: false,
-        position: 1,
+        position: prevFormQuestions.length + 1,
         show_in_results: false,
         options: [
           {
             option_text: "Option 1",
             option_id: uuidv4(),
             is_correct: false,
+            position: 1,
           },
         ],
       },
     ]);
   };
 
-  const handleDeleteQuestion = (id) => {
-    setFormQuestions((prevFormQuestions) =>
-      prevFormQuestions.filter((question) => question.question_id !== id)
-    );
+  const handleDeleteQuestion = (questionId) => {
+    setFormQuestions((prevFormQuestions) => {
+      const filteredQuestions = prevFormQuestions.filter(
+        (q) => q.question_id !== questionId
+      );
+  
+      // Reassign positions after deletion
+      return filteredQuestions.map((q, index) => ({
+        ...q,
+        position: index,
+      }));
+    });
   };
 
   const handleUpdateQuestion = (id, key, value) => {
@@ -121,6 +132,7 @@ export default function FormCreationPage() {
       const duplicatedQuestion = {
         ...questionToDuplicate,
         question_id: uuidv4(),
+        position: prevFormQuestions.length + 1,
         options: questionToDuplicate.options.map((option) => ({
           ...option,
           option_id: uuidv4(),
@@ -135,6 +147,7 @@ export default function FormCreationPage() {
     try {
       await action({
         formTitle,
+        formTitleMarkdown,
         formDescription,
         formDescriptionMarkdown,
         formQuestions,
@@ -148,6 +161,26 @@ export default function FormCreationPage() {
     } catch (error) {
       alert("Failed to upload the form. Please try again.");
     }
+  };
+
+  const handleDragEnd = ({ active, over }) => {
+    if (!over || active.id === over.id) return;
+  
+    setFormQuestions((prevFormQuestions) => {
+      const oldIndex = prevFormQuestions.findIndex(
+        (q) => q.position === active.id
+      );
+      const newIndex = prevFormQuestions.findIndex(
+        (q) => q.position === over.id
+      );
+  
+      // Update positions to reflect the new order
+      const updatedQuestions = arrayMove(prevFormQuestions, oldIndex, newIndex);
+      return updatedQuestions.map((q, index) => ({
+        ...q,
+        position: index, // Reassign positions
+      }));
+    });
   };
 
   console.log(formQuestions);
@@ -172,14 +205,16 @@ export default function FormCreationPage() {
           setFormTopic={setFormTopic}
         />
         <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
-        <NewFormQuestions
-          questions={formQuestions}
-          onDeleteQuestion={handleDeleteQuestion}
-          onUpdateQuestion={handleUpdateQuestion}
-          onUpdateOptions={handleUpdateOptions}
-          onDeleteOption={handleDeleteOption}
-          onDuplicateQuestion={handleDuplicateQuestion}
-        />
+        <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
+          <NewFormQuestions
+            questions={formQuestions}
+            onDeleteQuestion={handleDeleteQuestion}
+            onUpdateQuestion={handleUpdateQuestion}
+            onUpdateOptions={handleUpdateOptions}
+            onDeleteOption={handleDeleteOption}
+            onDuplicateQuestion={handleDuplicateQuestion}
+          />
+        </DndContext>
         <div className="w-full">
           <Button
             variant="contained"
@@ -214,6 +249,7 @@ export default function FormCreationPage() {
 export async function action(formData) {
   const {
     formTitle,
+    formTitleMarkdown,
     formDescription,
     formDescriptionMarkdown,
     formQuestions,
@@ -241,7 +277,8 @@ export async function action(formData) {
         optionId: option.option_id,
       })),
     })),
-    pageId
+    pageId,
+    titlemarkdown: formTitleMarkdown
   };
 
   console.log(newForm);

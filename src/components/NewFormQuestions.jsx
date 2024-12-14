@@ -33,7 +33,7 @@ export default function NewFormQuestions({
     <>
       {questions.map((question, index) => {
         return (
-          <div key={question.id} className="flex flex-col gap-2 border-t border-dashed border-black pt-3">
+          <div key={question.question_id} className="flex flex-col gap-2 border-t border-dashed border-black pt-3">
             <div className="flex flex-row items-center justify-between">
               <h1 className="text-nowrap text-xl font-semibold">
                 Question {index + 1}
@@ -43,12 +43,12 @@ export default function NewFormQuestions({
                 <Select
                   labelId="question-type"
                   id="question-type"
-                  value={question.questionType}
+                  value={question.question_type}
                   label="Type"
                   onChange={(e) =>
                     onUpdateQuestion(
-                      question.id,
-                      "questionType",
+                      question.question_id,
+                      "question_type",
                       e.target.value
                     )
                   }
@@ -94,11 +94,11 @@ export default function NewFormQuestions({
             </div>
             <input
               type="text"
-              value={question.questionTitle}
+              value={question.question_text}
               placeholder="Question"
               className="bg-gray-200 p-4"
               onChange={(e) =>
-                onUpdateQuestion(question.id, "questionTitle", e.target.value)
+                onUpdateQuestion(question.question_id, "question_text", e.target.value)
               }
             />
             <NewFormOptions
@@ -109,7 +109,7 @@ export default function NewFormQuestions({
             />
             <div className="flex flex-row justify-end items-center">
               <Tooltip placement="top" title="Duplicate question">
-                <IconButton onClick={() => onDuplicateQuestion(question.id)}>
+                <IconButton onClick={() => onDuplicateQuestion(question.question_id)}>
                   <ContentCopyIcon />
                 </IconButton>
               </Tooltip>
@@ -117,12 +117,12 @@ export default function NewFormQuestions({
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={question.required}
+                      checked={question.is_required}
                       onChange={() =>
                         onUpdateQuestion(
-                          question.id,
-                          "required",
-                          !question.required
+                          question.question_id,
+                          "is_required",
+                          !question.is_required
                         )
                       }
                       color="primary" // You can adjust the color as needed
@@ -135,7 +135,7 @@ export default function NewFormQuestions({
                 color={"error"}
                 variant="outlined"
                 startIcon={<DeleteIcon />}
-                onClick={() => onDeleteQuestion(question.id)}
+                onClick={() => onDeleteQuestion(question.question_id)}
               >
                 Delete
               </Button>

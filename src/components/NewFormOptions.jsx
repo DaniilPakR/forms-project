@@ -14,11 +14,11 @@ export default function NewFormOptions({
   onUpdateOptions,
   onDeleteOption,
 }) {
-  const { id, options, questionType } = question;
+  const { question_id, options, question_type } = question;
 
   let content = null;
 
-  if (questionType === "short-answer") {
+  if (question_type === "short-answer") {
     content = (
       <input
         type="text"
@@ -29,7 +29,7 @@ export default function NewFormOptions({
     );
   }
 
-  if (questionType === "multiple-choice") {
+  if (question_type === "multiple-choice") {
     content = options.map((option, index) => {
       return (
         <div key={index} className="flex flex-row justify-between items-center">
@@ -38,13 +38,13 @@ export default function NewFormOptions({
             <input
               type="text"
               placeholder="Option text"
-              value={option.optionText}
-              onChange={(e) => onUpdateOptions(id, index, e.target.value)}
+              value={option.option_text}
+              onChange={(e) => onUpdateOptions(question_id, index, e.target.value)}
               className="w-full hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
             />
           </div>
           <Tooltip title="Remove" placement="top">
-            <IconButton onClick={() => onDeleteOption(id, option.optionId)}>
+            <IconButton onClick={() => onDeleteOption(question_id, option.option_id)}>
               <ClearIcon />
             </IconButton>
           </Tooltip>
@@ -53,7 +53,7 @@ export default function NewFormOptions({
     });
   }
 
-  if (questionType === "checkboxes") {
+  if (question_type === "checkboxes") {
     content = options.map((option, index) => {
       return (
         <div key={index} className="flex flex-row justify-between items-center">
@@ -62,13 +62,13 @@ export default function NewFormOptions({
             <input
               type="text"
               placeholder="Option text"
-              value={option.optionText}
-              onChange={(e) => onUpdateOptions(id, index, e.target.value)}
+              value={option.option_text}
+              onChange={(e) => onUpdateOptions(question_id, index, e.target.value)}
               className="hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
             />
           </div>
           <Tooltip title="Remove" placement="top">
-            <IconButton onClick={() => onDeleteOption(id, option.optionId)}>
+            <IconButton onClick={() => onDeleteOption(question_id, option.option_id)}>
               <ClearIcon />
             </IconButton>
           </Tooltip>
@@ -77,7 +77,7 @@ export default function NewFormOptions({
     });
   }
 
-  if (questionType === "paragraph") {
+  if (question_type === "paragraph") {
     content = (
       <textarea
         type="text"
@@ -88,7 +88,7 @@ export default function NewFormOptions({
     );
   }
 
-  if (questionType === "dropdown") {
+  if (question_type === "dropdown") {
     content = options.map((option, index) => {
       return (
         <div key={index} className="flex flex-row justify-between items-center">
@@ -97,13 +97,13 @@ export default function NewFormOptions({
             <input
               type="text"
               placeholder="Option text"
-              value={option.optionText}
-              onChange={(e) => onUpdateOptions(id, index, e.target.value)}
+              value={option.option_text}
+              onChange={(e) => onUpdateOptions(question_id, index, e.target.value)}
               className="hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
             />
           </div>
           <Tooltip title="Remove" placement="top">
-            <IconButton onClick={() => onDeleteOption(id, option.optionId)}>
+            <IconButton onClick={() => onDeleteOption(question_id, option.option_id)}>
               <ClearIcon />
             </IconButton>
           </Tooltip>
@@ -112,23 +112,21 @@ export default function NewFormOptions({
     });
   }
 
-  console.log(options);
-
   return (
     <div className="flex flex-col">
       {content}
-      {(questionType === "multiple-choice" ||
-        questionType === "checkboxes" ||
-        questionType === "dropdown") && (
+      {(question_type === "multiple-choice" ||
+        question_type === "checkboxes" ||
+        question_type === "dropdown") && (
         <Button
           variant="contained"
           color="primary"
           onClick={() =>
-            onUpdateQuestion(id, "options", [
+            onUpdateQuestion(question_id, "options", [
               ...options,
               {
-                optionText: `Option ${options.length + 1}`,
-                optionId: uuidv4(),
+                option_text: `Option ${options.length + 1}`,
+                option_id: uuidv4(),
               },
             ])
           }

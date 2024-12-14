@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import FormsSearch from "./FormsSearch";
 import { GlobalContext } from "../context/GlobalProvider";
 import logoimg from "../images/logos/logo128.png"
 
@@ -11,20 +10,18 @@ export default function Navbar() {
 
   const logout = () => {
     setCurrentUser(null);
+    localStorage.removeItem("authSession");
   };
 
   return (
-    <header className="flex flex-row justify-between bg-background h-16 items-center pt-3 px-2 lg:px-4 lg:text-xl">
+    <header className="flex flex-row justify-between bg-background h-12 items-center pt-3 px-2 lg:px-4 lg:text-lg">
       <div>
         <Link className="flex flex-row items-center gap-4" to="">
-          <img src={logoimg} alt="" className='h-12 lg:h-11' />
+          <img src={logoimg} alt="" className='h-10' />
           <span className='text-2xl hidden lg:block'>Forms</span>
         </Link>
       </div>
-      <div className="bg-gray-200 p-2 w-1/3 flex flex-row items-center gap-3 px-4 rounded-full h-14">
-        <FontAwesomeIcon icon={faMagnifyingGlass} />
-        <input type="text" placeholder="Search" className="border-none outline-none w-full bg-transparent" />
-      </div>
+      <FormsSearch />
       <div className="flex flex-row gap-2 lg:gap-4">
         {!currentUser && (
           <Link className="text-blue-500 hover:underline" to="/auth?mode=signup">Sign up</Link>

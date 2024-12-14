@@ -11,17 +11,18 @@ import NewFormQuestions from "../components/NewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function FormCreationPage() {
+  const [form, setForm] = useState(null)
   const { id: pageId } = useParams();
   const { currentUser } = useContext(GlobalContext);
-  console.log(currentUser);
   let currentUserId;
   if (currentUser) {
     currentUserId = currentUser["id"];
   }
-  
+
+  const [formId, setFormId] = useState()
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
-  const [formDescriptionMarkdown, setFormDescriptionMarkdown] = useState([]);
+  const [formDescriptionMarkdown, setFormDescriptionMarkdown] = useState("normal");
   const [formTitleMarkdown, setFormTitleMarkdown] = useState([]);
   const [formTopic, setFormTopic] = useState("topic");
   const [formTags, setFormTags] = useState([]);
@@ -44,6 +45,32 @@ export default function FormCreationPage() {
       ],
     },
   ]);
+
+  useEffect(() => {
+    async function fetchForm() {
+      try {
+        const response = await fetch(`http://localhost:5000/eform/${pageId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch form");
+        }
+
+        const data = await response.json();
+        setForm(data);
+        setFormTitle(data.title);
+        setFormDescription(data.description);
+        setFormDescriptionMarkdown(data.descriptionMarkdown);
+        setFormTopic(data.topic);
+        setFormImage(data["image_url"]);
+        setIsPublic(data["is_public"]);
+        setFormQuestions(data.questions);
+        setFormId(data.form_id)
+      } catch (err) {
+        console.error("Error fetching form:", err.message);
+      }
+    }
+
+    fetchForm();
+  }, [pageId]);
 
   const handleAddQuestion = () => {
     setFormQuestions((prevFormQuestions) => [
@@ -142,15 +169,14 @@ export default function FormCreationPage() {
         formImage,
         isPublic,
         currentUserId,
-        pageId
+        pageId,
+        formId
       });
       alert("Form uploaded successfully!");
     } catch (error) {
       alert("Failed to upload the form. Please try again.");
     }
   };
-
-  console.log(formQuestions);
 
   return (
     <div className="flex flex-col items-center mt-5">
@@ -203,7 +229,7 @@ export default function FormCreationPage() {
             endIcon={<SendIcon />}
             onClick={handleUploadForm}
           >
-            Upload
+            Update
           </Button>
         </div>
       </div>
@@ -221,10 +247,11 @@ export async function action(formData) {
     formImage,
     isPublic,
     currentUserId,
-    pageId
+    pageId,
+    formId // Form ID is needed for editing
   } = formData;
 
-  const newForm = {
+  const updatedForm = {
     title: formTitle,
     description: formDescription,
     descriptionmarkdown: formDescriptionMarkdown,
@@ -233,38 +260,37 @@ export async function action(formData) {
     isPublic,
     creatorId: currentUserId,
     questions: formQuestions.map((question, index) => ({
+      questionId: question.question_id, // Include the ID if available
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
-      options: question.options.map((option) => ({
+      options: question.options.map(option => ({
+        optionId: option.option_id, // Include the ID if available
         optionText: option.option_text,
-        optionId: option.option_id,
       })),
     })),
     pageId
   };
 
-  console.log(newForm);
-
   try {
-    const response = await fetch("http://localhost:5000/forms/create", {
-      method: "POST",
+    const response = await fetch(`http://localhost:5000/forms/edit/${formId}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newForm),
+      body: JSON.stringify(updatedForm),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to create the form.");
+      throw new Error(errorData.error || "Failed to edit the form.");
     }
 
     const result = await response.json();
-    console.log("Form created successfully:", result);
+    console.log("Form updated successfully:", result);
     return result;
   } catch (error) {
-    console.error("Error uploading form:", error.message);
+    console.error("Error updating form:", error.message);
     throw error;
   }
 }

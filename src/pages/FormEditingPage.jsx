@@ -58,15 +58,23 @@ export default function FormCreationPage() {
         }
 
         const data = await response.json();
+        let str = data.descriptionMarkdown;
+        try {
+          const markdownArray = JSON.parse(str.replace(/{/g, "[").replace(/}/g, "]"));
+          setFormDescriptionMarkdown(markdownArray);
+        } catch (error) {
+          console.error("Failed to transform descriptionMarkdown:", error);
+          setFormDescriptionMarkdown([]);
+        }
         setForm(data);
         setFormTitle(data.title);
         setFormDescription(data.description);
-        setFormDescriptionMarkdown(data.descriptionMarkdown);
         setFormTopic(data.topic);
         setFormImage(data["image_url"]);
         setIsPublic(data["is_public"]);
         setFormQuestions(data.questions);
         setFormId(data.form_id);
+        console.log(data.descriptionMarkdown)
       } catch (err) {
         console.error("Error fetching form:", err.message);
       }
@@ -242,6 +250,7 @@ export default function FormCreationPage() {
             onUpdateOptions={handleUpdateOptions}
             onDeleteOption={handleDeleteOption}
             onDuplicateQuestion={handleDuplicateQuestion}
+            setFormQuestions={setFormQuestions}
           />
         </DndContext>
         <div className="w-full">

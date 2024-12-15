@@ -213,6 +213,7 @@ export default function FormCreationPage() {
             onUpdateOptions={handleUpdateOptions}
             onDeleteOption={handleDeleteOption}
             onDuplicateQuestion={handleDuplicateQuestion}
+            setFormQuestions={setFormQuestions}
           />
         </DndContext>
         <div className="w-full">

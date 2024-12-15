@@ -16,24 +16,24 @@ export default function FormatButtons({ state, setState }) {
   return (
     <div className="flex flex-row gap-3">
       <button
-        className={`transition-all text-gray-300 rounded-md text-center ${
-          state.includes("bold") ? "text-black bg-gray-300" : ""
+        className={`transition-all rounded-md text-center ${
+          state.includes("bold") ? "text-black bg-gray-300" : "text-gray-500 "
         }`}
         onClick={() => handleFormatChange("bold")}
       >
         <FormatBoldIcon />
       </button>
       <button
-        className={`transition-all text-gray-300 rounded-md text-center ${
-          state.includes("italic") ? "text-black bg-gray-300" : ""
+        className={`transition-all rounded-md text-center ${
+          state.includes("italic") ? "text-black bg-gray-300" : "text-gray-500 "
         }`}
         onClick={() => handleFormatChange("italic")}
       >
         <FormatItalicIcon />
       </button>
       <button
-        className={`transition-all text-gray-300 rounded-md text-center ${
-          state.includes("underlined") ? "text-black bg-gray-300" : ""
+        className={`transition-all rounded-md text-center ${
+          state.includes("underlined") ? "text-black bg-gray-300" : "text-gray-500 "
         }`}
         onClick={() => handleFormatChange("underlined")}
       >

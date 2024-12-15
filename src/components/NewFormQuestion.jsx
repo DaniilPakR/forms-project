@@ -32,6 +32,7 @@ export default function NewFormQuestion({
   onUpdateOptions,
   onDeleteOption,
   onDuplicateQuestion,
+  setFormQuestions
 }) {
   const { position } = question;
 
@@ -40,11 +41,17 @@ export default function NewFormQuestion({
       id: question.position,
     });
 
-  const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
-    pointerEvents: "auto",
-  };
+    const style = {
+      transition,
+      transform: transform
+        ? CSS.Transform.toString({
+            ...transform,
+            scaleX: 1, // Ensure no scaling effect
+            scaleY: 1,
+          })
+        : undefined,
+      pointerEvents: "auto",
+    };
 
   return (
     <div
@@ -139,6 +146,7 @@ export default function NewFormQuestion({
         onUpdateOptions={onUpdateOptions}
         question={question}
         onUpdateQuestion={onUpdateQuestion}
+        setFormQuestions={setFormQuestions}
       />
       <div className="flex flex-row justify-end items-center">
         <Tooltip placement="top" title="Duplicate question">

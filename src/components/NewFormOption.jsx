@@ -1,19 +1,7 @@
-import { useEffect, useState } from "react";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import ClearIcon from "@mui/icons-material/Clear";
-import IconButton from "@mui/material/IconButton";
-import { v4 as uuidv4 } from "uuid";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import Tooltip from "@mui/material/Tooltip";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import {
   SortableContext,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
 import SortableNewFormOption from "./SortableNewFormOption";
 
@@ -26,8 +14,6 @@ export default function NewFormOption({
   setFormQuestions,
 }) {
   const { question_id, options, question_type } = question;
-
-  const { position } = question.options;
 
   let content = null;
 
@@ -97,8 +83,6 @@ export default function NewFormOption({
       );
     });
   }
-
-  console.log(question);
 
   return (
     <>

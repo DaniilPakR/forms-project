@@ -1,12 +1,6 @@
-import { useEffect, useState } from "react";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import ClearIcon from "@mui/icons-material/Clear";
-import IconButton from "@mui/material/IconButton";
 import { v4 as uuidv4 } from "uuid";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import Tooltip from "@mui/material/Tooltip";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import NewFormOption from "./NewFormOption";

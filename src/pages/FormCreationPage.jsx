@@ -26,7 +26,8 @@ export default function FormCreationPage() {
   const [formTitleMarkdown, setFormTitleMarkdown] = useState([]);
   const [formTopic, setFormTopic] = useState("topic");
   const [formTags, setFormTags] = useState([]);
-  const [formImage, setFormImage] = useState("image");
+  const [formImage, setFormImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [isPublic, setIsPublic] = useState(true);
   const [formQuestions, setFormQuestions] = useState([
     {
@@ -68,6 +69,14 @@ export default function FormCreationPage() {
       },
     ]);
   };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormImage(file);
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
 
   const handleDeleteQuestion = (questionId) => {
     setFormQuestions((prevFormQuestions) => {
@@ -183,8 +192,6 @@ export default function FormCreationPage() {
     });
   };
 
-  console.log(formQuestions);
-
   return (
     <div className="flex flex-col items-center mt-5">
       <div className="w-4/5 lg:w-1/2 border border-solid bg-white rounded-md border-black py-4 px-5 gap-3 flex flex-col">
@@ -203,6 +210,8 @@ export default function FormCreationPage() {
           setFormTags={setFormTags}
           formTopic={formTopic}
           setFormTopic={setFormTopic}
+          handleImageChange={handleImageChange}
+          imagePreview={imagePreview}
         />
         <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
         <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>

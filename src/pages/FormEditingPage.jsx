@@ -66,6 +66,14 @@ export default function FormCreationPage() {
           console.error("Failed to transform descriptionMarkdown:", error);
           setFormDescriptionMarkdown([]);
         }
+        let strt = data.titleMarkdown;
+        try {
+          const markdownArray = JSON.parse(strt.replace(/{/g, "[").replace(/}/g, "]"));
+          setFormTitleMarkdown(markdownArray);
+        } catch (error) {
+          console.error("Failed to transform titleMarkdown:", error);
+          setFormTitleMarkdown([]);
+        }
         setForm(data);
         setFormTitle(data.title);
         setFormDescription(data.description);

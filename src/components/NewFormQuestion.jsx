@@ -1,6 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
-import { faSquareMinus } from "@fortawesome/free-regular-svg-icons";
 import { FormControl } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";

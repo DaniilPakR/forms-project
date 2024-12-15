@@ -1,9 +1,3 @@
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import TextField from '@mui/material/TextField';
 import FormatButtons from "./FormatButtons";
 
 export default function NewFormHeader({
@@ -19,10 +13,21 @@ export default function NewFormHeader({
   setFormTags,
   formTopic,
   setFormTopic,
+  handleImageChange,
+  imagePreview,
 }) {
 
   return (
     <div className="flex flex-col gap-2">
+      <input type="file" id="imageUpload" accept="image/*" onChange={(e) => handleImageChange(e)} />
+      {imagePreview ? (
+        <div>
+          <p>Preview:</p>
+          <img src={imagePreview} alt="Preview"/>
+        </div>
+      ) : (
+        <p>No image selected yet.</p>
+      )}
       <input
         type="text"
         value={title}

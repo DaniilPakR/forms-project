@@ -16,3 +16,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+html {
+  @apply bg-background text-text; /* Light mode */
+}
+
+html.dark {
+  @apply bg-background-dark text-text-dark; /* Dark mode */
+}
+

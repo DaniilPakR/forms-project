@@ -11,6 +11,21 @@ export default function GlobalContextProvider({children}) {
   const [isLogged, setIsLogged] = useState(false);
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("authSession")) || null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return savedTheme || (prefersDark ? "dark" : "light");
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
+
 
   const ctxValue = {
     isLogged,
@@ -19,6 +34,8 @@ export default function GlobalContextProvider({children}) {
     setCurrentUser,
     isAdmin,
     setIsAdmin,
+    theme,
+    toggleTheme,
   }
 
   externalContextReference = ctxValue;

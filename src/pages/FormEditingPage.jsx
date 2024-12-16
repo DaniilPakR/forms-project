@@ -11,6 +11,8 @@ import { arrayMove } from "@dnd-kit/sortable";
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
+import { uploadImageToCloudinary, fetchImageById, urlToFile } from "../utils/cloudinaryFunctions";
+import FilledForms from "../components/FilledForms";
 
 export default function FormCreationPage() {
   const [form, setForm] = useState(null);
@@ -29,7 +31,8 @@ export default function FormCreationPage() {
   const [formTitleMarkdown, setFormTitleMarkdown] = useState([]);
   const [formTopic, setFormTopic] = useState("topic");
   const [formTags, setFormTags] = useState([]);
-  const [formImage, setFormImage] = useState("image");
+  const [formImage, setFormImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [isPublic, setIsPublic] = useState(true);
   const [formQuestions, setFormQuestions] = useState([
     {
@@ -82,7 +85,9 @@ export default function FormCreationPage() {
         setIsPublic(data["is_public"]);
         setFormQuestions(data.questions);
         setFormId(data.form_id);
-        console.log(data.descriptionMarkdown)
+        const file = await urlToFile(pageId, "uploaded-image.jpg");
+        setFormImage(file);
+        setImagePreview(`https://res.cloudinary.com/dmi1xxumf/image/upload/${pageId}`);
       } catch (err) {
         console.error("Error fetching form:", err.message);
       }
@@ -90,6 +95,14 @@ export default function FormCreationPage() {
 
     fetchForm();
   }, [pageId]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormImage(file);
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
 
   const handleAddQuestion = () => {
     setFormQuestions((prevFormQuestions) => [
@@ -201,6 +214,13 @@ export default function FormCreationPage() {
         formId,
         formTitleMarkdown
       });
+      try {
+        if (!formImage) {return}
+        const uploadedImage = await uploadImageToCloudinary(formImage, pageId)
+        console.log(uploadedImage)
+      } catch (e) {
+        console.error(e.message)
+      }
       alert("Form uploaded successfully!");
     } catch (error) {
       alert("Failed to upload the form. Please try again.");
@@ -229,7 +249,7 @@ export default function FormCreationPage() {
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <div className="w-4/5 lg:w-1/2 border border-solid bg-white rounded-md border-black py-4 px-5 gap-3 flex flex-col">
+      <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
         <h1 className="text-center text-xl border-b border-black pb-2">Form</h1>
         <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
         <NewFormHeader
@@ -245,6 +265,8 @@ export default function FormCreationPage() {
           setFormTags={setFormTags}
           formTopic={formTopic}
           setFormTopic={setFormTopic}
+          handleImageChange={handleImageChange}
+          imagePreview={imagePreview}
         />
         <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
         <DndContext
@@ -288,6 +310,7 @@ export default function FormCreationPage() {
           </Button>
         </div>
       </div>
+      {form && <FilledForms form_id={form.form_id} />}
     </div>
   );
 }

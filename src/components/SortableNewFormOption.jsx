@@ -51,7 +51,7 @@ export default function SortableNewFormOption({ type, option, index, question_id
             onChange={(e) =>
               onUpdateOptions(question_id, index, e.target.value)
             }
-            className="w-full hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
+            className="bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark w-full hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
           />
         </div>
         <Tooltip title="Remove" placement="top">
@@ -90,7 +90,7 @@ export default function SortableNewFormOption({ type, option, index, question_id
             onChange={(e) =>
               onUpdateOptions(question_id, index, e.target.value)
             }
-            className="hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
+            className="bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
           />
         </div>
         <Tooltip title="Remove" placement="top">
@@ -129,7 +129,7 @@ export default function SortableNewFormOption({ type, option, index, question_id
             onChange={(e) =>
               onUpdateOptions(question_id, index, e.target.value)
             }
-            className="hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
+            className="bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark hover:border-b hover:border-solid hover:border-black focus:outline-none focus:border-b focus:border-solid focus:border-black"
           />
         </div>
         <Tooltip title="Remove" placement="top">

@@ -129,7 +129,7 @@ export default function NewFormQuestion({
         type="text"
         value={question.question_text}
         placeholder="Question"
-        className="bg-gray-200 p-4"
+        className="bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark p-4"
         onChange={(e) =>
           onUpdateQuestion(
             question.question_id,

@@ -44,7 +44,7 @@ export default function FormsSearch() {
   return (
     <div className="flex flex-col w-1/3 items-center">
       {/* Search input */}
-      <div className="bg-gray-200 p-2 w-full flex flex-row items-center gap-3 px-4 rounded-full h-10">
+      <div className="border-2 border-gray-400 dark:border-gray-300 bg-background dark:bg-background-dark text-text dark:text-text-dark p-2 w-full flex flex-row items-center gap-3 px-4 rounded-full h-10">
         <FontAwesomeIcon className="text-gray-600" icon={faMagnifyingGlass} />
         <input
           type="text"
@@ -56,7 +56,7 @@ export default function FormsSearch() {
       </div>
 
       {/* Search results */}
-      <ul className="mt-4">
+      {/* <ul className="mt-4 hidden">
         {isLoading && <li>Loading...</li>}
         {error && <li className="text-red-500">{error}</li>}
         {!isLoading && results.length === 0 && query.trim().length >= 3 && (
@@ -71,7 +71,7 @@ export default function FormsSearch() {
             </a>
           </li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 }

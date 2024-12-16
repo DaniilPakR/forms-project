@@ -3,17 +3,17 @@ import { Form, Link } from "react-router-dom"
 export default function LoginForm({isSubmitting}) {
   return (
     <Form
-      className="w-4/5 lg:w-1/3 flex flex-col border border-gray-300 rounded-xl shadow-lg p-6 bg-white"
+      className="w-4/5 lg:w-1/3 flex flex-col borderrounded-xl shadow-lg p-6 bg-background dark:bg-background-dark text-text dark:text-text-dark "
       method="patch"
     >
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
+      <h2 className="text-2xl font-bold text-center mb-4">
         Login
       </h2>
       <div className="space-y-4">
         <p>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium mb-1"
           >
             Email
           </label>
@@ -21,13 +21,13 @@ export default function LoginForm({isSubmitting}) {
             type="email"
             id="email"
             name="email"
-            className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="w-full p-2 border bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           />
         </p>
         <p>
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium mb-1"
           >
             Password
           </label>
@@ -35,14 +35,14 @@ export default function LoginForm({isSubmitting}) {
             type="password"
             id="password"
             name="password"
-            className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="w-full p-2 border bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           />
         </p>
       </div>
       <div className="mt-6">
         <button
           type="submit"
-          className={`w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition ${
+          className={`w-full py-3 bg-blue-500 font-semibold rounded-lg hover:bg-blue-600 transition ${
             isSubmitting ? "opacity-75 pointer-events-none" : ""
           }`}
         >

@@ -4,13 +4,14 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
-import { useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 import { DndContext, closestCorners } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
-import { arrayMove } from "@dnd-kit/sortable";
+import { uploadImageToCloudinary } from "../utils/cloudinaryFunctions";
 
 export default function FormCreationPage() {
   const { id: pageId } = useParams();
@@ -166,6 +167,13 @@ export default function FormCreationPage() {
         currentUserId,
         pageId
       });
+      try {
+        if (!formImage) {return}
+        const uploadedImage = await uploadImageToCloudinary(formImage, pageId)
+        console.log(uploadedImage)
+      } catch (e) {
+        console.error(e.message)
+      }
       alert("Form uploaded successfully!");
     } catch (error) {
       alert("Failed to upload the form. Please try again.");
@@ -194,7 +202,7 @@ export default function FormCreationPage() {
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <div className="w-4/5 lg:w-1/2 border border-solid bg-white rounded-md border-black py-4 px-5 gap-3 flex flex-col">
+      <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
         <h1 className="text-center text-xl border-b border-black pb-2">Form</h1>
         <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
         <NewFormHeader
@@ -275,7 +283,7 @@ export async function action(formData) {
     description: formDescription,
     descriptionmarkdown: formDescriptionMarkdown,
     topic: formTopic,
-    imageUrl: formImage,
+    imageUrl: formImage ? "true" : "false",
     isPublic,
     creatorId: currentUserId,
     questions: formQuestions.map((question, index) => ({
@@ -309,7 +317,7 @@ export async function action(formData) {
 
     const result = await response.json();
     console.log("Form created successfully:", result);
-    return result;
+    return redirect(`/eform/${pageId}`);
   } catch (error) {
     console.error("Error uploading form:", error.message);
     throw error;

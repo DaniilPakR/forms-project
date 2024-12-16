@@ -39,7 +39,7 @@ export default function CreatedForms() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex flex-col items-center bg-background dark:bg-background-dark text-text dark:text-text-dark">
       <h1>My Forms:</h1>
       {forms.length === 0 ? (
         <p>No forms created yet.</p>

@@ -2,7 +2,7 @@
 // dmi1xxumf
 // forms-project-cloudinary
 
-const uploadImageToCloudinary = async (file, publicId = null) => {
+export const uploadImageToCloudinary = async (file, publicId = null) => {
   const formData = new FormData();
   formData.append("file", file); // Attach the file
   formData.append("upload_preset", "forms-project-cloudinary"); // Replace with your preset
@@ -29,4 +29,17 @@ const uploadImageToCloudinary = async (file, publicId = null) => {
   } catch (error) {
     console.error("Error uploading image:", error);
   }
+};
+
+export const fetchImageById = async (publicId) => {
+  const imageUrl = `https://res.cloudinary.com/dmi1xxumf/image/upload/${publicId}`;
+  console.log("Image URL:", imageUrl);
+  return imageUrl;
+};
+
+export const urlToFile = async (url, filename = "image") => {
+  const response = await fetch(`https://res.cloudinary.com/dmi1xxumf/image/upload/${url}`);
+  const blob = await response.blob();
+  const file = new File([blob], filename, { type: blob.type });
+  return file;
 };

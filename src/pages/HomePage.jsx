@@ -12,7 +12,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex flex-col mt-5">
+    <div className="flex flex-col mt-5 bg-background dark:bg-background-dark">
       <CreatedForms />
       <button className="self-start" onClick={createForm}>Create Form</button>
     </div>

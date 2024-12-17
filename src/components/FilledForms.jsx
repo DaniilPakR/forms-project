@@ -13,7 +13,6 @@ export default function FilledForms({ form_id }) {
         };
         const result = await response.json();
         setFilledForms(result);
-        console.log("Filled Forms: ",result)
       } catch (err) {
         console.error("Error: ", err.message)
       }

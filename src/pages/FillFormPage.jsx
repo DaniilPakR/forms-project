@@ -125,7 +125,7 @@ export default function FillFormPage() {
   }
 
   return (
-    <form>
+    <form className="mt-16">
       <FillForm answers={answers} setAnswers={setAnswers} formData={formData} onSetAnswers={handleSetAnswers} />
       <button onClick={(e) => handleSubmit(e)}>Submit</button>
       {formData && <LikeButton user_id={currentUser.id} form_id={formData.form_id} />}

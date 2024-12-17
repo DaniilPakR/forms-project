@@ -1,77 +1,105 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 export default function FormsSearch() {
-  const [query, setQuery] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [results, setResults] = useState([]);
+  const [resultsVisible, setResultsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const searchRef = useRef(null);
 
-  // Fetch search results from the backend
-  const fetchResults = async (searchText) => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`http://localhost:5000/forms/search?q=${encodeURIComponent(searchText)}`);
+  // Debounced search text
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch search results.");
-      }
-
-      const data = await response.json();
-      console.log("Received response: ", data);
-      setResults(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Debounced search handler
   useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      if (query.trim().length >= 3) {
-        fetchResults(query);
-      } else {
-        setResults([]);
-      }
-    }, 300); // 300ms debounce
+    const handler = setTimeout(() => setDebouncedSearchText(searchText), 300); // 300ms debounce
+    return () => clearTimeout(handler);
+  }, [searchText]);
 
-    return () => clearTimeout(debounceTimer);
-  }, [query]);
+  useEffect(() => {
+    if (!debouncedSearchText) {
+      setResults([]);
+      return;
+    }
+
+    async function search() {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          `http://localhost:5000/forms/search?query=${searchText}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch search results.");
+        }
+
+        const data = await response.json();
+        console.log("Received response: ", data);
+        setResults(data)
+      } catch (err) {
+        console.error(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    search();
+  }, [debouncedSearchText]);
+
+  // Close results if clicking outside the input and results container
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target)
+      ) {
+        setResultsVisible(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="flex flex-col w-1/3 items-center">
-      {/* Search input */}
+    <div className="flex flex-col w-1/3 items-center" ref={searchRef}>
       <div className="border-2 border-gray-400 dark:border-gray-300 bg-background dark:bg-background-dark text-text dark:text-text-dark p-2 w-full flex flex-row items-center gap-3 px-4 rounded-full h-10">
         <FontAwesomeIcon className="text-gray-600" icon={faMagnifyingGlass} />
         <input
           type="text"
           placeholder="Search"
           className="border-none outline-none w-full bg-transparent"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+            setResultsVisible(true);
+          }}
+          onFocus={() => setResultsVisible(true)}
         />
       </div>
-
-      {/* Search results */}
-      {/* <ul className="mt-4 hidden">
-        {isLoading && <li>Loading...</li>}
-        {error && <li className="text-red-500">{error}</li>}
-        {!isLoading && results.length === 0 && query.trim().length >= 3 && (
-          <li>No results found.</li>
+      <div className="relative w-full">
+        {searchText.length > 0 && resultsVisible && (
+          <div className="absolute top-full bg-background dark:bg-background-dark text-text dark:text-text-dark border-gray-300 rounded-md w-full max-h-60 overflow-y-auto shadow-md z-10">
+            {isLoading ? (
+              <div className="p-2 text-gray-500">Loading...</div>
+            ) : results.length > 0 ? (
+              results.map((result, index) => (
+                <Link
+                  key={result.page_id}
+                  className="block w-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                  to={`/fform/${result.page_id}`}
+                  onClick={() => setResultsVisible(false)}
+                >
+                  {result.title}
+                </Link>
+              ))
+            ) : (
+              <div className="p-2 text-gray-500">No results found.</div>
+            )}
+          </div>
         )}
-        {results.map((form) => (
-          <li key={form.link} className="mb-4">
-            <a href={form.link} className="block p-4 bg-white shadow rounded-lg hover:bg-gray-100">
-              <h3 className="text-lg font-semibold">{form.title}</h3>
-              <p className="text-sm text-gray-600">{form.description}</p>
-              <small className="text-xs text-gray-500">Topic: {form.topic}</small>
-            </a>
-          </li>
-        ))}
-      </ul> */}
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { externalContextReference } from "../context/GlobalProvider";
 
 export default function AuthPage() {
   return (
-    <div className="flex flex-col items-center mt-10">
+    <div className="flex flex-col items-center mt-20">
       <AuthForm />
     </div>
   );

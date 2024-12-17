@@ -35,37 +35,41 @@ export default function CreatedForms() {
     fetchForms();
   }, [currentUser?.id]);
 
+  if (!currentUser) {return}
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="w-full flex flex-col items-center bg-background dark:bg-background-dark text-text dark:text-text-dark">
-      <h1>My Forms:</h1>
-      {forms.length === 0 ? (
-        <p>No forms created yet.</p>
-      ) : (
-        <ul className="w-full p-4 flex flex-col lg:flex-row gap-4">
-          {forms.map((form) => (
-            <li
-              key={form.form_id}
-              className="flex flex-col border p-4 mb-4 rounded lg:w-1/4 h-48"
-            >
-              <Link to={`/eform/${form.page_id}`}>
-                <div></div>
-                <div>
-                  <h2 className="text-xl font-bold">{form.title}</h2>
-                  <div className="flex flex-row items-center gap-2 justify-self-end">
-                    <img src={formimg} alt="" className="h-5" />
-                    <small>
-                      Created at: {new Date(form.created_at).toLocaleString()}
-                    </small>
+    <>
+      <div className="w-full flex flex-col items-center bg-background dark:bg-background-dark text-text dark:text-text-dark">
+        <h1>My Forms:</h1>
+        {forms.length === 0 ? (
+          <p>No forms created yet.</p>
+        ) : (
+          <ul className="w-full p-4 flex flex-col lg:flex-row gap-4">
+            {forms.map((form) => (
+              <li
+                key={form.form_id}
+                className="flex flex-col border p-4 mb-4 rounded lg:w-1/4 h-48"
+              >
+                <Link to={`/eform/${form.page_id}`}>
+                  <div></div>
+                  <div>
+                    <h2 className="text-xl font-bold">{form.title}</h2>
+                    <div className="flex flex-row items-center gap-2 justify-self-end">
+                      <img src={formimg} alt="" className="h-5" />
+                      <small>
+                        Created at: {new Date(form.created_at).toLocaleString()}
+                      </small>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </>
   );
 }

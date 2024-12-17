@@ -3,7 +3,7 @@ import { Form, Link } from "react-router-dom"
 export default function LoginForm({isSubmitting}) {
   return (
     <Form
-      className="w-4/5 lg:w-1/3 flex flex-col borderrounded-xl shadow-lg p-6 bg-background dark:bg-background-dark text-text dark:text-text-dark "
+      className="w-4/5 lg:w-1/3 flex flex-col border rounded-xl border-gray-300 borderrounded-xl shadow-lg p-6 bg-background dark:bg-background-dark text-text dark:text-text-dark "
       method="patch"
     >
       <h2 className="text-2xl font-bold text-center mb-4">

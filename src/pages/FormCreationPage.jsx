@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
-import { redirect, useParams } from "react-router-dom";
+import { redirect, useParams, useNavigate } from "react-router-dom";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -14,6 +14,7 @@ import { GlobalContext } from "../context/GlobalProvider";
 import { uploadImageToCloudinary } from "../utils/cloudinaryFunctions";
 
 export default function FormCreationPage() {
+  const navigate = useNavigate();
   const { id: pageId } = useParams();
   const { currentUser } = useContext(GlobalContext);
   let currentUserId;
@@ -200,9 +201,11 @@ export default function FormCreationPage() {
     });
   };
 
+  if (!currentUser) {navigate("/")}
+
   return (
-    <div className="flex flex-col items-center mt-5">
-      <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
+    <div className="flex flex-col items-center mt-16">
+      {currentUser && <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
         <h1 className="text-center text-xl border-b border-black pb-2">Form</h1>
         <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
         <NewFormHeader
@@ -259,7 +262,7 @@ export default function FormCreationPage() {
             Upload
           </Button>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

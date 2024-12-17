@@ -20,7 +20,7 @@ export default function FillFormQuestions({ questions, answers, onSetAnswers }) 
                   value={answers[question.question_id]?.value || ""}
                   onChange={(e) => onSetAnswers(question.question_id, "short-answer", e.target.value)}
                   placeholder="Your Answer"
-                  className="input-class"
+                  className="input-class text-text dark:text-text-dark bg-background dark:bg-background-dark"
                 />
               </div>
             );
@@ -37,7 +37,7 @@ export default function FillFormQuestions({ questions, answers, onSetAnswers }) 
                   value={answers[question.question_id]?.value || ""}
                   onChange={(e) => onSetAnswers(question.question_id, "paragraph", e.target.value)}
                   placeholder="Your Answer"
-                  className="textarea-class"
+                  className="textarea-class text-text dark:text-text-dark bg-background dark:bg-background-dark"
                 />
               </div>
             );
@@ -96,7 +96,7 @@ export default function FillFormQuestions({ questions, answers, onSetAnswers }) 
                   required={question.is_required}
                   value={answers[question.question_id]?.value || ""}
                   onChange={(e) => onSetAnswers(question.question_id, "dropdown", e.target.value)}
-                  className="select-class"
+                  className="select-class text-text dark:text-text-dark bg-background dark:bg-background-dark"
                 >
                   <option value="" disabled>
                     Select an option

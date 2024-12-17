@@ -16,7 +16,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="flex flex-row justify-between bg-background dark:bg-background-dark h-12 items-center pt-3 px-2 lg:px-4 lg:text-lg">
+    <header className="top-0 w-full fixed flex flex-row justify-between bg-background dark:bg-background-dark h-14 items-center py-3 px-2 lg:px-4 lg:text-lg">
       <div>
         <Link className="flex flex-row items-center gap-4" to="">
           <img src={logoimg} alt="" className='h-10' />

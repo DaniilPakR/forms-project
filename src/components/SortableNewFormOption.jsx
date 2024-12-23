@@ -17,7 +17,7 @@ export default function SortableNewFormOption({ type, option, index, question_id
       transform: transform
         ? CSS.Transform.toString({
             ...transform,
-            scaleX: 1, // Ensure no scaling effect
+            scaleX: 1,
             scaleY: 1,
           })
         : undefined,

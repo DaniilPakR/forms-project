@@ -3,18 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-export default function FormsSearch() {
+export default function FormsSearch({t}) {
   const [searchText, setSearchText] = useState("");
   const [results, setResults] = useState([]);
   const [resultsVisible, setResultsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef(null);
 
-  // Debounced search text
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
 
   useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearchText(searchText), 300); // 300ms debounce
+    const handler = setTimeout(() => setDebouncedSearchText(searchText), 300);
     return () => clearTimeout(handler);
   }, [searchText]);
 
@@ -48,7 +47,6 @@ export default function FormsSearch() {
     search();
   }, [debouncedSearchText]);
 
-  // Close results if clicking outside the input and results container
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -68,7 +66,7 @@ export default function FormsSearch() {
         <FontAwesomeIcon className="text-gray-600" icon={faMagnifyingGlass} />
         <input
           type="text"
-          placeholder="Search"
+          placeholder={t("header.search")}
           className="border-none outline-none w-full bg-transparent"
           value={searchText}
           onChange={(e) => {

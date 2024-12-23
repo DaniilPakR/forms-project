@@ -1,10 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 
 import { GlobalContext } from "../context/GlobalProvider";
+import { formatDate } from "../utils/formateDate";
 
 export default function Comments({ form_id }) {
   const { currentUser } = useContext(GlobalContext);
-  const { id: user_id, name: user_name } = currentUser;
+  const user_id = currentUser?.id || null;
+  const user_name = currentUser?.name || null;
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState([]);
   useEffect(() => {
@@ -13,11 +15,7 @@ export default function Comments({ form_id }) {
         const response = await fetch(
           `http://localhost:5000/comments/${form_id}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch comments.");
-        }
         const result = await response.json();
-        console.log("Comments: ", result);
         setComments(result);
       } catch (err) {
         console.error("Error: ", err.message);
@@ -31,6 +29,7 @@ export default function Comments({ form_id }) {
   }, []);
 
   const handleLeaveComment = async () => {
+    if (!user_id) {return}
     try {
       const response = await fetch("http://localhost:5000/comments/add", {
         method: "POST",
@@ -48,13 +47,13 @@ export default function Comments({ form_id }) {
         throw new Error("Failed to leave comment.");
       }
       const result = response.json();
-      console.log(result);
     } catch (err) {
       console.error("Error: ", err.message);
     }
   };
 
   const handleDeleteComment = async (comment_id) => {
+    if (!user_id) {return}
     try {
       const response = await fetch("http://localhost:5000/comments/delete", {
         method: "DELETE",
@@ -68,9 +67,7 @@ export default function Comments({ form_id }) {
       }
   
       const result = await response.json();
-      console.log(result);
   
-      // Update the comments state by removing the deleted comment
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.comment_id !== comment_id)
       );
@@ -78,27 +75,10 @@ export default function Comments({ form_id }) {
       console.error("Error: ", err.message);
     }
   };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
   
-    const year = date.getFullYear();
-    const month = date.toLocaleString('en-GB', { month: 'long' });
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-  
-    return `${year}, ${day} ${month}, ${hours}:${minutes}`;
-  };
-  
-  const commented_at = "2024-12-16T03:54:34.969Z";
-  console.log(formatDate(commented_at)); // Output: "2024, 16 December, 03:54"
-  
-
   return (
     <div className="bg-background dark:bg-background-dark text-text dark:text-text-dark p-6 rounded-lg shadow-md">
-      {/* Leave Comment Section */}
-      <div className="mb-6">
+      {currentUser && <div className="mb-6">
         <p className="text-lg font-semibold mb-2 text-primary dark:text-primary-light">
           Leave Comment
         </p>
@@ -116,9 +96,8 @@ export default function Comments({ form_id }) {
         >
           Leave Comment
         </button>
-      </div>
+      </div>}
 
-      {/* Comments Section */}
       <div>
         <h3 className="text-xl font-semibold mb-4 text-secondary dark:text-secondary-light">
           Comments:

@@ -11,9 +11,13 @@ import { arrayMove } from "@dnd-kit/sortable";
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
-import { uploadImageToCloudinary, fetchImageById, urlToFile } from "../utils/cloudinaryFunctions";
-import FilledForms from "../components/FilledForms";
+import {
+  uploadImageToCloudinary,
+  fetchImageById,
+  urlToFile,
+} from "../utils/cloudinaryFunctions";
 import Responses from "../components/Responses";
+import { deleteForm } from "../utils/deleteForm";
 
 export default function FormCreationPage() {
   const navigate = useNavigate();
@@ -33,7 +37,7 @@ export default function FormCreationPage() {
   const [formTitleMarkdown, setFormTitleMarkdown] = useState([]);
   const [formTopic, setFormTopic] = useState("topic");
   const [formTags, setFormTags] = useState([]);
-  const [formImage, setFormImage] = useState(null);
+  const [formImage, setFormImage] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [isPublic, setIsPublic] = useState(true);
   const [formQuestions, setFormQuestions] = useState([
@@ -53,6 +57,7 @@ export default function FormCreationPage() {
       ],
     },
   ]);
+  const [content, setContent] = useState("form");
 
   useEffect(() => {
     async function fetchForm() {
@@ -65,7 +70,9 @@ export default function FormCreationPage() {
         const data = await response.json();
         let str = data.descriptionMarkdown;
         try {
-          const markdownArray = JSON.parse(str.replace(/{/g, "[").replace(/}/g, "]"));
+          const markdownArray = JSON.parse(
+            str.replace(/{/g, "[").replace(/}/g, "]")
+          );
           setFormDescriptionMarkdown(markdownArray);
         } catch (error) {
           console.error("Failed to transform descriptionMarkdown:", error);
@@ -73,7 +80,9 @@ export default function FormCreationPage() {
         }
         let strt = data.titleMarkdown;
         try {
-          const markdownArray = JSON.parse(strt.replace(/{/g, "[").replace(/}/g, "]"));
+          const markdownArray = JSON.parse(
+            strt.replace(/{/g, "[").replace(/}/g, "]")
+          );
           setFormTitleMarkdown(markdownArray);
         } catch (error) {
           console.error("Failed to transform titleMarkdown:", error);
@@ -89,7 +98,9 @@ export default function FormCreationPage() {
         setFormId(data.form_id);
         const file = await urlToFile(pageId, "uploaded-image.jpg");
         setFormImage(file);
-        setImagePreview(`https://res.cloudinary.com/dmi1xxumf/image/upload/${pageId}`);
+        setImagePreview(
+          `https://res.cloudinary.com/dmi1xxumf/image/upload/${pageId}`
+        );
       } catch (err) {
         console.error("Error fetching form:", err.message);
       }
@@ -101,10 +112,10 @@ export default function FormCreationPage() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormImage(file);
-      setImagePreview(URL.createObjectURL(file))
+      setFormImage(true);
+      setImagePreview(URL.createObjectURL(file));
     }
-  }
+  };
 
   const handleAddQuestion = () => {
     setFormQuestions((prevFormQuestions) => [
@@ -133,7 +144,6 @@ export default function FormCreationPage() {
         (q) => q.question_id !== questionId
       );
 
-      // Reassign positions after deletion
       return filteredQuestions.map((q, index) => ({
         ...q,
         position: index,
@@ -214,14 +224,16 @@ export default function FormCreationPage() {
         currentUserId,
         pageId,
         formId,
-        formTitleMarkdown
+        formTitleMarkdown,
       });
       try {
-        if (!formImage) {return}
-        const uploadedImage = await uploadImageToCloudinary(formImage, pageId)
-        console.log(uploadedImage)
+        if (!formImage) {
+          return;
+        }
+        const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
+        console.log(uploadedImage);
       } catch (e) {
-        console.error(e.message)
+        console.error(e.message);
       }
       alert("Form uploaded successfully!");
     } catch (error) {
@@ -240,82 +252,131 @@ export default function FormCreationPage() {
         (q) => q.position === over.id
       );
 
-      // Update positions to reflect the new order
       const updatedQuestions = arrayMove(prevFormQuestions, oldIndex, newIndex);
       return updatedQuestions.map((q, index) => ({
         ...q,
-        position: index, // Reassign positions
+        position: index,
       }));
     });
   };
-  
-  if (!currentUser) {navigate("/")}
 
+  if (!currentUser) {
+    navigate("/");
+  }
+  console.log(form);
+
+  console.log(isPublic)
   return (
     <div className="flex flex-col items-center mt-16">
-      {currentUser && <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
-        <h1 className="text-center text-xl border-b border-black pb-2">Form</h1>
-        <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
-        <NewFormHeader
-          title={formTitle}
-          setTitle={setFormTitle}
-          description={formDescription}
-          setDescription={setFormDescription}
-          descriptionMarkdown={formDescriptionMarkdown}
-          setDescriptionMarkdown={setFormDescriptionMarkdown}
-          formTitleMarkdown={formTitleMarkdown}
-          setFormTitleMarkdown={setFormTitleMarkdown}
-          formTags={formTags}
-          setFormTags={setFormTags}
-          formTopic={formTopic}
-          setFormTopic={setFormTopic}
-          handleImageChange={handleImageChange}
-          imagePreview={imagePreview}
-        />
-        <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
-        <DndContext
-          onDragEnd={handleDragEnd}
-          collisionDetection={closestCorners}
-        >
-          <NewFormQuestions
-            questions={formQuestions}
-            onDeleteQuestion={handleDeleteQuestion}
-            onUpdateQuestion={handleUpdateQuestion}
-            onUpdateOptions={handleUpdateOptions}
-            onDeleteOption={handleDeleteOption}
-            onDuplicateQuestion={handleDuplicateQuestion}
-            setFormQuestions={setFormQuestions}
-          />
-        </DndContext>
-        <div className="w-full">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddQuestion}
-            sx={{
-              textTransform: "none",
-              width: "100%",
-            }}
-            startIcon={<AddIcon />}
-          >
-            Add Question
-          </Button>
+      {currentUser && (
+        <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
+          <div className="self-center">
+            <button
+              onClick={() => setContent("form")}
+              className={`px-4 py-2 rounded ${
+                content === "form"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 dark:bg-gray-700"
+              }`}
+            >
+              Form
+            </button>
+            <button
+              onClick={() => setContent("responses")}
+              className={`px-4 py-2 rounded ml-2 ${
+                content === "responses"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 dark:bg-gray-700"
+              }`}
+            >
+              Responses
+            </button>
+          </div>
+
+          {/* Shared Header */}
+          <h1 className="text-center text-xl border-b border-black pb-2">
+            {content === "form" ? "Form" : "Responses"}
+          </h1>
+          <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
+
+          {content === "form" ? (
+            <>
+              <NewFormHeader
+                title={formTitle}
+                setTitle={setFormTitle}
+                description={formDescription}
+                setDescription={setFormDescription}
+                descriptionMarkdown={formDescriptionMarkdown}
+                setDescriptionMarkdown={setFormDescriptionMarkdown}
+                formTitleMarkdown={formTitleMarkdown}
+                setFormTitleMarkdown={setFormTitleMarkdown}
+                formTags={formTags}
+                setFormTags={setFormTags}
+                formTopic={formTopic}
+                setFormTopic={setFormTopic}
+                handleImageChange={handleImageChange}
+                imagePreview={imagePreview}
+                isPublic={isPublic}
+                setIsPublic={setIsPublic}
+              />
+              <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
+              <DndContext
+                onDragEnd={handleDragEnd}
+                collisionDetection={closestCorners}
+              >
+                <NewFormQuestions
+                  questions={formQuestions}
+                  onDeleteQuestion={handleDeleteQuestion}
+                  onUpdateQuestion={handleUpdateQuestion}
+                  onUpdateOptions={handleUpdateOptions}
+                  onDeleteOption={handleDeleteOption}
+                  onDuplicateQuestion={handleDuplicateQuestion}
+                  setFormQuestions={setFormQuestions}
+                />
+              </DndContext>
+              <div className="w-full">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddQuestion}
+                  sx={{
+                    textTransform: "none",
+                    width: "100%",
+                  }}
+                  startIcon={<AddIcon />}
+                >
+                  Add Question
+                </Button>
+              </div>
+            </>
+          ) : (
+            <Responses form_id={formId} />
+          )}
+
+          <div className="flex flex-row justify-between items-center mt-4">
+            <Button variant="outlined">Cancel</Button>
+            <div className="flex flex-row items-center gap-2">
+              <Button
+                variant="outlined"
+                endIcon={<DeleteIcon />}
+                onClick={async () => {
+                  await deleteForm(formId);
+                  window.location.href = "/";
+                }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                endIcon={<SendIcon />}
+                onClick={handleUploadForm}
+              >
+                Update
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-row justify-between items-center">
-          <Button variant="outlined" startIcon={<DeleteIcon />}>
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            endIcon={<SendIcon />}
-            onClick={handleUploadForm}
-          >
-            Update
-          </Button>
-        </div>
-      </div>}
-      {form && <FilledForms form_id={form.form_id} />}
-      {form && <Responses form_id={form.form_id} />}
+      )}
     </div>
   );
 }
@@ -332,7 +393,7 @@ export async function action(formData) {
     currentUserId,
     pageId,
     formId,
-    formTitleMarkdown // Form ID is needed for editing
+    formTitleMarkdown,
   } = formData;
 
   const updatedForm = {
@@ -341,16 +402,16 @@ export async function action(formData) {
     description: formDescription,
     descriptionmarkdown: formDescriptionMarkdown,
     topic: formTopic,
-    imageUrl: formImage,
+    imageUrl: false,
     isPublic,
     creatorId: currentUserId,
     questions: formQuestions.map((question, index) => ({
-      questionId: question.question_id, // Include the ID if available
+      questionId: question.question_id,
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
       options: question.options.map((option) => ({
-        optionId: option.option_id, // Include the ID if available
+        optionId: option.option_id,
         optionText: option.option_text,
       })),
     })),

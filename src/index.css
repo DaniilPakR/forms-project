@@ -25,3 +25,6 @@ html.dark {
   @apply bg-background-dark text-text-dark; /* Dark mode */
 }
 
+label {
+  font-size: 18px;
+}

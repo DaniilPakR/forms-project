@@ -43,7 +43,7 @@ export default function NewFormQuestion({
       transform: transform
         ? CSS.Transform.toString({
             ...transform,
-            scaleX: 1, // Ensure no scaling effect
+            scaleX: 1,
             scaleY: 1,
           })
         : undefined,
@@ -69,6 +69,7 @@ export default function NewFormQuestion({
               id="question-type"
               value={question.question_type}
               label="Type"
+              className="bg-white"
               onChange={(e) =>
                 onUpdateQuestion(
                   question.question_id,
@@ -163,7 +164,7 @@ export default function NewFormQuestion({
                     !question.is_required
                   )
                 }
-                color="primary" // You can adjust the color as needed
+                color="primary"
               />
             }
             label="Required"

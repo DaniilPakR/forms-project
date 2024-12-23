@@ -26,7 +26,6 @@ export default function NewFormOptions({
           (option) => option.position === over.id
         );
   
-        // Only update options if the drag-and-drop occurred within the same question
         if (activeOptionIndex !== -1 && overOptionIndex !== -1) {
           const updatedOptions = arrayMove(
             question.options,
@@ -34,12 +33,11 @@ export default function NewFormOptions({
             overOptionIndex
           );
   
-          // Update positions to reflect the new order
           return {
             ...question,
             options: updatedOptions.map((option, index) => ({
               ...option,
-              position: index + 1, // Reassign positions starting from 1
+              position: index + 1,
             })),
           };
         }

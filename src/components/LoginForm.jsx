@@ -1,21 +1,18 @@
-import { Form, Link } from "react-router-dom"
+import { Form, Link } from "react-router-dom";
 
-export default function LoginForm({isSubmitting}) {
+export default function LoginForm({ isSubmitting, t }) {
   return (
     <Form
-      className="w-4/5 lg:w-1/3 flex flex-col border rounded-xl border-gray-300 borderrounded-xl shadow-lg p-6 bg-background dark:bg-background-dark text-text dark:text-text-dark "
+      className="w-4/5 lg:w-1/3 flex flex-col border rounded-xl border-gray-300 shadow-lg p-6 bg-background dark:bg-background-dark text-text dark:text-text-dark "
       method="patch"
     >
       <h2 className="text-2xl font-bold text-center mb-4">
-        Login
+        {t("auth.login")}
       </h2>
       <div className="space-y-4">
         <p>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium mb-1"
-          >
-            Email
+          <label htmlFor="email" className="block text-sm font-medium mb-1">
+            {t("auth.email")}
           </label>
           <input
             type="email"
@@ -25,11 +22,8 @@ export default function LoginForm({isSubmitting}) {
           />
         </p>
         <p>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium mb-1"
-          >
-            Password
+          <label htmlFor="password" className="block text-sm font-medium mb-1">
+            {t("auth.password")}
           </label>
           <input
             type="password"
@@ -46,17 +40,15 @@ export default function LoginForm({isSubmitting}) {
             isSubmitting ? "opacity-75 pointer-events-none" : ""
           }`}
         >
-          {isSubmitting
-            ? "Submitting..."
-            : "login"}
+          {isSubmitting ? t("auth.submitting") : t("auth.login")}
         </button>
         <Link
           to="?mode=signup"
           className="text-blue-500 mt-4 block text-center hover:underline"
         >
-          Don't have an account? Sign up!
+          {t("auth.dontHaveAccount")}
         </Link>
       </div>
     </Form>
-  )
+  );
 }

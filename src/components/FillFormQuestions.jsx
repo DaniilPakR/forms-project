@@ -1,6 +1,11 @@
-export default function FillFormQuestions({ questions, answers, onSetAnswers }) {
+export default function FillFormQuestions({
+  questions,
+  answers,
+  onSetAnswers,
+  currentUser
+}) {
   if (!questions || questions.length === 0) {
-    return <p>No questions available</p>;
+    return <p className="text-center text-text-muted">No questions available</p>;
   }
 
   return (
@@ -9,94 +14,111 @@ export default function FillFormQuestions({ questions, answers, onSetAnswers }) 
         switch (question.question_type) {
           case "short-answer":
             return (
-              <div key={question.question_id}>
-                <label htmlFor={`question-${question.question_id}`} className="block mb-2">
+              <div key={question.question_id} className="space-y-2">
+                <label htmlFor={`question-${question.question_id}`} className="font-medium">
                   {question.question_text}
                 </label>
                 <input
+                  disabled={!currentUser}
                   type="text"
                   id={`question-${question.question_id}`}
                   required={question.is_required}
                   value={answers[question.question_id]?.value || ""}
-                  onChange={(e) => onSetAnswers(question.question_id, "short-answer", e.target.value)}
+                  onChange={(e) =>
+                    onSetAnswers(question.question_id, "short-answer", e.target.value)
+                  }
                   placeholder="Your Answer"
-                  className="input-class text-text dark:text-text-dark bg-background dark:bg-background-dark"
+                  className="w-full p-3 border rounded-md bg-background dark:bg-background-dark text-text dark:text-text-dark border-border focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             );
 
           case "paragraph":
             return (
-              <div key={question.question_id}>
-                <label htmlFor={`question-${question.question_id}`} className="block mb-2">
+              <div key={question.question_id} className="space-y-2">
+                <label htmlFor={`question-${question.question_id}`} className="font-medium">
                   {question.question_text}
                 </label>
                 <textarea
+                  disabled={!currentUser}
                   id={`question-${question.question_id}`}
                   required={question.is_required}
                   value={answers[question.question_id]?.value || ""}
-                  onChange={(e) => onSetAnswers(question.question_id, "paragraph", e.target.value)}
+                  onChange={(e) =>
+                    onSetAnswers(question.question_id, "paragraph", e.target.value)
+                  }
                   placeholder="Your Answer"
-                  className="textarea-class text-text dark:text-text-dark bg-background dark:bg-background-dark"
+                  className="w-full p-3 border rounded-md bg-background dark:bg-background-dark text-text dark:text-text-dark border-border focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             );
 
           case "multiple-choice":
             return (
-              <div key={question.question_id}>
-                <p className="mb-2">{question.question_text}</p>
-                {question.options.map((option) => (
-                  <label key={option.option_id} className="flex items-center">
-                    <input
-                      type="radio"
-                      name={`question-${question.question_id}`}
-                      value={option.option_text}
-                      checked={answers[question.question_id]?.value === option.option_text}
-                      onChange={(e) =>
-                        onSetAnswers(question.question_id, "multiple-choice", e.target.value)
-                      }
-                      className="mr-2"
-                    />
-                    {option.option_text}
-                  </label>
-                ))}
+              <div key={question.question_id} className="space-y-2">
+                <p className="font-medium">{question.question_text}</p>
+                <div className="space-y-1">
+                  {question.options.map((option) => (
+                    <label key={option.option_id} className="flex items-center space-x-2">
+                      <input
+                        disabled={!currentUser}
+                        type="radio"
+                        name={`question-${question.question_id}`}
+                        value={option.option_text}
+                        checked={answers[question.question_id]?.value === option.option_text}
+                        onChange={(e) =>
+                          onSetAnswers(question.question_id, "multiple-choice", e.target.value)
+                        }
+                        className="form-radio focus:ring-primary"
+                      />
+                      <span>{option.option_text}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
             );
 
           case "checkboxes":
             return (
-              <div key={question.question_id}>
-                <p className="mb-2">{question.question_text}</p>
-                {question.options.map((option) => (
-                  <label key={option.option_id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      value={option.option_text}
-                      checked={(answers[question.question_id]?.value || []).includes(option.option_text)}
-                      onChange={(e) =>
-                        onSetAnswers(question.question_id, "checkboxes", e.target.value, true)
-                      }
-                      className="mr-2"
-                    />
-                    {option.option_text}
-                  </label>
-                ))}
+              <div key={question.question_id} className="space-y-2">
+                <p className="font-medium">{question.question_text}</p>
+                <div className="space-y-1">
+                  {question.options.map((option) => (
+                    <label key={option.option_id} className="flex items-center space-x-2">
+                      <input
+                        disabled={!currentUser}
+                        type="checkbox"
+                        value={option.option_text}
+                        checked={(answers[question.question_id]?.value || []).includes(
+                          option.option_text
+                        )}
+                        onChange={(e) =>
+                          onSetAnswers(question.question_id, "checkboxes", e.target.value, true)
+                        }
+                        className="form-checkbox focus:ring-primary"
+                      />
+                      <span>{option.option_text}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
             );
 
           case "dropdown":
             return (
-              <div key={question.question_id}>
-                <label htmlFor={`dropdown-${question.question_id}`} className="block mb-2">
+              <div key={question.question_id} className="space-y-2">
+                <label htmlFor={`dropdown-${question.question_id}`} className="font-medium">
                   {question.question_text}
                 </label>
                 <select
+                  disabled={!currentUser}
                   id={`dropdown-${question.question_id}`}
                   required={question.is_required}
                   value={answers[question.question_id]?.value || ""}
-                  onChange={(e) => onSetAnswers(question.question_id, "dropdown", e.target.value)}
-                  className="select-class text-text dark:text-text-dark bg-background dark:bg-background-dark"
+                  onChange={(e) =>
+                    onSetAnswers(question.question_id, "dropdown", e.target.value)
+                  }
+                  className="w-full p-3 border rounded-md bg-background dark:bg-background-dark text-text dark:text-text-dark border-border focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="" disabled>
                     Select an option

@@ -35,7 +35,6 @@ export async function action({ request }) {
     };
   }
 
-  // Determine the API endpoint based on the mode
   const endpoint = mode === "signup" ? "/auth/register" : "/auth/login";
 
   try {
@@ -54,9 +53,8 @@ export async function action({ request }) {
 
     const result = await response.json();
 
-    // Store user info in localStorage and context
     const userInfo = {
-      id: result.user.id, // Store user_id
+      id: result.user.id,
       email: result.user.email,
       name: result.user.name,
     };
@@ -64,7 +62,7 @@ export async function action({ request }) {
     console.log(userInfo)
 
     localStorage.setItem("authSession", JSON.stringify(userInfo));
-    setCurrentUser(userInfo); // Store full user info in context
+    setCurrentUser(userInfo);
 
     return redirect("/");
   } catch (e) {

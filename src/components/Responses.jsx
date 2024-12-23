@@ -1,26 +1,35 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import ViewFilledForms from "./ViewFilledForms";
 
-export default function Responses({form_id}) {
-
+export default function Responses({ form_id }) {
   const [responses, setResponses] = useState([]);
 
   useEffect(() => {
     async function getRespones() {
       try {
-        const response = await fetch(`http://localhost:5000/forms/${form_id}/details`);
+        const response = await fetch(
+          `http://localhost:5000/forms/${form_id}/details`
+        );
         if (!response.ok) {
-          throw new Error("Error fetching details.")
-        };
+          throw new Error("Error fetching details.");
+        }
         const data = await response.json();
+        setResponses(data)
         console.log("Details: ", data);
       } catch (err) {
-        console.error(err.message)
+        console.error(err.message);
       }
-    };
+    }
     getRespones();
-  }, [responses])
+  }, []);
+
+  console.log(responses.filledForms)
+
+  if (responses.length < 1) {return null;}
 
   return (
-    <div></div>
-  )
+    <div>
+      <ViewFilledForms responses={responses} />
+    </div>
+  );
 }

@@ -1,13 +1,13 @@
 import { Form, Link } from "react-router-dom";
 
-export default function RegistrationForm({ isSubmitting }) {
+export default function RegistrationForm({ isSubmitting, t }) {
   return (
     <Form
       className="w-4/5 lg:w-1/3 flex flex-col border border-gray-300 rounded-xl shadow-lg p-6 bg-background dark:bg-background-dark text-text dark:text-text-dark "
       method="post"
     >
       <h2 className="text-2xl font-bold text-center mb-4">
-        Sign Up
+        {t("auth.signUp")}
       </h2>
       <div className="space-y-4">
         <p>
@@ -15,7 +15,7 @@ export default function RegistrationForm({ isSubmitting }) {
             htmlFor="name"
             className="block text-sm font-medium mb-1"
           >
-            Name
+            {t("auth.name")}
           </label>
           <input
             type="text"
@@ -29,7 +29,7 @@ export default function RegistrationForm({ isSubmitting }) {
             htmlFor="email"
             className="block text-sm font-medium mb-1"
           >
-            Email
+            {t("auth.email")}
           </label>
           <input
             type="email"
@@ -43,7 +43,7 @@ export default function RegistrationForm({ isSubmitting }) {
             htmlFor="password"
             className="block text-sm font-medium mb-1"
           >
-            Password
+            {t("auth.password")}
           </label>
           <input
             type="password"
@@ -60,13 +60,13 @@ export default function RegistrationForm({ isSubmitting }) {
             isSubmitting ? "opacity-75 pointer-events-none" : ""
           }`}
         >
-          {isSubmitting ? "Submitting..." : "Sign Up"}
+          {isSubmitting ? t("auth.submitting") : t("auth.signUp")}
         </button>
         <Link
           to="?mode=login"
           className="text-blue-500 mt-4 block text-center hover:underline"
         >
-          Already have an Account? Log in!
+          {t("auth.alreadyHaveAccount")}
         </Link>
       </div>
     </Form>

@@ -50,6 +50,12 @@ export default function FormCreationPage() {
     },
   ]);
 
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/");
+    }
+  }, [currentUser])
+
   const handleAddQuestion = () => {
     setFormQuestions((prevFormQuestions) => [
       ...prevFormQuestions,
@@ -86,7 +92,6 @@ export default function FormCreationPage() {
         (q) => q.question_id !== questionId
       );
   
-      // Reassign positions after deletion
       return filteredQuestions.map((q, index) => ({
         ...q,
         position: index,
@@ -192,16 +197,15 @@ export default function FormCreationPage() {
         (q) => q.position === over.id
       );
   
-      // Update positions to reflect the new order
       const updatedQuestions = arrayMove(prevFormQuestions, oldIndex, newIndex);
       return updatedQuestions.map((q, index) => ({
         ...q,
-        position: index, // Reassign positions
+        position: index,
       }));
     });
   };
 
-  if (!currentUser) {navigate("/")}
+  console.log(isPublic)
 
   return (
     <div className="flex flex-col items-center mt-16">
@@ -223,6 +227,8 @@ export default function FormCreationPage() {
           setFormTopic={setFormTopic}
           handleImageChange={handleImageChange}
           imagePreview={imagePreview}
+          isPublic={isPublic}
+          setIsPublic={setIsPublic}
         />
         <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
         <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>

@@ -88,6 +88,8 @@ export default function FillFormPage() {
     const submissionPayload = {
       form_id: formData.form_id,
       user_id: currentUser.id,
+      user_name: currentUser.name,
+      user_email: currentUser.email,
       answers: Object.entries(answers).map(([questionId, { question_type, value }]) => ({
         question_id: parseInt(questionId, 10),
         answer_text: typeof value === "string" ? value : null,
@@ -124,11 +126,12 @@ export default function FillFormPage() {
     return <p>No form data available.</p>
   }
 
+  console.log(currentUser)
+
   return (
     <form className="mt-16">
-      <FillForm answers={answers} setAnswers={setAnswers} formData={formData} onSetAnswers={handleSetAnswers} />
-      <button onClick={(e) => handleSubmit(e)}>Submit</button>
-      {formData && <LikeButton user_id={currentUser.id} form_id={formData.form_id} />}
+      <FillForm onSubmit={handleSubmit} currentUser={currentUser} answers={answers} setAnswers={setAnswers} formData={formData} onSetAnswers={handleSetAnswers} />
+      {formData && <LikeButton user_id={currentUser?.id} form_id={formData.form_id} />}
       {formData && <Comments form_id={formData.form_id} />}
     </form>
   )

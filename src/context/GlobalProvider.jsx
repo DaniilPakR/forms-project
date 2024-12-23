@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const GlobalContext = createContext({
 
@@ -10,12 +11,13 @@ export default function GlobalContextProvider({children}) {
 
   const [isLogged, setIsLogged] = useState(false);
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("authSession")) || null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true);
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     return savedTheme || (prefersDark ? "dark" : "light");
   });
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
@@ -36,6 +38,8 @@ export default function GlobalContextProvider({children}) {
     setIsAdmin,
     theme,
     toggleTheme,
+    t,
+    i18n
   }
 
   externalContextReference = ctxValue;

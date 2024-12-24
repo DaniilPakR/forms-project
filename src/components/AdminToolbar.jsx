@@ -44,17 +44,26 @@ export default function AdminToolbar() {
 
   const performAction = async (action) => {
     try {
-      const response = await fetch("http://localhost:5000/users/action", {
-        method: "POST",
+      const method = action === "delete" ? "DELETE" : "POST";
+      const endpoint =
+        action === "delete"
+          ? `http://localhost:5000/users/delete`
+          : `http://localhost:5000/users/action`;
+
+      const response = await fetch(endpoint, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userIds: selectedUsers, action }),
       });
+
       if (!response.ok) {
         throw new Error("Action failed");
       }
+
       const result = await response.json();
       setSelectedUsers([]);
       setSelectAll(false);
+
       const refreshedUsers = await fetch("http://localhost:5000/users/get");
       const refreshedData = await refreshedUsers.json();
       setUsers(refreshedData.users);
@@ -69,6 +78,12 @@ export default function AdminToolbar() {
         {t("userManagement.title")}
       </h1>
       <div className="mb-4 flex flex-col gap-2 lg:flex-row">
+        <button
+          onClick={() => performAction("delete")}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 lg:px-6 lg:py-3"
+        >
+          {t("userManagement.delete")}
+        </button>
         <button
           onClick={() => performAction("block")}
           className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 lg:px-6 lg:py-3"
@@ -138,7 +153,7 @@ export default function AdminToolbar() {
                     onChange={() => handleSelectUser(user.user_id)}
                   />
                 </td>
-                <td className="border border-gray-300 p-2">{user.user_name}</td>
+                <td className="border border-gray-300 p-2">{user.user_name} {currentUser.email === user.user_email ? "(You)" : ""}</td>
                 <td className="border border-gray-300 p-2">
                   {user.user_email}
                 </td>

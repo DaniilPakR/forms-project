@@ -23,6 +23,8 @@ export default function FormsSearch({t}) {
       return;
     }
 
+    setResults([])
+
     async function search() {
       try {
         setIsLoading(true);

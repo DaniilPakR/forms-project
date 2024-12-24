@@ -18,9 +18,11 @@ import {
 } from "../utils/cloudinaryFunctions";
 import Responses from "../components/Responses";
 import { deleteForm } from "../utils/deleteForm";
+import { convertTags, convertTagsBack } from "../utils/convertTags";
 
 export default function FormCreationPage() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState(null);
   const { id: pageId } = useParams();
   const { currentUser } = useContext(GlobalContext);
@@ -58,8 +60,10 @@ export default function FormCreationPage() {
     },
   ]);
   const [content, setContent] = useState("form");
+  const [users, setUsers] = useState([]); 
 
   useEffect(() => {
+    setLoading(true);
     async function fetchForm() {
       try {
         const response = await fetch(`http://localhost:5000/eform/${pageId}`);
@@ -88,6 +92,7 @@ export default function FormCreationPage() {
           console.error("Failed to transform titleMarkdown:", error);
           setFormTitleMarkdown([]);
         }
+        console.log("SUCESS ",data)
         setForm(data);
         setFormTitle(data.title);
         setFormDescription(data.description);
@@ -96,18 +101,27 @@ export default function FormCreationPage() {
         setIsPublic(data["is_public"]);
         setFormQuestions(data.questions);
         setFormId(data.form_id);
+        setFormTags(convertTagsBack(data.tags));
+        setUsers(data.users_with_access)
         const file = await urlToFile(pageId, "uploaded-image.jpg");
         setFormImage(file);
+
         setImagePreview(
           `https://res.cloudinary.com/dmi1xxumf/image/upload/${pageId}`
         );
       } catch (err) {
         console.error("Error fetching form:", err.message);
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchForm();
   }, [pageId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -212,6 +226,18 @@ export default function FormCreationPage() {
   };
 
   const handleUploadForm = async () => {
+    let tags;
+    if (formTags === "") {
+      tags = [];
+    } else if (formTags.length > 0) {
+      tags = convertTags(formTags);
+    }
+    let usersWithAccess;
+    if (users.length > 0) {
+      usersWithAccess = users.map((user) => user.user_id);
+    } else if (users.length === 0) {
+      usersWithAccess = [];
+    }
     try {
       await action({
         formTitle,
@@ -225,6 +251,8 @@ export default function FormCreationPage() {
         pageId,
         formId,
         formTitleMarkdown,
+        tags,
+        usersWithAccess
       });
       try {
         if (!formImage) {
@@ -263,9 +291,7 @@ export default function FormCreationPage() {
   if (!currentUser) {
     navigate("/");
   }
-  console.log(form);
 
-  console.log(isPublic)
   return (
     <div className="flex flex-col items-center mt-16">
       {currentUser && (
@@ -318,6 +344,8 @@ export default function FormCreationPage() {
                 imagePreview={imagePreview}
                 isPublic={isPublic}
                 setIsPublic={setIsPublic}
+                usersWithAccess={users}
+                setUsersWithAccess={setUsers}
               />
               <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
               <DndContext
@@ -394,7 +422,13 @@ export async function action(formData) {
     pageId,
     formId,
     formTitleMarkdown,
+    tags,
+    usersWithAccess
   } = formData;
+
+  if (!isPublic && usersWithAccess.length === 0) {
+    throw new Error("Please provide at least one user for access control.");
+  }
 
   const updatedForm = {
     title: formTitle,
@@ -416,6 +450,8 @@ export async function action(formData) {
       })),
     })),
     pageId,
+    tags,
+    accessControlUsers: usersWithAccess
   };
 
   try {

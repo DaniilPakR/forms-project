@@ -12,6 +12,7 @@ import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
 import { uploadImageToCloudinary } from "../utils/cloudinaryFunctions";
+import { convertTags } from "../utils/convertTags";
 
 export default function FormCreationPage() {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ export default function FormCreationPage() {
       ],
     },
   ]);
+  const [users, setUsers] = useState([]); 
 
   useEffect(() => {
     if (!currentUser) {
@@ -160,6 +162,18 @@ export default function FormCreationPage() {
   };
 
   const handleUploadForm = async () => {
+    let tags;
+    if (formTags === "") {
+      tags = [];
+    } else if (formTags.length > 0) {
+      tags = convertTags(formTags);
+    }
+    let usersWithAccess;
+    if (users.length > 0) {
+      usersWithAccess = users.map((user) => user.user_email);
+    } else if (users.length === 0) {
+      usersWithAccess = [];
+    }
     try {
       await action({
         formTitle,
@@ -171,7 +185,9 @@ export default function FormCreationPage() {
         formImage,
         isPublic,
         currentUserId,
-        pageId
+        pageId,
+        tags,
+        usersWithAccess,
       });
       try {
         if (!formImage) {return}
@@ -229,6 +245,8 @@ export default function FormCreationPage() {
           imagePreview={imagePreview}
           isPublic={isPublic}
           setIsPublic={setIsPublic}
+          usersWithAccess={users}
+          setUsersWithAccess={setUsers}
         />
         <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
         <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
@@ -284,8 +302,14 @@ export async function action(formData) {
     formImage,
     isPublic,
     currentUserId,
-    pageId
+    pageId,
+    tags,
+    usersWithAccess
   } = formData;
+
+  if (!isPublic && usersWithAccess.length === 0) {
+    throw new Error("Please provide at least one user for access control.");
+  }
 
   const newForm = {
     title: formTitle,
@@ -305,7 +329,9 @@ export async function action(formData) {
       })),
     })),
     pageId,
-    titlemarkdown: formTitleMarkdown
+    titlemarkdown: formTitleMarkdown,
+    tags,
+    usersWithAccess
   };
 
   console.log(newForm);

@@ -1,13 +1,16 @@
-export default function FillFormQuestions({
+export default function ViewFormQuestions({
   questions,
   answers,
   onSetAnswers,
-  currentUser,
+  currentUser
 }) {
   if (!questions || questions.length === 0) {
     return <p className="text-center text-text-muted">No questions available</p>;
   }
 
+  console.log("Hi ", answers)
+
+  console.log("QUESTIONS ", questions)
   return (
     <div className="space-y-6">
       {questions.map((question) => {
@@ -19,11 +22,11 @@ export default function FillFormQuestions({
                   {question.question_text}
                 </label>
                 <input
-                  disabled={!currentUser}
+                  disabled
                   type="text"
                   id={`question-${question.question_id}`}
                   required={question.is_required}
-                  value={answers[question.question_id]?.value || ""}
+                  value={answers[question.question_id]?.answer_text || ""}
                   onChange={(e) =>
                     onSetAnswers(question.question_id, "short-answer", e.target.value)
                   }
@@ -40,10 +43,10 @@ export default function FillFormQuestions({
                   {question.question_text}
                 </label>
                 <textarea
-                  disabled={!currentUser}
+                  disabled
                   id={`question-${question.question_id}`}
                   required={question.is_required}
-                  value={answers[question.question_id]?.value || ""}
+                  value={answers[question.question_id]?.answer_text || ""}
                   onChange={(e) =>
                     onSetAnswers(question.question_id, "paragraph", e.target.value)
                   }
@@ -61,11 +64,11 @@ export default function FillFormQuestions({
                   {question.options.map((option) => (
                     <label key={option.option_id} className="flex items-center space-x-2">
                       <input
-                        disabled={!currentUser}
+                        disabled
                         type="radio"
                         name={`question-${question.question_id}`}
                         value={option.option_text}
-                        checked={answers[question.question_id]?.value === option.option_text}
+                        checked={answers[question.question_id]?.answer_text === option.option_text}
                         onChange={(e) =>
                           onSetAnswers(question.question_id, "multiple-choice", e.target.value)
                         }
@@ -86,10 +89,10 @@ export default function FillFormQuestions({
                   {question.options.map((option) => (
                     <label key={option.option_id} className="flex items-center space-x-2">
                       <input
-                        disabled={!currentUser}
+                        disabled
                         type="checkbox"
                         value={option.option_text}
-                        checked={(answers[question.question_id]?.value || []).includes(
+                        checked={(answers[question.question_id]?.answer_value || []).includes(
                           option.option_text
                         )}
                         onChange={(e) =>
@@ -111,10 +114,10 @@ export default function FillFormQuestions({
                   {question.question_text}
                 </label>
                 <select
-                  disabled={!currentUser}
+                  disabled
                   id={`dropdown-${question.question_id}`}
                   required={question.is_required}
-                  value={answers[question.question_id]?.value || ""}
+                  value={answers[question.question_id]?.answer_text || ""}
                   onChange={(e) =>
                     onSetAnswers(question.question_id, "dropdown", e.target.value)
                   }

@@ -1,7 +1,12 @@
+import { useEffect, useState, useRef } from "react";
+
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import FormatButtons from "./FormatButtons";
+
+import { convertTags } from "../utils/convertTags";
+import AccessControl from "./AccessControl";
 
 export default function NewFormHeader({
   title,
@@ -20,7 +25,73 @@ export default function NewFormHeader({
   imagePreview,
   isPublic,
   setIsPublic,
+  usersWithAccess,
+  setUsersWithAccess,
 }) {
+  const [results, setResults] = useState([]);
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (debouncedSearchText) {
+        searchTags(debouncedSearchText);
+        setIsDropdownVisible(true);
+      }
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [debouncedSearchText]);
+
+  const searchTags = async (query) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/tags/search?query=${query}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch search results.");
+      const data = await response.json();
+      setResults(data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const handleTagsChange = (e) => {
+    const value = e.target.value;
+    setFormTags(value);
+
+    const tagsArray = value.split(" ");
+    const lastTag = tagsArray[tagsArray.length - 1];
+
+    if (lastTag.startsWith("#") && lastTag.trim() !== "#") {
+      setDebouncedSearchText(lastTag.slice(1));
+    } else {
+      setDebouncedSearchText("");
+    }
+  };
+
+  const handleSuggestionClick = (suggestedTag) => {
+    const tagsArray = formTags.split(" ");
+    tagsArray[tagsArray.length - 1] = suggestedTag;
+    setFormTags(tagsArray.join(" "));
+    setResults([]);
+    setIsDropdownVisible(false);
+  };
+
+  const handleClickOutside = (event) => {
+    if (
+      searchRef.current &&
+      !searchRef.current.contains(event.target) // Click outside results container
+    ) {
+      setIsDropdownVisible(false); // Hide dropdown
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="flex flex-col gap-2">
       <input
@@ -92,21 +163,39 @@ export default function NewFormHeader({
         <div className="flex flex-row justify-between gap-3">
           <label htmlFor="">Tags</label>
           <span className="text-xs text-gray-500">
-            Type tags divided with space and each tag should start with # (e.g.
-            "#development")
+            Type tags divided with space, and each tag should start with # (e.g.
+            "#development #job")
           </span>
         </div>
-
         <input
           type="text"
           value={formTags}
           placeholder="Tags"
-          className="mt-1 w-full rounded-lg p-2 bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark "
-          onChange={(e) => {
-            setFormTags(e.target.value);
-          }}
+          className="mt-1 w-full rounded-lg p-2 bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark"
+          onChange={handleTagsChange}
         />
       </p>
+      {isDropdownVisible && results.length > 0 && (
+        <div className="relative z-50 w-full">
+          <div
+            ref={searchRef}
+            className="absolute border rounded-lg p-2 bg-white dark:bg-background-dark shadow-md w-full"
+          >
+            <p>Suggestions:</p>
+            <ul>
+              {results.map((result, index) => (
+                <li
+                  key={index}
+                  className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-1 rounded"
+                  onClick={() => handleSuggestionClick(`#${result.tag_text}`)} // Add the selected tag
+                >
+                  {`#${result.tag_text}`}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
       <p className="flex flex-row items-center gap-2">
         <label htmlFor="">Access: </label>
         <FormGroup>
@@ -114,9 +203,7 @@ export default function NewFormHeader({
             control={
               <Switch
                 checked={!isPublic}
-                onChange={() =>
-                  setIsPublic(prevPublic => !prevPublic)
-                }
+                onChange={() => setIsPublic((prevPublic) => !prevPublic)}
                 color="primary"
               />
             }
@@ -124,6 +211,9 @@ export default function NewFormHeader({
           />
         </FormGroup>
       </p>
+      {!isPublic && (
+        <AccessControl users={usersWithAccess} setUsers={setUsersWithAccess} />
+      )}
     </div>
   );
 }

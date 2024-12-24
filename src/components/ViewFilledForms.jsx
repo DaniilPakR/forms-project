@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 
 export default function ViewFilledForms({ responses }) {
+
+  console.log(responses);
+
   return (
     <div className="flex flex-col">
       <h1>Read forms:</h1>
@@ -13,7 +16,7 @@ export default function ViewFilledForms({ responses }) {
             Date Submitted:
             {new Date(filledForm.filled_at).toLocaleDateString()}
           </h3>
-          <Link to={`/fform/`} className="bg-primary text-button-text text-center py-1 px-2 rounded hover:bg-primary-hover dark:bg-primary-dark dark:hover:bg-primary">
+          <Link to={`/vform/${responses.form.page_id}`} className="bg-primary text-button-text text-center py-1 px-2 rounded hover:bg-primary-hover dark:bg-primary-dark dark:hover:bg-primary">
             View in read mode
           </Link>
         </div>

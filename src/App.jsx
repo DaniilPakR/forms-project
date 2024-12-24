@@ -10,6 +10,7 @@ import FormEditingPage from "./pages/FormEditingPage";
 import FillFormPage from "./pages/FillFormPage";
 import AdminPage from "./pages/AdminPage";
 import ErrorPage from "./pages/ErrorPage";
+import ViewFormPage from "./pages/ViewFormPage";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,8 @@ const router = createBrowserRouter([
       { path: "/cform/:id", element: <FormCreationPage /> },
       { path: "/eform/:id", element: <FormEditingPage /> },
       { path: "/fform/:id", element: <FillFormPage /> },
-      { path: "/admin", element: <AdminPage /> }
+      { path: "/admin", element: <AdminPage /> },
+      { path: "/vform/:id", element: <ViewFormPage /> },
     ],
     errorElement: <ErrorPage />
   },

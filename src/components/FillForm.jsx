@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import FillFormQuestions from "./FillFormQuestions";
 
 export default function FillForm({
@@ -8,8 +10,6 @@ export default function FillForm({
   currentUser,
   onSubmit
 }) {
-
-  console.log(formData);
 
   return (
     <div className="flex flex-col items-center mt-8">
@@ -25,9 +25,15 @@ export default function FillForm({
             setAnswers={setAnswers}
             onSetAnswers={onSetAnswers}
             currentUser={currentUser}
+            read={false}
           />
         </div>
       </div>
+      {currentUser.is_admin && (
+        <Link to={`/eform/${formData.page_id}`} className="mt-6 text-primary hover:text-primary-hover">
+          Edit Form
+        </Link>
+      )}
       {currentUser && (
         <button
           className="mt-6 bg-primary hover:bg-primary-hover text-button-text font-medium rounded-md w-3/4 lg:w-1/3 py-3"

@@ -29,6 +29,7 @@ const resources = {
       },
       userManagement: {
         title: "Users Management",
+        delete: "Delete",
         block: "Block",
         unblock: "Unblock",
         makeAdmin: "Make Admin",
@@ -83,6 +84,7 @@ const resources = {
       },
       userManagement: {
         title: "Управление Пользователями",
+        delete: "Удалить",
         block: "Заблокировать",
         unblock: "Разблокировать",
         makeAdmin: "Сделать Админом",

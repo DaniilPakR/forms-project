@@ -12,7 +12,7 @@ export default function AuthPage() {
 }
 
 export async function action({ request }) {
-  const { setCurrentUser } = externalContextReference
+  const { setCurrentUser, setIsAdmin } = externalContextReference
   const searchParams = new URL(request.url).searchParams;
   const mode = searchParams.get("mode") || "signup";
 
@@ -52,17 +52,27 @@ export async function action({ request }) {
     }
 
     const result = await response.json();
+    
+    console.log(result)
 
     const userInfo = {
       id: result.user.id,
       email: result.user.email,
       name: result.user.name,
+      is_blocked: result.user.is_blocked,
+      is_admin: result.user.is_admin,
     };
 
     console.log(userInfo)
 
+    if (result.user.is_blocked) {
+      throw new Error("User is blocked");
+    }
+
     localStorage.setItem("authSession", JSON.stringify(userInfo));
     setCurrentUser(userInfo);
+    setIsAdmin(result.user.is_admin);
+    
 
     return redirect("/");
   } catch (e) {

@@ -20,7 +20,6 @@ export default function LikeButton({ user_id, form_id }) {
         }
         const result = await response.json();
         setIsLiked(result.liked);
-        console.log(result);
       } catch (err) {
         console.error("Error: ", err.message);
       }

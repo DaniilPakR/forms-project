@@ -11,7 +11,7 @@ export default function GlobalContextProvider({children}) {
 
   const [isLogged, setIsLogged] = useState(false);
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("authSession")) || null);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;

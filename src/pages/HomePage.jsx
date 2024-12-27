@@ -5,6 +5,9 @@ import { useContext } from "react";
 import CreatedForms from "../components/CreatedForms";
 import FilledForms from "../components/FilledForms";
 import { GlobalContext } from "../context/GlobalProvider";
+import LatestTemplates from "../components/LatestTemplates";
+import PopularForms from "../components/PopularForms";
+import TagCloud from "../components/TagCloud";
 
 export default function HomePage() {
   const { currentUser, t } = useContext(GlobalContext);
@@ -21,6 +24,9 @@ export default function HomePage() {
   return (
     <div className="flex flex-col mt-16 bg-background dark:bg-background-dark">
       {!currentUser && <h1 className="mt-32 text-2xl text-center">{t("forms.homeNotLoggedIn")}</h1>}
+      <TagCloud />
+      <LatestTemplates />
+      <PopularForms />
       {currentUser && <CreatedForms createForm={createForm} />}
       {currentUser && <FilledForms />}
     </div>

@@ -38,7 +38,7 @@ export async function action({ request }) {
   const endpoint = mode === "signup" ? "/auth/register" : "/auth/login";
 
   try {
-    const response = await fetch(`http://localhost:5000${endpoint}`, {
+    const response = await fetch(`http://51.20.3.194:5000${endpoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

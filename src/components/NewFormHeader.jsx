@@ -1,3 +1,7 @@
+import { FormControl } from "@mui/material";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useState, useRef } from "react";
 
 import FormGroup from "@mui/material/FormGroup";
@@ -27,6 +31,8 @@ export default function NewFormHeader({
   setIsPublic,
   usersWithAccess,
   setUsersWithAccess,
+  formType,
+  setFormType,
 }) {
   const [results, setResults] = useState([]);
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
@@ -108,6 +114,24 @@ export default function NewFormHeader({
       ) : (
         <p>No image selected yet.</p>
       )}
+      <FormControl sx={{ m: 1, minWidth: 100 }} className="z-10">
+        <InputLabel id="form-type">Form Type</InputLabel>
+        <Select
+          labelId="form-type"
+          id="form-type"
+          value={formType}
+          label="Form Type"
+          className="bg-white"
+          onChange={(e) => setFormType(e.target.value)}
+        >
+          <MenuItem value="form" className="flex items-center gap-2">
+            <span className="text-gray-800 ml-2">Form</span>
+          </MenuItem>
+          <MenuItem value="quiz" className="flex items-center gap-2">
+            <span className="text-gray-800 ml-2">Quiz</span>
+          </MenuItem>
+        </Select>
+      </FormControl>
       <p>
         <label htmlFor="">Title</label>
         <input

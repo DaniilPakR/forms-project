@@ -22,7 +22,8 @@ export default function FormCreationPage() {
   if (currentUser) {
     currentUserId = currentUser["id"];
   }
-  
+
+  const [formType, setFormType] = useState("form");
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formDescriptionMarkdown, setFormDescriptionMarkdown] = useState([]);
@@ -39,7 +40,8 @@ export default function FormCreationPage() {
       question_type: "short-answer",
       is_required: false,
       position: 1,
-      show_in_results: false,
+      show_in_results: true,
+      is_with_score: false,
       options: [
         {
           option_text: "Option 1",
@@ -50,13 +52,13 @@ export default function FormCreationPage() {
       ],
     },
   ]);
-  const [users, setUsers] = useState([]); 
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     if (!currentUser) {
       navigate("/");
     }
-  }, [currentUser])
+  }, [currentUser]);
 
   const handleAddQuestion = () => {
     setFormQuestions((prevFormQuestions) => [
@@ -67,7 +69,8 @@ export default function FormCreationPage() {
         question_type: "short-answer",
         is_required: false,
         position: prevFormQuestions.length + 1,
-        show_in_results: false,
+        show_in_results: true,
+        is_with_score: false,
         options: [
           {
             option_text: "Option 1",
@@ -84,16 +87,16 @@ export default function FormCreationPage() {
     const file = e.target.files[0];
     if (file) {
       setFormImage(file);
-      setImagePreview(URL.createObjectURL(file))
+      setImagePreview(URL.createObjectURL(file));
     }
-  }
+  };
 
   const handleDeleteQuestion = (questionId) => {
     setFormQuestions((prevFormQuestions) => {
       const filteredQuestions = prevFormQuestions.filter(
         (q) => q.question_id !== questionId
       );
-  
+
       return filteredQuestions.map((q, index) => ({
         ...q,
         position: index,
@@ -190,11 +193,13 @@ export default function FormCreationPage() {
         usersWithAccess,
       });
       try {
-        if (!formImage) {return}
-        const uploadedImage = await uploadImageToCloudinary(formImage, pageId)
-        console.log(uploadedImage)
+        if (!formImage) {
+          return;
+        }
+        const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
+        console.log(uploadedImage);
       } catch (e) {
-        console.error(e.message)
+        console.error(e.message);
       }
       alert("Form uploaded successfully!");
     } catch (error) {
@@ -204,7 +209,7 @@ export default function FormCreationPage() {
 
   const handleDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id) return;
-  
+
     setFormQuestions((prevFormQuestions) => {
       const oldIndex = prevFormQuestions.findIndex(
         (q) => q.position === active.id
@@ -212,7 +217,7 @@ export default function FormCreationPage() {
       const newIndex = prevFormQuestions.findIndex(
         (q) => q.position === over.id
       );
-  
+
       const updatedQuestions = arrayMove(prevFormQuestions, oldIndex, newIndex);
       return updatedQuestions.map((q, index) => ({
         ...q,
@@ -221,72 +226,86 @@ export default function FormCreationPage() {
     });
   };
 
-  console.log(isPublic)
+  console.log(formType);
 
   return (
     <div className="flex flex-col items-center mt-16">
-      {currentUser && <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
-        <h1 className="text-center text-xl border-b border-black pb-2">Form</h1>
-        <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
-        <NewFormHeader
-          title={formTitle}
-          setTitle={setFormTitle}
-          description={formDescription}
-          setDescription={setFormDescription}
-          descriptionMarkdown={formDescriptionMarkdown}
-          setDescriptionMarkdown={setFormDescriptionMarkdown}
-          formTitleMarkdown={formTitleMarkdown}
-          setFormTitleMarkdown={setFormTitleMarkdown}
-          formTags={formTags}
-          setFormTags={setFormTags}
-          formTopic={formTopic}
-          setFormTopic={setFormTopic}
-          handleImageChange={handleImageChange}
-          imagePreview={imagePreview}
-          isPublic={isPublic}
-          setIsPublic={setIsPublic}
-          usersWithAccess={users}
-          setUsersWithAccess={setUsers}
-        />
-        <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
-        <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
-          <NewFormQuestions
-            questions={formQuestions}
-            onDeleteQuestion={handleDeleteQuestion}
-            onUpdateQuestion={handleUpdateQuestion}
-            onUpdateOptions={handleUpdateOptions}
-            onDeleteOption={handleDeleteOption}
-            onDuplicateQuestion={handleDuplicateQuestion}
-            setFormQuestions={setFormQuestions}
+      {currentUser && (
+        <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
+          <h1 className="text-center text-xl border-b border-black pb-2">
+            Form
+          </h1>
+          <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
+          <NewFormHeader
+            title={formTitle}
+            setTitle={setFormTitle}
+            description={formDescription}
+            setDescription={setFormDescription}
+            descriptionMarkdown={formDescriptionMarkdown}
+            setDescriptionMarkdown={setFormDescriptionMarkdown}
+            formTitleMarkdown={formTitleMarkdown}
+            setFormTitleMarkdown={setFormTitleMarkdown}
+            formTags={formTags}
+            setFormTags={setFormTags}
+            formTopic={formTopic}
+            setFormTopic={setFormTopic}
+            handleImageChange={handleImageChange}
+            imagePreview={imagePreview}
+            isPublic={isPublic}
+            setIsPublic={setIsPublic}
+            usersWithAccess={users}
+            setUsersWithAccess={setUsers}
+            formType={formType}
+            setFormType={setFormType}
           />
-        </DndContext>
-        <div className="w-full">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddQuestion}
-            sx={{
-              textTransform: "none",
-              width: "100%",
-            }}
-            startIcon={<AddIcon />}
+          <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
+          <span className="text-xs text-gray-400">
+            Quiz Forms sum up the scores of each question to give a total score
+            of 100.
+          </span>
+          <DndContext
+            onDragEnd={handleDragEnd}
+            collisionDetection={closestCorners}
           >
-            Add Question
-          </Button>
+            <NewFormQuestions
+              questions={formQuestions}
+              onDeleteQuestion={handleDeleteQuestion}
+              onUpdateQuestion={handleUpdateQuestion}
+              onUpdateOptions={handleUpdateOptions}
+              onDeleteOption={handleDeleteOption}
+              onDuplicateQuestion={handleDuplicateQuestion}
+              setFormQuestions={setFormQuestions}
+              formType={formType}
+            />
+          </DndContext>
+          <div className="w-full">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddQuestion}
+              sx={{
+                textTransform: "none",
+                width: "100%",
+              }}
+              startIcon={<AddIcon />}
+            >
+              Add Question
+            </Button>
+          </div>
+          <div className="flex flex-row justify-between items-center">
+            <Button variant="outlined" startIcon={<DeleteIcon />}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              endIcon={<SendIcon />}
+              onClick={handleUploadForm}
+            >
+              Upload
+            </Button>
+          </div>
         </div>
-        <div className="flex flex-row justify-between items-center">
-          <Button variant="outlined" startIcon={<DeleteIcon />}>
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            endIcon={<SendIcon />}
-            onClick={handleUploadForm}
-          >
-            Upload
-          </Button>
-        </div>
-      </div>}
+      )}
     </div>
   );
 }
@@ -304,7 +323,7 @@ export async function action(formData) {
     currentUserId,
     pageId,
     tags,
-    usersWithAccess
+    usersWithAccess,
   } = formData;
 
   if (!isPublic && usersWithAccess.length === 0) {
@@ -323,6 +342,7 @@ export async function action(formData) {
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
+      showInResults: question.show_in_results,
       options: question.options.map((option) => ({
         optionText: option.option_text,
         optionId: option.option_id,
@@ -331,7 +351,7 @@ export async function action(formData) {
     pageId,
     titlemarkdown: formTitleMarkdown,
     tags,
-    usersWithAccess
+    usersWithAccess,
   };
 
   console.log(newForm);

@@ -444,6 +444,7 @@ export async function action(formData) {
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
+      showInResults: question.show_in_results,
       options: question.options.map((option) => ({
         optionId: option.option_id,
         optionText: option.option_text,

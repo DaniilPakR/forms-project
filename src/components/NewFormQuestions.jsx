@@ -12,7 +12,8 @@ export default function NewFormQuestions({
   onUpdateOptions,
   onDeleteOption,
   onDuplicateQuestion,
-  setFormQuestions
+  setFormQuestions,
+  formType,
 }) {
   return (
     <>
@@ -29,6 +30,7 @@ export default function NewFormQuestions({
               index={index}
               key={index}
               setFormQuestions={setFormQuestions}
+              formType={formType}
             />
           );
         })}

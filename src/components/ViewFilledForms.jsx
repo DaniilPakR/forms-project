@@ -8,7 +8,7 @@ export default function ViewFilledForms({ responses }) {
     <div className="flex flex-col">
       <h1>Read forms:</h1>
       {responses.filledForms.map((filledForm) => (
-        <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row justify-between items-center mb-1">
           <h3>
             {filledForm.user_name}, {filledForm.user_email}
           </h3>

@@ -29,7 +29,8 @@ export default function NewFormQuestion({
   onUpdateOptions,
   onDeleteOption,
   onDuplicateQuestion,
-  setFormQuestions
+  setFormQuestions,
+  formType,
 }) {
   const { position } = question;
 
@@ -38,17 +39,17 @@ export default function NewFormQuestion({
       id: question.position,
     });
 
-    const style = {
-      transition,
-      transform: transform
-        ? CSS.Transform.toString({
-            ...transform,
-            scaleX: 1,
-            scaleY: 1,
-          })
-        : undefined,
-      pointerEvents: "auto",
-    };
+  const style = {
+    transition,
+    transform: transform
+      ? CSS.Transform.toString({
+          ...transform,
+          scaleX: 1,
+          scaleY: 1,
+        })
+      : undefined,
+    pointerEvents: "auto",
+  };
 
   return (
     <div
@@ -57,12 +58,30 @@ export default function NewFormQuestion({
       style={style}
       className="flex flex-col gap-2 border-t border-dashed border-black pt-3"
     >
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
         <h1 className="text-nowrap text-xl font-semibold">
           Question {index + 1}
         </h1>
-        <div className="flex flex-row items-center gap-5">
-          <FormControl sx={{ m: 1, minWidth: 120 }} className="z-10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={question.show_in_results}
+                  onChange={() =>
+                    onUpdateQuestion(
+                      question.question_id,
+                      "show_in_results",
+                      !question.show_in_results
+                    )
+                  }
+                  color="primary"
+                />
+              }
+              label="Show in Results"
+            />
+          </FormGroup>
+          <FormControl sx={{ m: 1, minWidth: 100 }} className="z-10">
             <InputLabel id="question-type">Type</InputLabel>
             <Select
               labelId="question-type"
@@ -80,37 +99,27 @@ export default function NewFormQuestion({
             >
               <MenuItem
                 value="short-answer"
-                className="flex flex-row items-center gap-2"
+                className="flex items-center gap-2"
               >
                 <ShortTextIcon className="text-gray-500" />
                 <span className="text-gray-800 ml-2">Short Answer</span>
               </MenuItem>
-              <MenuItem
-                value="paragraph"
-                className="flex flex-row items-center gap-2"
-              >
+              <MenuItem value="paragraph" className="flex items-center gap-2">
                 <SubjectIcon className="text-gray-500" />
                 <span className="text-gray-800 ml-2">Paragraph</span>
               </MenuItem>
               <MenuItem
                 value="multiple-choice"
-                className="flex flex-row items-center gap-2"
+                className="flex items-center gap-2"
               >
                 <RadioButtonCheckedIcon className="text-gray-500" />
                 <span className="text-gray-800 ml-2">Multiple Choice</span>
               </MenuItem>
-              <MenuItem
-                value="checkboxes"
-                className="flex flex-row items-center gap-2"
-              >
+              <MenuItem value="checkboxes" className="flex items-center gap-2">
                 <CheckBoxIcon className="text-gray-500" />
                 <span className="text-gray-800 ml-2">Checkboxes</span>
               </MenuItem>
-
-              <MenuItem
-                value="dropdown"
-                className="flex flex-row items-center gap-2"
-              >
+              <MenuItem value="dropdown" className="flex items-center gap-2">
                 <ArrowDropDownCircleIcon className="text-gray-500" />
                 <span className="text-gray-800 ml-2">Dropdown</span>
               </MenuItem>
@@ -119,8 +128,7 @@ export default function NewFormQuestion({
           <div
             {...attributes}
             {...listeners}
-            className="cursor-grab p-2"
-            style={{ display: "flex", alignItems: "center" }}
+            className="cursor-grab p-2 flex items-center"
           >
             <DragIndicatorIcon className="text-gray-500" />
           </div>
@@ -139,6 +147,49 @@ export default function NewFormQuestion({
           )
         }
       />
+      {formType === "quiz" && (
+        <div className="flex flex-row items-center">
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={question.is_with_score}
+                  onChange={() =>
+                    onUpdateQuestion(
+                      question.question_id,
+                      "is_with_score",
+                      !question.is_with_score
+                    )
+                  }
+                  color="primary"
+                />
+              }
+              label="With Score"
+            />
+          </FormGroup>
+          {question.is_with_score && (
+            <div className="flex flex-row items-center gap-2">
+              <label className="block text-sm font-medium text-gray-400">
+                SCORE:
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={question.points || 0}
+                className="bg-background dark:bg-background-dark border-gray-400 border rounded-md text-text dark:text-text-dark p-2"
+                onChange={(e) =>
+                  onUpdateQuestion(
+                    question.question_id,
+                    "points",
+                    parseInt(e.target.value, 10)
+                  )
+                }
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       <NewFormOptions
         onDeleteOption={onDeleteOption}
         onUpdateOptions={onUpdateOptions}

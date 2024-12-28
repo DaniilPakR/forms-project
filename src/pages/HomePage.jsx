@@ -22,7 +22,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchTables() {
       try {
-        const response = await fetch("http://localhost:5000/tables");
+        const response = await fetch("http://51.20.3.194:5000/tables");
         if (!response.ok) {
           throw new Error("Failed to fetch form");
         }

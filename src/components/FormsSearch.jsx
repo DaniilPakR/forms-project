@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
+import { GlobalContext } from "../context/GlobalProvider";
+
 export default function FormsSearch({t}) {
+  const { URL } = useContext(GlobalContext);
   const [searchText, setSearchText] = useState("");
   const [results, setResults] = useState([]);
   const [resultsVisible, setResultsVisible] = useState(false);
@@ -29,7 +32,7 @@ export default function FormsSearch({t}) {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:5000/forms/search?query=${searchText}`
+          `${URL}/forms/search?query=${searchText}`
         );
 
         if (!response.ok) {

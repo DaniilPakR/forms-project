@@ -8,7 +8,7 @@ import formimg from "../images/logos/logo64.png";
 import { deleteForm } from "../utils/deleteForm";
 
 export default function CreatedForms({ createForm }) {
-  const { currentUser, t } = useContext(GlobalContext);
+  const { currentUser, t, URL } = useContext(GlobalContext);
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +18,7 @@ export default function CreatedForms({ createForm }) {
     const fetchForms = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/forms/user/${currentUser.id}`
+          `${URL}/forms/user/${currentUser.id}`
         );
         const data = await response.json();
 

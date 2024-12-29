@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 
+import { GlobalContext } from "../context/GlobalProvider";
+
 export default function LikeButton({ user_id, form_id }) {
+  const { URL } = useContext(GlobalContext);
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
@@ -13,7 +16,7 @@ export default function LikeButton({ user_id, form_id }) {
     async function fetchLike() {
       try {
         const response = await fetch(
-          `http://localhost:5000/likes/check?userId=${user_id}&formId=${form_id}`
+          `${URL}/likes/check?userId=${user_id}&formId=${form_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch like.");
@@ -29,7 +32,7 @@ export default function LikeButton({ user_id, form_id }) {
 
   const handleLike = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/likes/add`, {
+      const response = await fetch(`${URL}/likes/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +51,7 @@ export default function LikeButton({ user_id, form_id }) {
 
   const handleRemoveLike = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/likes/delete`, {
+      const response = await fetch(`${URL}/likes/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

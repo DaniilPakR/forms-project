@@ -10,7 +10,7 @@ import PopularForms from "../components/PopularForms";
 import TagCloud from "../components/TagCloud";
 
 export default function HomePage() {
-  const { currentUser, t } = useContext(GlobalContext);
+  const { currentUser, t, URL } = useContext(GlobalContext);
   const navigate = useNavigate();
 
   function createForm() {
@@ -22,7 +22,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchTables() {
       try {
-        const response = await fetch("http://51.20.3.194:5000/tables");
+        const response = await fetch(`${URL}/tables`);
         if (!response.ok) {
           throw new Error("Failed to fetch form");
         }

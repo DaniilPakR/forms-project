@@ -1,8 +1,13 @@
 import { redirect } from "react-router-dom";
 
+import { externalContextReference } from "../context/GlobalProvider";
+
 export const deleteForm = async (form_id) => {
+
+  const { URL } = externalContextReference;
+
   try {
-    const response = await fetch(`http://localhost:5000/forms/delete/${form_id}`, {
+    const response = await fetch(`${URL}/forms/delete/${form_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

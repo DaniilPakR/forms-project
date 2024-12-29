@@ -10,14 +10,14 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
-import { GlobalContext } from "../context/GlobalProvider";
+import { GlobalContext, externalContextReference } from "../context/GlobalProvider";
 import { uploadImageToCloudinary } from "../utils/cloudinaryFunctions";
 import { convertTags } from "../utils/convertTags";
 
 export default function FormCreationPage() {
   const navigate = useNavigate();
   const { id: pageId } = useParams();
-  const { currentUser } = useContext(GlobalContext);
+  const { currentUser, URL } = useContext(GlobalContext);
   let currentUserId;
   if (currentUser) {
     currentUserId = currentUser["id"];
@@ -326,6 +326,8 @@ export async function action(formData) {
     usersWithAccess,
   } = formData;
 
+  const { URL } = externalContextReference
+
   if (!isPublic && usersWithAccess.length === 0) {
     throw new Error("Please provide at least one user for access control.");
   }
@@ -357,7 +359,7 @@ export async function action(formData) {
   console.log(newForm);
 
   try {
-    const response = await fetch("http://localhost:5000/forms/create", {
+    const response = await fetch(`${URL}/forms/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

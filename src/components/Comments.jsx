@@ -4,7 +4,7 @@ import { GlobalContext } from "../context/GlobalProvider";
 import { formatDate } from "../utils/formateDate";
 
 export default function Comments({ form_id }) {
-  const { currentUser } = useContext(GlobalContext);
+  const { currentUser, URL } = useContext(GlobalContext);
   const user_id = currentUser?.id || null;
   const user_name = currentUser?.name || null;
   const [commentInput, setCommentInput] = useState("");
@@ -13,7 +13,7 @@ export default function Comments({ form_id }) {
     async function fetchComments() {
       try {
         const response = await fetch(
-          `http://localhost:5000/comments/${form_id}`
+          `${URL}/comments/${form_id}`
         );
         const result = await response.json();
         setComments(result);
@@ -31,7 +31,7 @@ export default function Comments({ form_id }) {
   const handleLeaveComment = async () => {
     if (!user_id) {return}
     try {
-      const response = await fetch("http://localhost:5000/comments/add", {
+      const response = await fetch(`${URL}/comments/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export default function Comments({ form_id }) {
   const handleDeleteComment = async (comment_id) => {
     if (!user_id) {return}
     try {
-      const response = await fetch("http://localhost:5000/comments/delete", {
+      const response = await fetch(`${URL}/comments/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import ViewFilledForms from "./ViewFilledForms";
 import QuestionStats from "./QuestionStats";
 
+import { GlobalContext } from "../context/GlobalProvider";
+
 export default function Responses({ form_id }) {
+  const { URL } = useContext(GlobalContext);
   const [responses, setResponses] = useState(null);
 
   useEffect(() => {
     async function getResponses() {
       try {
         const response = await fetch(
-          `http://localhost:5000/forms/${form_id}/details`
+          `${URL}/forms/${form_id}/details`
         );
         if (!response.ok) {
           throw new Error("Error fetching details.");

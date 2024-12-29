@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function TagCloud() {
+  const { URL } = useContext(GlobalContext)
   const [tags, setTags] = useState([]);
   const [forms, setForms] = useState([]);
   const [activeTag, setActiveTag] = useState(null);
@@ -9,7 +12,7 @@ export default function TagCloud() {
 
   const fetchTags = async () => {
     try {
-      const response = await fetch("http://localhost:5000/tags");
+      const response = await fetch(`${URL}/tags`);
       if (!response.ok) throw new Error("Failed to fetch tags");
       const data = await response.json();
       setTags(data.tags);
@@ -20,7 +23,7 @@ export default function TagCloud() {
 
   const fetchForms = async (tagId) => {
     try {
-      const response = await fetch(`http://localhost:5000/tags/${tagId}/forms`);
+      const response = await fetch(`${URL}/tags/${tagId}/forms`);
       if (!response.ok) throw new Error("Failed to fetch forms");
       const data = await response.json();
       setForms(data.forms);

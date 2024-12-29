@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function FilledForms() {
-  const { currentUser, t } = useContext(GlobalContext);
+  const { currentUser, t, URL } = useContext(GlobalContext);
   const [filledForms, setFilledForms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -15,7 +15,7 @@ export default function FilledForms() {
         if (!currentUser?.id) return;
 
         const response = await fetch(
-          `http://localhost:5000/filled-forms/${currentUser.id}`
+          `${URL}/filled-forms/${currentUser.id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch filled forms.");

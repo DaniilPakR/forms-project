@@ -25,7 +25,7 @@ export default function FormCreationPage() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState(null);
   const { id: pageId } = useParams();
-  const { currentUser } = useContext(GlobalContext);
+  const { currentUser, URL } = useContext(GlobalContext);
   let currentUserId;
   if (currentUser) {
     currentUserId = currentUser["id"];
@@ -66,7 +66,7 @@ export default function FormCreationPage() {
     setLoading(true);
     async function fetchForm() {
       try {
-        const response = await fetch(`http://localhost:5000/eform/${pageId}`);
+        const response = await fetch(`${URL}/eform/${pageId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch form");
         }
@@ -456,7 +456,7 @@ export async function action(formData) {
   };
 
   try {
-    const response = await fetch(`http://localhost:5000/forms/edit/${formId}`, {
+    const response = await fetch(`${URL}/forms/edit/${formId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

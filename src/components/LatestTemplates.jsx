@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function LatestTemplates() {
+  const { URL } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -9,7 +12,7 @@ export default function LatestTemplates() {
     async function fetchLatestForms() {
       try {
         setIsLoading(true);
-        const response = await fetch("http://localhost:5000/latest/forms");
+        const response = await fetch(`${URL}/latest/forms`);
         if (!response.ok) {
           throw new Error("Failed to fetch latest forms");
         }

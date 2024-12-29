@@ -2,12 +2,13 @@ import { FormControl } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import FormatButtons from "./FormatButtons";
+import { GlobalContext } from "../context/GlobalProvider";
 
 import { convertTags } from "../utils/convertTags";
 import AccessControl from "./AccessControl";
@@ -34,6 +35,7 @@ export default function NewFormHeader({
   formType,
   setFormType,
 }) {
+  const { URL } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -52,7 +54,7 @@ export default function NewFormHeader({
   const searchTags = async (query) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/tags/search?query=${query}`
+        `${URL}/tags/search?query=${query}`
       );
       if (!response.ok) throw new Error("Failed to fetch search results.");
       const data = await response.json();

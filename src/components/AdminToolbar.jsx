@@ -4,7 +4,7 @@ import { GlobalContext } from "../context/GlobalProvider";
 import { formatDate } from "../utils/formateDate";
 
 export default function AdminToolbar() {
-  const { currentUser, t } = useContext(GlobalContext);
+  const { currentUser, t, URL } = useContext(GlobalContext);
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -12,7 +12,7 @@ export default function AdminToolbar() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await fetch("http://localhost:5000/users/get");
+        const response = await fetch(`${URL}/users/get`);
         if (!response.ok) {
           throw new Error("Failed to get users");
         }
@@ -23,7 +23,7 @@ export default function AdminToolbar() {
       }
     }
     fetchUsers();
-  }, []);
+  }, [URL]);
 
   useEffect(() => {
     setSelectAll(users.length > 0 && selectedUsers.length === users.length);
@@ -47,8 +47,8 @@ export default function AdminToolbar() {
       const method = action === "delete" ? "DELETE" : "POST";
       const endpoint =
         action === "delete"
-          ? `http://localhost:5000/users/delete`
-          : `http://localhost:5000/users/action`;
+          ? `${URL}/users/delete`
+          : `${URL}/users/action`;
 
       const response = await fetch(endpoint, {
         method,
@@ -60,11 +60,10 @@ export default function AdminToolbar() {
         throw new Error("Action failed");
       }
 
-      const result = await response.json();
       setSelectedUsers([]);
       setSelectAll(false);
 
-      const refreshedUsers = await fetch("http://localhost:5000/users/get");
+      const refreshedUsers = await fetch(`${URL}/users/get`);
       const refreshedData = await refreshedUsers.json();
       setUsers(refreshedData.users);
     } catch (err) {

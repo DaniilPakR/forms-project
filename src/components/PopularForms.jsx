@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function PopularForms() {
+  const { URL } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -9,7 +12,7 @@ export default function PopularForms() {
     async function fetchPopularForms() {
       try {
         setIsLoading(true);
-        const response = await fetch("http://localhost:5000/popular/forms");
+        const response = await fetch(`${URL}/popular/forms`);
         if (!response.ok) {
           throw new Error("Failed to fetch popular forms");
         }

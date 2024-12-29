@@ -7,6 +7,8 @@ const GlobalContext = createContext({
 
 let externalContextReference = null
 
+const URL = "https://forms-project-backend-p0dd.onrender.com";
+
 export default function GlobalContextProvider({children}) {
 
   const [isLogged, setIsLogged] = useState(false);
@@ -39,7 +41,8 @@ export default function GlobalContextProvider({children}) {
     theme,
     toggleTheme,
     t,
-    i18n
+    i18n,
+    URL,
   }
 
   externalContextReference = ctxValue;

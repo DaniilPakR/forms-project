@@ -7,7 +7,7 @@ import LikeButton from "../components/LikeButton";
 import Comments from "../components/Comments";
 
 export default function FillFormPage() {
-  const { currentUser, isAdmin } = useContext(GlobalContext);
+  const { currentUser, isAdmin, URL } = useContext(GlobalContext);
   const [formData, setFormData] = useState(null);
   const { id: form_id } = useParams();
   const [answers, setAnswers] = useState({});
@@ -17,7 +17,7 @@ export default function FillFormPage() {
     setIsLoading(true);
     async function fetchForm() {
       try {
-        const response = await fetch(`http://localhost:5000/eform/${form_id}`);
+        const response = await fetch(`${URL}/eform/${form_id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch form");
         }
@@ -95,7 +95,7 @@ export default function FillFormPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/filled-forms/submit`,
+        `${URL}/filled-forms/submit`,
         {
           method: "POST",
           headers: {

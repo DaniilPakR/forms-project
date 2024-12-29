@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function AccessControl({ users, setUsers }) {
+  const { URL } = useContext(GlobalContext);
   const [input, setInput] = useState("");
   const [results, setResults] = useState([]);
 
@@ -13,7 +16,7 @@ export default function AccessControl({ users, setUsers }) {
       setResults([]);
       try {
         const response = await fetch(
-          `http://localhost:5000/users/search?query=${input}`
+          `${URL}/users/search?query=${input}`
         );
         if (!response.ok) throw new Error("Failed to fetch search results.");
         const data = await response.json();
@@ -23,7 +26,7 @@ export default function AccessControl({ users, setUsers }) {
       }
     };
     fetchUsers();
-  }, [input]);
+  }, [input, URL]);
 
   const handleUserSelect = (user) => {
     setInput("");

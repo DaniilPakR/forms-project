@@ -6,7 +6,7 @@ import FillForm from "../components/FillForm";
 import ViewFilledForm from "../components/ViewFilledForm";
 
 export default function ViewFormPage() {
-  const { currentUser } = useContext(GlobalContext);
+  const { currentUser, URL } = useContext(GlobalContext);
   const [formData, setFormData] = useState(null);
   const { id: form_id } = useParams();
   const [answers, setAnswers] = useState({});
@@ -16,7 +16,7 @@ export default function ViewFormPage() {
     setIsLoading(true);
     async function fetchForm() {
       try {
-        const response = await fetch(`http://localhost:5000/eform/${form_id}`);
+        const response = await fetch(`${URL}/eform/${form_id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch form");
         }
@@ -39,7 +39,7 @@ export default function ViewFormPage() {
       async function fetchResponses() {
         try {
           const response = await fetch(
-            `http://localhost:5000/forms/${formData.form_id}/details`
+            `${URL}/forms/${formData.form_id}/details`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch responses");

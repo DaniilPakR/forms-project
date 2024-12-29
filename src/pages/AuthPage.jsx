@@ -12,7 +12,7 @@ export default function AuthPage() {
 }
 
 export async function action({ request }) {
-  const { setCurrentUser, setIsAdmin } = externalContextReference
+  const { setCurrentUser, setIsAdmin, URL } = externalContextReference
   const searchParams = new URL(request.url).searchParams;
   const mode = searchParams.get("mode") || "signup";
 
@@ -38,7 +38,7 @@ export async function action({ request }) {
   const endpoint = mode === "signup" ? "/auth/register" : "/auth/login";
 
   try {
-    const response = await fetch(`https://51.20.3.194:5000${endpoint}`, {
+    const response = await fetch(`${URL}${endpoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -35,7 +35,7 @@ export default function NewFormHeader({
   formType,
   setFormType,
 }) {
-  const { URL } = useContext(GlobalContext);
+  const { URL, t } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -53,9 +53,7 @@ export default function NewFormHeader({
 
   const searchTags = async (query) => {
     try {
-      const response = await fetch(
-        `${URL}/tags/search?query=${query}`
-      );
+      const response = await fetch(`${URL}/tags/search?query=${query}`);
       if (!response.ok) throw new Error("Failed to fetch search results.");
       const data = await response.json();
       setResults(data);
@@ -110,36 +108,40 @@ export default function NewFormHeader({
       />
       {imagePreview ? (
         <div>
-          <p>Preview:</p>
+          <p>{t("newFormHeader.imagePreview")}</p>
           <img src={imagePreview} alt="" />
         </div>
       ) : (
-        <p>No image selected yet.</p>
+        <p>{t("newFormHeader.noImageSelected")}</p>
       )}
       <FormControl sx={{ m: 1, minWidth: 100 }} className="z-10">
-        <InputLabel id="form-type">Form Type</InputLabel>
+        <InputLabel id="form-type">{t("newFormHeader.formType")}</InputLabel>
         <Select
           labelId="form-type"
           id="form-type"
           value={formType}
-          label="Form Type"
+          label={t("newFormHeader.formType")}
           className="bg-white"
           onChange={(e) => setFormType(e.target.value)}
         >
           <MenuItem value="form" className="flex items-center gap-2">
-            <span className="text-gray-800 ml-2">Form</span>
+            <span className="text-gray-800 ml-2">
+              {t("newFormHeader.form")}
+            </span>
           </MenuItem>
           <MenuItem value="quiz" className="flex items-center gap-2">
-            <span className="text-gray-800 ml-2">Quiz</span>
+            <span className="text-gray-800 ml-2">
+              {t("newFormHeader.quiz")}
+            </span>
           </MenuItem>
         </Select>
       </FormControl>
       <p>
-        <label htmlFor="">Title</label>
+        <label htmlFor="">{t("newFormHeader.titleLabel")}</label>
         <input
           type="text"
           value={title}
-          placeholder="Form Title"
+          placeholder={t("newFormHeader.titlePlaceholder")}
           className={`mt-1 w-full rounded-lg p-2 bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark ${
             formTitleMarkdown.includes("bold") ? "font-bold" : ""
           } ${formTitleMarkdown.includes("italic") ? "italic" : ""} ${
@@ -155,10 +157,10 @@ export default function NewFormHeader({
         setState={setFormTitleMarkdown}
       />
       <p>
-        <label htmlFor="">Description</label>
+        <label htmlFor="">{t("newFormHeader.descriptionLabel")}</label>
         <textarea
           value={description}
-          placeholder="Form Description"
+          placeholder={t("newFormHeader.descriptionPlaceholder")}
           className={`mt-1 w-full rounded-lg p-2 bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark  ${
             descriptionMarkdown.includes("bold") ? "font-bold" : ""
           } ${descriptionMarkdown.includes("italic") ? "italic" : ""} ${
@@ -174,11 +176,11 @@ export default function NewFormHeader({
         setState={setDescriptionMarkdown}
       />
       <p>
-        <label htmlFor="">Topic</label>
+        <label htmlFor="">{t("newFormHeader.topicLabel")}</label>
         <input
           type="text"
           value={formTopic}
-          placeholder="Form Topic"
+          placeholder={t("newFormHeader.topicPlaceholder")}
           className="mt-1 w-full rounded-lg p-2 bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark "
           onChange={(e) => {
             setFormTopic(e.target.value);
@@ -187,16 +189,15 @@ export default function NewFormHeader({
       </p>
       <p>
         <div className="flex flex-row justify-between gap-3">
-          <label htmlFor="">Tags</label>
+          <label htmlFor="">{t("newFormHeader.tagsLabel")}</label>
           <span className="text-xs text-gray-500">
-            Type tags divided with space, and each tag should start with # (e.g.
-            "#development #job")
+            {t("newFormHeader.tagsHint")}
           </span>
         </div>
         <input
           type="text"
           value={formTags}
-          placeholder="Tags"
+          placeholder={t("newFormHeader.tagsPlaceholder")}
           className="mt-1 w-full rounded-lg p-2 bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark"
           onChange={handleTagsChange}
         />
@@ -207,7 +208,7 @@ export default function NewFormHeader({
             ref={searchRef}
             className="absolute border rounded-lg p-2 bg-white dark:bg-background-dark shadow-md w-full"
           >
-            <p>Suggestions:</p>
+            <p>{t("newFormHeader.suggestions")}</p>
             <ul>
               {results.map((result, index) => (
                 <li
@@ -223,7 +224,7 @@ export default function NewFormHeader({
         </div>
       )}
       <p className="flex flex-row items-center gap-2">
-        <label htmlFor="">Access: </label>
+        <label htmlFor="">{t("newFormHeader.accessLabel")}</label>
         <FormGroup>
           <FormControlLabel
             control={
@@ -233,7 +234,9 @@ export default function NewFormHeader({
                 color="primary"
               />
             }
-            label={`${isPublic ? "Public" : "Private"}`}
+            label={t(
+              isPublic ? "newFormHeader.public" : "newFormHeader.private"
+            )}
           />
         </FormGroup>
       </p>

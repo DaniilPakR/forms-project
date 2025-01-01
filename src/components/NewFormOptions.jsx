@@ -4,15 +4,20 @@ import AddIcon from "@mui/icons-material/Add";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import NewFormOption from "./NewFormOption";
+import { useContext } from "react";
+
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function NewFormOptions({
   question,
   onUpdateQuestion,
   onUpdateOptions,
   onDeleteOption,
-  setFormQuestions
+  setFormQuestions,
+  onCorrectChange,
 }) {
-  const { question_id, options, question_type } = question;
+  const { t } = useContext(GlobalContext);
+  const { question_id, options, question_type, is_with_score } = question;
 
   const handleDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id) return;
@@ -47,8 +52,11 @@ export default function NewFormOptions({
     });
   };
 
+  console.log("D",question)
+
   return (
     <div className="flex flex-col">
+      {is_with_score && <p className="text-xs text-gray-500">{t("newFormOptions.correctAnswerOption")}</p>}
       <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
         <NewFormOption
           question={question}
@@ -56,6 +64,7 @@ export default function NewFormOptions({
           onUpdateOptions={onUpdateOptions}
           onDeleteOption={onDeleteOption}
           setFormQuestions={setFormQuestions}
+          onCorrectChange={onCorrectChange}
         />
       </DndContext>
       {(question_type === "multiple-choice" ||

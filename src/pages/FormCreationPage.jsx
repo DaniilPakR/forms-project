@@ -10,14 +10,17 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
-import { GlobalContext, externalContextReference } from "../context/GlobalProvider";
+import {
+  GlobalContext,
+  externalContextReference,
+} from "../context/GlobalProvider";
 import { uploadImageToCloudinary } from "../utils/cloudinaryFunctions";
 import { convertTags } from "../utils/convertTags";
 
 export default function FormCreationPage() {
   const navigate = useNavigate();
   const { id: pageId } = useParams();
-  const { currentUser, URL } = useContext(GlobalContext);
+  const { currentUser, URL, t } = useContext(GlobalContext);
   let currentUserId;
   if (currentUser) {
     currentUserId = currentUser["id"];
@@ -35,13 +38,15 @@ export default function FormCreationPage() {
   const [isPublic, setIsPublic] = useState(true);
   const [formQuestions, setFormQuestions] = useState([
     {
-      question_text: "Untitled Question",
+      question_text: t("newFormQuestion.untitledQuestion"),
       question_id: uuidv4(),
       question_type: "short-answer",
       is_required: false,
       position: 1,
       show_in_results: true,
       is_with_score: false,
+      score: 0,
+      correct_answer: "",
       options: [
         {
           option_text: "Option 1",
@@ -71,6 +76,8 @@ export default function FormCreationPage() {
         position: prevFormQuestions.length + 1,
         show_in_results: true,
         is_with_score: false,
+        score: 0,
+        correct_answer: "",
         options: [
           {
             option_text: "Option 1",
@@ -120,6 +127,21 @@ export default function FormCreationPage() {
               ...question,
               options: question.options.map((option, index) =>
                 index === idx ? { ...option, option_text: value } : option
+              ),
+            }
+          : question
+      )
+    );
+  };
+
+  const handleUpdateCorrectOption = (id, idx, value) => {
+    setFormQuestions((prevFormQuestions) =>
+      prevFormQuestions.map((question) =>
+        question.question_id === id
+          ? {
+              ...question,
+              options: question.options.map((option, index) =>
+                index === idx ? { ...option, is_correct: value } : option
               ),
             }
           : question
@@ -191,6 +213,7 @@ export default function FormCreationPage() {
         pageId,
         tags,
         usersWithAccess,
+        formType,
       });
       try {
         if (!formImage) {
@@ -226,16 +249,18 @@ export default function FormCreationPage() {
     });
   };
 
-  console.log(formType);
+  console.log(formQuestions);
 
   return (
     <div className="flex flex-col items-center mt-16">
       {currentUser && (
         <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
           <h1 className="text-center text-xl border-b border-black pb-2">
-            Form
+            {t("form.title")}
           </h1>
-          <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
+          <h1 className="text-2xl lg:text-3xl font-semibold">
+            {t("form.header")}
+          </h1>
           <NewFormHeader
             title={formTitle}
             setTitle={setFormTitle}
@@ -258,11 +283,10 @@ export default function FormCreationPage() {
             formType={formType}
             setFormType={setFormType}
           />
-          <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
-          <span className="text-xs text-gray-400">
-            Quiz Forms sum up the scores of each question to give a total score
-            of 100.
-          </span>
+          <h1 className="text-2xl lg:text-3xl font-semibold">
+            {t("form.questions")}
+          </h1>
+          <span className="text-xs text-gray-400">{t("form.quizHint")}</span>
           <DndContext
             onDragEnd={handleDragEnd}
             collisionDetection={closestCorners}
@@ -276,6 +300,7 @@ export default function FormCreationPage() {
               onDuplicateQuestion={handleDuplicateQuestion}
               setFormQuestions={setFormQuestions}
               formType={formType}
+              onCorrectChange={handleUpdateCorrectOption}
             />
           </DndContext>
           <div className="w-full">
@@ -289,19 +314,19 @@ export default function FormCreationPage() {
               }}
               startIcon={<AddIcon />}
             >
-              Add Question
+              {t("form.addQuestionButton")}
             </Button>
           </div>
           <div className="flex flex-row justify-between items-center">
             <Button variant="outlined" startIcon={<DeleteIcon />}>
-              Cancel
+              {t("form.cancelButton")}
             </Button>
             <Button
               variant="contained"
               endIcon={<SendIcon />}
               onClick={handleUploadForm}
             >
-              Upload
+              {t("form.uploadButton")}
             </Button>
           </div>
         </div>
@@ -324,9 +349,10 @@ export async function action(formData) {
     pageId,
     tags,
     usersWithAccess,
+    formType,
   } = formData;
 
-  const { URL } = externalContextReference
+  const { URL } = externalContextReference;
 
   if (!isPublic && usersWithAccess.length === 0) {
     throw new Error("Please provide at least one user for access control.");
@@ -339,15 +365,21 @@ export async function action(formData) {
     topic: formTopic,
     imageUrl: formImage ? "true" : "false",
     isPublic,
+    formType,
     creatorId: currentUserId,
     questions: formQuestions.map((question, index) => ({
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
       showInResults: question.show_in_results,
+      is_with_score: question.is_with_score,
+      score: question.score,
+      correct_answer: question.correct_answer,
       options: question.options.map((option) => ({
         optionText: option.option_text,
         optionId: option.option_id,
+        is_correct: option.is_correct,
+        position: option.position,
       })),
     })),
     pageId,

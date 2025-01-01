@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function AccessControl({ users, setUsers }) {
-  const { URL } = useContext(GlobalContext);
+  const { URL, t } = useContext(GlobalContext);
   const [input, setInput] = useState("");
   const [results, setResults] = useState([]);
 
@@ -15,9 +15,7 @@ export default function AccessControl({ users, setUsers }) {
       }
       setResults([]);
       try {
-        const response = await fetch(
-          `${URL}/users/search?query=${input}`
-        );
+        const response = await fetch(`${URL}/users/search?query=${input}`);
         if (!response.ok) throw new Error("Failed to fetch search results.");
         const data = await response.json();
         setResults(data);
@@ -57,16 +55,15 @@ export default function AccessControl({ users, setUsers }) {
             </div>
             <button
               onClick={() => handleRemoveUser(user)}
-              className="justify-self-end bg-red-500 text-text-dark text-center py-1 px-2 rounded hover:bg-red-700 "
+              className="justify-self-end bg-red-500 text-text-dark text-center py-1 px-2 rounded hover:bg-red-700"
             >
-              Remove
+              {t("userList.removeButton")}
             </button>
           </li>
         ))}
       </ul>
       <span className="text-xs text-gray-500 hidden lg:inline">
-        Type name or email to search for users, (e.g. "Daniil" or
-        "test@test.com", minimum 3 characters for suggestions)
+        {t("userList.searchHint")}
       </span>
       <input
         type="text"

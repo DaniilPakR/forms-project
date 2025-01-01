@@ -19,7 +19,20 @@ export default function GlobalContextProvider({children}) {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     return savedTheme || (prefersDark ? "dark" : "light");
   });
+  const [languageInitialized, setLanguageInitialized] = useState(false);
+
   const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    const initializeLanguage = async () => {
+      const savedLanguage = localStorage.getItem("language") || "en";
+      await i18n.changeLanguage(savedLanguage);
+      setLanguageInitialized(true);
+    };
+    initializeLanguage();
+  }, [i18n]);
+
+  
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
@@ -43,6 +56,7 @@ export default function GlobalContextProvider({children}) {
     t,
     i18n,
     URL,
+    languageInitialized,
   }
 
   externalContextReference = ctxValue;

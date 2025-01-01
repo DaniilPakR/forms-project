@@ -4,20 +4,24 @@ import { useState, useEffect, useContext } from "react";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function TagCloud() {
-  const { URL } = useContext(GlobalContext)
+  const { URL, t } = useContext(GlobalContext);
   const [tags, setTags] = useState([]);
   const [forms, setForms] = useState([]);
   const [activeTag, setActiveTag] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchTags = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(`${URL}/tags`);
       if (!response.ok) throw new Error("Failed to fetch tags");
       const data = await response.json();
       setTags(data.tags);
     } catch (err) {
       console.error("Error fetching tags:", err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,7 +59,7 @@ export default function TagCloud() {
         onClick={openModal}
         className="rounded-xl px-4 py-2 bg-primary text-button-text hover:bg-primary-hover dark:bg-primary-dark dark:hover:bg-primary-light"
       >
-        Tag Cloud
+        {t("tagCloud.button")}
       </button>
       {isModalOpen && (
         <div
@@ -70,12 +74,16 @@ export default function TagCloud() {
               className="absolute top-2 right-2 text-text-muted hover:text-primary dark:text-text-dark-muted dark:hover:text-primary-light"
               onClick={closeModal}
             >
-              &times;
+              {t("tagCloud.closeButton")}
             </button>
             <h2 className="text-xl font-bold mb-4 text-text dark:text-text-dark">
-              Tag Cloud (Alphabetically)
+              {t("tagCloud.modalTitle")}
             </h2>
             <ul className="space-y-2">
+              {isLoading && <li>{t("tagCloud.loading")}</li>}
+              {tags.length === 0 && !isLoading && (
+                <li>{t("tagCloud.noTagsFound")}</li>
+              )}
               {tags.map((tag) => (
                 <li key={tag.id}>
                   <button
@@ -94,7 +102,7 @@ export default function TagCloud() {
             {activeTag && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold text-text dark:text-text-dark">
-                  Forms for {activeTag}
+                  {t("tagCloud.formsFor")} {activeTag}
                 </h3>
                 <ul className="space-y-2 mt-2">
                   {forms.map((form) => (

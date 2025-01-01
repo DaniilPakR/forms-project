@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { FormControl } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
@@ -20,6 +21,8 @@ import { CSS } from "@dnd-kit/utilities";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 import NewFormOptions from "./NewFormOptions";
+import { GlobalContext } from "../context/GlobalProvider";
+import { t } from "i18next";
 
 export default function NewFormQuestion({
   question,
@@ -31,6 +34,7 @@ export default function NewFormQuestion({
   onDuplicateQuestion,
   setFormQuestions,
   formType,
+  onCorrectChange,
 }) {
   const { position } = question;
 
@@ -51,6 +55,8 @@ export default function NewFormQuestion({
     pointerEvents: "auto",
   };
 
+  console.log(formType)
+
   return (
     <div
       ref={setNodeRef}
@@ -60,7 +66,7 @@ export default function NewFormQuestion({
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
         <h1 className="text-nowrap text-xl font-semibold">
-          Question {index + 1}
+          {t("newFormQuestion.questionTitle")} {index + 1}
         </h1>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
           <FormGroup>
@@ -78,11 +84,11 @@ export default function NewFormQuestion({
                   color="primary"
                 />
               }
-              label="Show in Results"
+              label={t("newFormQuestion.showInResults")}
             />
           </FormGroup>
           <FormControl sx={{ m: 1, minWidth: 100 }} className="z-10">
-            <InputLabel id="question-type">Type</InputLabel>
+            <InputLabel id="question-type">{t("newFormQuestion.type")}</InputLabel>
             <Select
               labelId="question-type"
               id="question-type"
@@ -102,26 +108,26 @@ export default function NewFormQuestion({
                 className="flex items-center gap-2"
               >
                 <ShortTextIcon className="text-gray-500" />
-                <span className="text-gray-800 ml-2">Short Answer</span>
+                <span className="text-gray-800 ml-2">{t("newFormQuestion.shortAnswer")}</span>
               </MenuItem>
               <MenuItem value="paragraph" className="flex items-center gap-2">
                 <SubjectIcon className="text-gray-500" />
-                <span className="text-gray-800 ml-2">Paragraph</span>
+                <span className="text-gray-800 ml-2">{t("newFormQuestion.paragraph")}</span>
               </MenuItem>
               <MenuItem
                 value="multiple-choice"
                 className="flex items-center gap-2"
               >
                 <RadioButtonCheckedIcon className="text-gray-500" />
-                <span className="text-gray-800 ml-2">Multiple Choice</span>
+                <span className="text-gray-800 ml-2">{t("newFormQuestion.multipleChoice")}</span>
               </MenuItem>
               <MenuItem value="checkboxes" className="flex items-center gap-2">
                 <CheckBoxIcon className="text-gray-500" />
-                <span className="text-gray-800 ml-2">Checkboxes</span>
+                <span className="text-gray-800 ml-2">{t("newFormQuestion.checkboxes")}</span>
               </MenuItem>
               <MenuItem value="dropdown" className="flex items-center gap-2">
                 <ArrowDropDownCircleIcon className="text-gray-500" />
-                <span className="text-gray-800 ml-2">Dropdown</span>
+                <span className="text-gray-800 ml-2">{t("newFormQuestion.dropdown")}</span>
               </MenuItem>
             </Select>
           </FormControl>
@@ -137,7 +143,7 @@ export default function NewFormQuestion({
       <input
         type="text"
         value={question.question_text}
-        placeholder="Question"
+        placeholder={t("newFormQuestion.questionPlaceholder")}
         className="bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark p-4"
         onChange={(e) =>
           onUpdateQuestion(
@@ -164,29 +170,44 @@ export default function NewFormQuestion({
                   color="primary"
                 />
               }
-              label="With Score"
+              label={t("newFormQuestion.withScore")}
             />
           </FormGroup>
           {question.is_with_score && (
             <div className="flex flex-row items-center gap-2">
               <label className="block text-sm font-medium text-gray-400">
-                SCORE:
+              {t("newFormQuestion.scoreLabel")}
               </label>
               <input
                 type="number"
                 min="0"
-                value={question.points || 0}
+                value={question.score || 0}
                 className="bg-background dark:bg-background-dark border-gray-400 border rounded-md text-text dark:text-text-dark p-2"
                 onChange={(e) =>
                   onUpdateQuestion(
                     question.question_id,
-                    "points",
-                    parseInt(e.target.value, 10)
+                    "score",
+                    Number(e.target.value)
                   )
                 }
               />
             </div>
           )}
+          {(question.is_with_score && question.question_type === "short-answer") && (
+              <input
+                type="text"
+                placeholder={t("newFormQuestion.correctAnswerPlaceholder")}
+                value={question.correct_answer || ""}
+                className="ml-1 bg-background dark:bg-background-dark border-gray-400 border rounded-md text-text dark:text-text-dark p-2"
+                onChange={(e) =>
+                  onUpdateQuestion(
+                    question.question_id,
+                    "correct_answer",
+                    e.target.value
+                  )
+                }
+              />
+            )}
         </div>
       )}
 
@@ -196,6 +217,7 @@ export default function NewFormQuestion({
         question={question}
         onUpdateQuestion={onUpdateQuestion}
         setFormQuestions={setFormQuestions}
+        onCorrectChange={onCorrectChange}
       />
       <div className="flex flex-row justify-end items-center">
         <Tooltip placement="top" title="Duplicate question">
@@ -218,7 +240,7 @@ export default function NewFormQuestion({
                 color="primary"
               />
             }
-            label="Required"
+            label={t("newFormQuestion.required")}
           />
         </FormGroup>
         <Button
@@ -227,7 +249,7 @@ export default function NewFormQuestion({
           startIcon={<DeleteIcon />}
           onClick={() => onDeleteQuestion(question.question_id)}
         >
-          Delete
+          {t("newFormQuestion.delete")}
         </Button>
       </div>
     </div>

@@ -14,6 +14,7 @@ export default function NewFormQuestions({
   onDuplicateQuestion,
   setFormQuestions,
   formType,
+  onCorrectChange,
 }) {
   return (
     <>
@@ -31,6 +32,7 @@ export default function NewFormQuestions({
               key={index}
               setFormQuestions={setFormQuestions}
               formType={formType}
+              onCorrectChange={onCorrectChange}
             />
           );
         })}

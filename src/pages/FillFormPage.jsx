@@ -124,6 +124,8 @@ export default function FillFormPage() {
     return <p>No form data available.</p>;
   }
 
+  console.log("Suc",formData)
+
   return (
     <form className="mt-16">
       <FillForm

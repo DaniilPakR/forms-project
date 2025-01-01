@@ -12,7 +12,7 @@ export default function AuthPage() {
 }
 
 export async function action({ request }) {
-  const { setCurrentUser, setIsAdmin, URL } = externalContextReference
+  const { setCurrentUser, setIsAdmin, URL: apiBaseURL } = externalContextReference; // Rename URL to apiBaseURL
   const searchParams = new URL(request.url).searchParams;
   const mode = searchParams.get("mode") || "signup";
 
@@ -38,7 +38,7 @@ export async function action({ request }) {
   const endpoint = mode === "signup" ? "/auth/register" : "/auth/login";
 
   try {
-    const response = await fetch(`${URL}${endpoint}`, {
+    const response = await fetch(`${apiBaseURL}${endpoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,9 +52,6 @@ export async function action({ request }) {
     }
 
     const result = await response.json();
-    
-    console.log(result)
-
     const userInfo = {
       id: result.user.id,
       email: result.user.email,
@@ -63,8 +60,6 @@ export async function action({ request }) {
       is_admin: result.user.is_admin,
     };
 
-    console.log(userInfo)
-
     if (result.user.is_blocked) {
       throw new Error("User is blocked");
     }
@@ -72,11 +67,10 @@ export async function action({ request }) {
     localStorage.setItem("authSession", JSON.stringify(userInfo));
     setCurrentUser(userInfo);
     setIsAdmin(result.user.is_admin);
-    
 
     return redirect("/");
   } catch (e) {
-    console.error("Error in action:", e.message);
-    return { error: e.message };
+    console.error("Error in action:", e?.message || "Unknown error");
+    throw new Error(e?.message || "Authentication failed");
   }
 }

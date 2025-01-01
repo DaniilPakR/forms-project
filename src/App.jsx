@@ -25,7 +25,6 @@ const router = createBrowserRouter([
       { path: "/admin", element: <AdminPage /> },
       { path: "/vform/:id", element: <ViewFormPage /> },
     ],
-    errorElement: <ErrorPage />
   },
 ]);
 

@@ -12,8 +12,9 @@ export default function NewFormOption({
   onUpdateOptions,
   onDeleteOption,
   setFormQuestions,
+  onCorrectChange,
 }) {
-  const { question_id, options, question_type } = question;
+  const { question_id, options, question_type, is_with_score } = question;
 
   let content = null;
 
@@ -38,6 +39,8 @@ export default function NewFormOption({
           question_id={question_id}
           onUpdateOptions={onUpdateOptions}
           onDeleteOption={onDeleteOption}
+          onCorrectChange={onCorrectChange}
+          is_with_score={is_with_score}
         />
       );
     });
@@ -53,6 +56,8 @@ export default function NewFormOption({
         question_id={question_id}
         onUpdateOptions={onUpdateOptions}
         onDeleteOption={onDeleteOption}
+        onCorrectChange={onCorrectChange}
+        is_with_score={is_with_score}
       />
       );
     });
@@ -79,6 +84,8 @@ export default function NewFormOption({
         question_id={question_id}
         onUpdateOptions={onUpdateOptions}
         onDeleteOption={onDeleteOption}
+        onCorrectChange={onCorrectChange}
+        is_with_score={is_with_score}
       />
       );
     });

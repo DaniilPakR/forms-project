@@ -32,6 +32,7 @@ export default function FormCreationPage() {
   }
 
   const [formId, setFormId] = useState();
+  const [formType, setFormType] = useState("form");
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formDescriptionMarkdown, setFormDescriptionMarkdown] =
@@ -49,7 +50,10 @@ export default function FormCreationPage() {
       question_type: "short-answer",
       is_required: false,
       position: 1,
-      show_in_results: false,
+      show_in_results: true,
+      is_with_score: false,
+      score: 0,
+      correct_answer: "",
       options: [
         {
           option_text: "Option 1",
@@ -60,7 +64,7 @@ export default function FormCreationPage() {
     },
   ]);
   const [content, setContent] = useState("form");
-  const [users, setUsers] = useState([]); 
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -92,7 +96,7 @@ export default function FormCreationPage() {
           console.error("Failed to transform titleMarkdown:", error);
           setFormTitleMarkdown([]);
         }
-        console.log("SUCESS ",data)
+        console.log("SUCESS ", data);
         setForm(data);
         setFormTitle(data.title);
         setFormDescription(data.description);
@@ -100,9 +104,10 @@ export default function FormCreationPage() {
         setFormImage(data["image_url"]);
         setIsPublic(data["is_public"]);
         setFormQuestions(data.questions);
+        setFormType(data.form_type);
         setFormId(data.form_id);
         setFormTags(convertTagsBack(data.tags));
-        setUsers(data.users_with_access)
+        setUsers(data.users_with_access);
         const file = await urlToFile(pageId, "uploaded-image.jpg");
         setFormImage(file);
 
@@ -140,12 +145,16 @@ export default function FormCreationPage() {
         question_type: "short-answer",
         is_required: false,
         position: prevFormQuestions.length + 1,
-        show_in_results: false,
+        show_in_results: true,
+        is_with_score: false,
+        score: 0,
+        correct_answer: "",
         options: [
           {
             option_text: "Option 1",
             option_id: uuidv4(),
             is_correct: false,
+            position: 1,
           },
         ],
       },
@@ -203,6 +212,21 @@ export default function FormCreationPage() {
     );
   };
 
+  const handleUpdateCorrectOption = (id, idx, value) => {
+    setFormQuestions((prevFormQuestions) =>
+      prevFormQuestions.map((question) =>
+        question.question_id === id
+          ? {
+              ...question,
+              options: question.options.map((option, index) =>
+                index === idx ? { ...option, is_correct: value } : option
+              ),
+            }
+          : question
+      )
+    );
+  };
+
   const handleDuplicateQuestion = (questionId) => {
     setFormQuestions((prevFormQuestions) => {
       const questionToDuplicate = prevFormQuestions.find(
@@ -252,7 +276,8 @@ export default function FormCreationPage() {
         formId,
         formTitleMarkdown,
         tags,
-        usersWithAccess
+        usersWithAccess,
+        formType,
       });
       try {
         if (!formImage) {
@@ -291,6 +316,8 @@ export default function FormCreationPage() {
   if (!currentUser) {
     navigate("/");
   }
+
+  console.log("STATE", formQuestions);
 
   return (
     <div className="flex flex-col items-center mt-16">
@@ -346,6 +373,8 @@ export default function FormCreationPage() {
                 setIsPublic={setIsPublic}
                 usersWithAccess={users}
                 setUsersWithAccess={setUsers}
+                formType={formType}
+                setFormType={setFormType}
               />
               <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
               <DndContext
@@ -360,6 +389,8 @@ export default function FormCreationPage() {
                   onDeleteOption={handleDeleteOption}
                   onDuplicateQuestion={handleDuplicateQuestion}
                   setFormQuestions={setFormQuestions}
+                  onCorrectChange={handleUpdateCorrectOption}
+                  formType={formType}
                 />
               </DndContext>
               <div className="w-full">
@@ -423,7 +454,8 @@ export async function action(formData) {
     formId,
     formTitleMarkdown,
     tags,
-    usersWithAccess
+    usersWithAccess,
+    formType,
   } = formData;
 
   if (!isPublic && usersWithAccess.length === 0) {
@@ -439,21 +471,28 @@ export async function action(formData) {
     imageUrl: false,
     isPublic,
     creatorId: currentUserId,
+    form_type: formType,
     questions: formQuestions.map((question, index) => ({
       questionId: question.question_id,
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
       showInResults: question.show_in_results,
+      is_with_score: question.is_with_score,
+      score: question.score,
+      correct_answer: question.correct_answer,
       options: question.options.map((option) => ({
         optionId: option.option_id,
         optionText: option.option_text,
+        is_correct: option.is_correct,
       })),
     })),
     pageId,
     tags,
-    accessControlUsers: usersWithAccess
+    accessControlUsers: usersWithAccess,
   };
+
+  console.log(updatedForm)
 
   try {
     const response = await fetch(`${URL}/forms/edit/${formId}`, {

@@ -10,7 +10,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
-import { GlobalContext } from "../context/GlobalProvider";
+import { externalContextReference, GlobalContext } from "../context/GlobalProvider";
 import {
   uploadImageToCloudinary,
   fetchImageById,
@@ -430,6 +430,8 @@ export async function action(formData) {
     usersWithAccess,
   } = formData;
 
+  const { URL: apiUrl } = externalContextReference
+
   if (!isPublic && usersWithAccess.length === 0) {
     throw new Error("Please provide at least one user for access control.");
   }
@@ -461,7 +463,7 @@ export async function action(formData) {
   };
 
   try {
-    const response = await fetch(`http://localhost:5000/forms/edits/${formId}`, {
+    const response = await fetch(`${apiUrl}/forms/edits/${formId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

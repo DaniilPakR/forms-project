@@ -8,7 +8,7 @@ import ViewFilledForm from "../components/ViewFilledForm";
 export default function ViewFormPage() {
   const { currentUser, URL } = useContext(GlobalContext);
   const [formData, setFormData] = useState(null);
-  const { id: form_id } = useParams();
+  const { id: filled_form_id } = useParams();
   const [answers, setAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,7 +16,7 @@ export default function ViewFormPage() {
     setIsLoading(true);
     async function fetchForm() {
       try {
-        const response = await fetch(`${URL}/eform/${form_id}`);
+        const response = await fetch(`${URL}/view-filled-form/${filled_form_id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch form");
         }
@@ -32,38 +32,7 @@ export default function ViewFormPage() {
     }
 
     fetchForm();
-  }, [form_id]);
-
-  useEffect(() => {
-    if (formData) {
-      async function fetchResponses() {
-        try {
-          const response = await fetch(
-            `${URL}/forms/${formData.form_id}/details`
-          );
-          if (!response.ok) {
-            throw new Error("Failed to fetch responses");
-          }
-  
-          const data = await response.json();
-          const transformedAnswers = data.answers.reduce((acc, answer) => {
-            acc[answer.question_id] = {
-              answer_text: answer.answer_text,
-              answer_value: answer.answer_value,
-              question_type: answer.question_type,
-            };
-            return acc;
-          }, {});
-          setAnswers(transformedAnswers);
-          console.log("Transformed answers: ", transformedAnswers);
-        } catch (err) {
-          console.error("Error fetching responses:", err.message);
-        }
-      }
-  
-      fetchResponses();
-    }
-  }, [formData]);
+  }, [filled_form_id]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -73,7 +42,7 @@ export default function ViewFormPage() {
 
   return (
     <div className="flex flex-col items-center mt-16">
-      {formData && <ViewFilledForm formData={formData} answers={answers} />}
+      {formData && <ViewFilledForm formData={formData.form} answers={formData.answers} questions={formData.questions} />}
     </div>
   );
 }

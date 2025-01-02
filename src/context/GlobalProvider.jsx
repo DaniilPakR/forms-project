@@ -7,15 +7,19 @@ const GlobalContext = createContext({
 
 let externalContextReference = null
 
-const URL = "https://forms-project-backend-p0dd.onrender.com";
+// const URL = "https://forms-project-backend-p0dd.onrender.com";
 
-// const URL = "http://localhost:5000"
+const URL = "http://localhost:5000"
 
 export default function GlobalContextProvider({children}) {
 
+  const [isReady, setIsReady] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("authSession")) || null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(() => {
+    const authSession = JSON.parse(localStorage.getItem("authSession"));
+    return authSession ? authSession.is_admin : false;
+  });
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -39,6 +43,7 @@ export default function GlobalContextProvider({children}) {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
+    setIsReady(true);
   }, [theme]);
 
   const toggleTheme = () => {
@@ -59,13 +64,14 @@ export default function GlobalContextProvider({children}) {
     i18n,
     URL,
     languageInitialized,
+    isReady,
   }
 
   externalContextReference = ctxValue;
 
   return (
     <GlobalContext.Provider value={ctxValue}>
-      {children}
+      {isReady ? children : ""}
     </GlobalContext.Provider>
   )
 }

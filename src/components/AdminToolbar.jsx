@@ -4,7 +4,7 @@ import { GlobalContext } from "../context/GlobalProvider";
 import { formatDate } from "../utils/formateDate";
 
 export default function AdminToolbar() {
-  const { currentUser, t, URL } = useContext(GlobalContext);
+  const { currentUser, t, URL, setIsAdmin, setCurrentUser, isAdmin } = useContext(GlobalContext);
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -24,6 +24,23 @@ export default function AdminToolbar() {
     }
     fetchUsers();
   }, [URL]);
+
+  useEffect(() => {
+    users.forEach((user) => {
+      if (user.user_id === currentUser.id) {
+        if (user.is_blocked) {
+          setCurrentUser(null);
+          localStorage.removeItem("authSession");
+        }
+        setIsAdmin(user.is_admin);
+        if (!user.is_admin) {
+          setCurrentUser(null);
+          localStorage.removeItem("authSession");
+        }
+      }
+    })
+    console.log("Check",users)
+  }, [users])
 
   useEffect(() => {
     setSelectAll(users.length > 0 && selectedUsers.length === users.length);

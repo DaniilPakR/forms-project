@@ -70,13 +70,18 @@ export default function LikeButton({ user_id, form_id }) {
 
   return (
     <>
-      {user_id && <button
-        type="button"
-        onClick={isLiked ? handleRemoveLike : handleLike}
-        className="flex items-center justify-center border border-black fixed right-4 bottom-4 bg-gray-300 text-text rounded-full h-8 w-8"
-      >
-        <FontAwesomeIcon icon={isLiked ? faHeartSolid : faHeartRegular} />
-      </button>}
+      {user_id && (
+        <button
+          type="button"
+          onClick={isLiked ? handleRemoveLike : handleLike}
+          className="flex items-center justify-center border-2 border-transparent transition-all duration-300 ease-in-out rounded-full h-12 w-12 bg-gray-800 text-white hover:bg-pink-600 hover:border-pink-600 fixed right-6 bottom-6 shadow-lg transform hover:scale-110 active:scale-95 active:bg-pink-700"
+        >
+          <FontAwesomeIcon
+            icon={isLiked ? faHeartSolid : faHeartRegular}
+            className="text-xl"
+          />
+        </button>
+      )}
     </>
   );
 }

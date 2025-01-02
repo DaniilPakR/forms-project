@@ -1,26 +1,33 @@
+const requiredJsx = <span className="text-red-500">*</span>;
+
 export default function FillFormQuestions({
   questions,
   answers,
   onSetAnswers,
-  currentUser,
-  t
+  t,
+  read
 }) {
   if (!questions || questions.length === 0) {
     return <p className="text-center text-text-muted">No questions available</p>;
   }
 
+  console.log(questions)
+
   return (
     <div className="space-y-6">
+      <h1>
+        {t("fillFormQuestions.requiredQuestionsMarked")} {requiredJsx}
+      </h1>
       {questions.map((question) => {
         switch (question.question_type) {
           case "short-answer":
             return (
               <div key={question.question_id} className="space-y-2">
                 <label htmlFor={`question-${question.question_id}`} className="font-medium">
-                  {question.question_text}
+                  {question.question_text}{question.is_required ? requiredJsx : ""}
                 </label>
                 <input
-                  disabled={!currentUser}
+                  disabled={read}
                   type="text"
                   id={`question-${question.question_id}`}
                   required={question.is_required}
@@ -38,10 +45,10 @@ export default function FillFormQuestions({
             return (
               <div key={question.question_id} className="space-y-2">
                 <label htmlFor={`question-${question.question_id}`} className="font-medium">
-                  {question.question_text}
+                  {question.question_text}{question.is_required ? requiredJsx : ""}
                 </label>
                 <textarea
-                  disabled={!currentUser}
+                  disabled={read}
                   id={`question-${question.question_id}`}
                   required={question.is_required}
                   value={answers[question.question_id]?.value || ""}
@@ -57,12 +64,12 @@ export default function FillFormQuestions({
           case "multiple-choice":
             return (
               <div key={question.question_id} className="space-y-2">
-                <p className="font-medium">{question.question_text}</p>
+                <p className="font-medium">{question.question_text}{question.is_required ? requiredJsx : ""}</p>
                 <div className="space-y-1">
                   {question.options.map((option) => (
                     <label key={option.option_id} className="flex items-center space-x-2">
                       <input
-                        disabled={!currentUser}
+                        disabled={read}
                         type="radio"
                         name={`question-${question.question_id}`}
                         value={option.option_text}
@@ -82,12 +89,12 @@ export default function FillFormQuestions({
           case "checkboxes":
             return (
               <div key={question.question_id} className="space-y-2">
-                <p className="font-medium">{question.question_text}</p>
+                <p className="font-medium">{question.question_text}{question.is_required ? requiredJsx : ""}</p>
                 <div className="space-y-1">
                   {question.options.map((option) => (
                     <label key={option.option_id} className="flex items-center space-x-2">
                       <input
-                        disabled={!currentUser}
+                        disabled={read}
                         type="checkbox"
                         value={option.option_text}
                         checked={(answers[question.question_id]?.value || []).includes(
@@ -109,10 +116,10 @@ export default function FillFormQuestions({
             return (
               <div key={question.question_id} className="space-y-2">
                 <label htmlFor={`dropdown-${question.question_id}`} className="font-medium">
-                  {question.question_text}
+                  {question.question_text}{question.is_required ? requiredJsx : ""}
                 </label>
                 <select
-                  disabled={!currentUser}
+                  disabled={read}
                   id={`dropdown-${question.question_id}`}
                   required={question.is_required}
                   value={answers[question.question_id]?.value || ""}

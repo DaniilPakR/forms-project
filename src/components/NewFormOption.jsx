@@ -25,7 +25,7 @@ export default function NewFormOption({
         type="text"
         placeholder={t("newFormOption.shortPlaceholder")}
         disabled
-        className="cursor-default bg-gray-200 border-b border-b-black"
+        className="cursor-default bg-gray-200 border-b border-b-black rounded-md"
       />
     );
   }
@@ -66,7 +66,7 @@ export default function NewFormOption({
         type="text"
         placeholder={t("newFormOption.paragraphPlaceholder")}
         disabled
-        className="cursor-default bg-gray-200 border-b border-b-black"
+        className="cursor-default bg-gray-200 border-b border-b-black rounded-md"
       />
     );
   }

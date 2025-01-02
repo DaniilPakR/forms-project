@@ -1,13 +1,16 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { GlobalContext } from "../context/GlobalProvider";
 import FillForm from "../components/FillForm";
 import LikeButton from "../components/LikeButton";
 import Comments from "../components/Comments";
+import { toast } from "react-toastify";
 
 export default function FillFormPage() {
-  const { currentUser, isAdmin, URL } = useContext(GlobalContext);
+  const navigate = useNavigate();
+  const { currentUser, isAdmin, URL, isReady, t } = useContext(GlobalContext);
   const [formData, setFormData] = useState(null);
   const { id: form_id } = useParams();
   const [answers, setAnswers] = useState({});
@@ -32,11 +35,13 @@ export default function FillFormPage() {
           currentUser.id === data.creator_id;
 
         if (!hasAccess) {
-          throw new Error("You do not have access to this form.");
+          throw new Error(t("fillForm.youDontHaveAccess"));
         }
+        console.log(data)
         setFormData(data);
       } catch (err) {
         console.error("Error fetching form:", err.message);
+        toast.error(err.message)
       } finally {
         setIsLoading(false);
       }
@@ -78,6 +83,34 @@ export default function FillFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const missingRequiredAnswers = formData.questions.some((question) => {
+      if (question.is_required) {
+        const answer = answers[question.question_id]?.value;
+        
+        if (question.question_type === "short-answer" && (!answer || answer.trim() === "")) {
+          return true;
+        }
+        
+        if (question.question_type === "multiple-choice" && (!answer || answer.length === 0)) {
+          return true;
+        }
+        
+        if (question.question_type === "checkboxes" && (!answer || answer.length === 0)) {
+          return true;
+        }
+        
+        if (question.question_type === "dropdown" && (!answer || answer === "")) {
+          return true;
+        }
+      }
+      return false;
+    });
+  
+    if (missingRequiredAnswers) {
+      toast.error(t("fillFormQuestions.fillAllRequiredFields"));
+      return;
+    }
+
     const submissionPayload = {
       form_id: formData.form_id,
       user_id: currentUser.id,
@@ -111,10 +144,16 @@ export default function FillFormPage() {
 
       const result = await response.json();
       console.log("Submission successful:", result);
+      toast.success(t("fillForm.formSubmitted"));
+      return navigate("/success")
     } catch (err) {
       console.error("Error submitting form answers:", err.message);
     }
   };
+
+  if (!isReady) {
+    return <p>Loading...</p>;
+  }
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -128,7 +167,6 @@ export default function FillFormPage() {
     <form className="mt-16">
       <FillForm
         onSubmit={handleSubmit}
-        currentUser={currentUser}
         answers={answers}
         setAnswers={setAnswers}
         formData={formData}

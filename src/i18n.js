@@ -100,6 +100,7 @@ const resources = {
         accessLabel: "Access:",
         public: "Public",
         private: "Private",
+        imageLabel: "Upload Image"
       },
       newFormQuestion: {
         questionTitle: "Question",
@@ -136,10 +137,14 @@ const resources = {
         date: "Date (filled automatically)",
         submit: "Submit",
         editForm: "Edit Form",
+        formSubmitted: "Form Submitted",
+        youDontHaveAccess: "You don't have access to this form.",
       },
       fillFormQuestions: {
         yourAnswer: "Your Answer",
         selectAnOption: "Select an option",
+        requiredQuestionsMarked: "Required questions are marked with",
+        fillAllRequiredFields: "Fill all required fields",
       },
       latestTemplates: {
         latestTemplates: "Latest Templates",
@@ -184,6 +189,8 @@ const resources = {
         questionCount: "Question Count",
         questionTypes: "Question Types",
         topResponses: "Top Responses",
+        noResponses: "No responses found.",
+        unsupportedQuestionType: "Unsupported question type",
       },
       formEditingPage: {
         form: "Form",
@@ -193,7 +200,15 @@ const resources = {
         cancel: "Cancel",
         delete: "Delete",
         update: "Update",
-      }
+      },
+      responses: {
+        amountUsersLiked: "Users liked this form",
+        amountUsersCommented: "Users commented on this form",
+      },
+      successPage: {
+        successMessage: "Successfully submitted!",
+        goHome: "Home Page",
+      },
     },
   },
   ru: {
@@ -249,8 +264,8 @@ const resources = {
         pageDoesntExist: "Страница не существует",
       },
       tagCloud: {
-        button: "Облачко тегов",
-        modalTitle: "Облачко тегов (по алфавиту)",
+        button: "Облако тегов",
+        modalTitle: "Облако тегов (по алфавиту)",
         loading: "Загрузка...",
         noTagsFound: "Теги не найдены",
         formsFor: "Формы для",
@@ -291,6 +306,7 @@ const resources = {
         accessLabel: "Доступ:",
         public: "Публичный",
         private: "Приватный",
+        imageLabel: "Загрузить Изображение"
       },
       newFormQuestion: {
         questionTitle: "Вопрос",
@@ -327,10 +343,14 @@ const resources = {
         date: "Дата (заполняется автоматически)",
         submit: "Отправить",
         editForm: "Редактировать форму",
+        formSubmitted: "Форма отправлена",
+        youDontHaveAccess: "У вас нет доступа к этой форме.",
       },
       fillFormQuestions: {
         yourAnswer: "Ваш ответ",
         selectAnOption: "Выберите вариант",
+        requiredQuestionsMarked: "Обязательные вопросы помечены с",
+        fillAllRequiredFields: "Заполните все обязательные поля",
       },
       latestTemplates: {
         latestTemplates: "Последние Шаблоны",
@@ -374,7 +394,8 @@ const resources = {
         questionTypeDistribution: "Распределение Типов Вопросов",
         questionCount: "Количество Вопросов",
         questionTypes: "Типы Вопросов",
-        topResponses: "Лучшие Ответы",
+        topResponses: "Наиболее Популярные Ответы",
+        unsupportedQuestionType: "Неподдерживаемый тип вопроса",
       },
       formEditingPage: {
         form: "Форма",
@@ -384,7 +405,15 @@ const resources = {
         cancel: "Отмена",
         delete: "Удалить",
         update: "Обновить",
-      }
+      },
+      responses: {
+        amountUsersLiked: "Пользователей оценили эту форму",
+        amountUsersCommented: "Пользователей прокомментировали эту форму",
+      },
+      successPage: {
+        successMessage: "Успешно отправлено!",
+        goHome: "На Главную",
+      },
     },
   },
 };

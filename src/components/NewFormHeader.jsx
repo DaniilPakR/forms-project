@@ -32,6 +32,8 @@ export default function NewFormHeader({
   setIsPublic,
   usersWithAccess,
   setUsersWithAccess,
+  onRemoveImage,
+  formImage,
 }) {
   const { URL, t } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
@@ -97,28 +99,46 @@ export default function NewFormHeader({
   }, []);
 
   return (
-    <div className="flex flex-col gap-2">
-      <input
-        type="file"
-        id="imageUpload"
-        accept="image/*"
-        onChange={(e) => handleImageChange(e)}
-      />
-      {imagePreview ? (
-        <div>
-          <p>{t("newFormHeader.imagePreview")}</p>
-          <img src={imagePreview} alt="" />
-        </div>
-      ) : (
-        <p>{t("newFormHeader.noImageSelected")}</p>
-      )}
+    <div className="flex flex-col gap-4">
+      <div className="w-full">
+        <label
+          htmlFor="imageUpload"
+          className="m-2 cursor-pointer bg-button dark:bg-button-dark hover:bg-button-hover text-text dark:text-text-dark rounded-lg p-2"
+        >
+          {t("newFormHeader.imageLabel")}
+        </label>
+        {formImage && <button className="m-2 cursor-pointer bg-button dark:bg-button-dark hover:bg-button-hover text-text dark:text-text-dark rounded-lg p-2" onClick={onRemoveImage}>
+          Remove Image
+        </button>}
+        <input
+          type="file"
+          id="imageUpload"
+          accept="image/*"
+          onChange={(e) => handleImageChange(e)}
+          className="hidden"
+        />
+        {imagePreview && (
+          <div className="mt-4 flex justify-center">
+            <img
+              src={imagePreview}
+              className="rounded-lg shadow-lg max-w-full h-auto"
+              alt=""
+            />
+          </div>
+        )}
+      </div>
       <p>
-        <label htmlFor="">{t("newFormHeader.titleLabel")}</label>
+        <label
+          htmlFor=""
+          className="font-medium text-gray-700 dark:text-gray-300"
+        >
+          {t("newFormHeader.titleLabel")}
+        </label>
         <input
           type="text"
           value={title}
           placeholder={t("newFormHeader.titlePlaceholder")}
-          className={`mt-1 w-full rounded-lg p-2 bg-background dark:bg-background-dark border-gray-400 border text-text dark:text-text-dark ${
+          className={`block w-full mt-1 border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-300 ${
             formTitleMarkdown.includes("bold") ? "font-bold" : ""
           } ${formTitleMarkdown.includes("italic") ? "italic" : ""} ${
             formTitleMarkdown.includes("underlined") ? "underline" : ""

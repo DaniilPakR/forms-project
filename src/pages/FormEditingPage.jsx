@@ -10,15 +10,21 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 import NewFormHeader from "../components/NewFormHeader";
 import NewFormQuestions from "../components/NewFormQuestions";
-import { externalContextReference, GlobalContext } from "../context/GlobalProvider";
+import {
+  externalContextReference,
+  GlobalContext,
+} from "../context/GlobalProvider";
 import {
   uploadImageToCloudinary,
   fetchImageById,
   urlToFile,
+  deleteImageInCloud,
 } from "../utils/cloudinaryFunctions";
 import Responses from "../components/Responses";
 import { deleteForm } from "../utils/deleteForm";
 import { convertTags, convertTagsBack } from "../utils/convertTags";
+import { toast } from "react-toastify";
+import Comments from "../components/Comments";
 
 export default function FormCreationPage() {
   const navigate = useNavigate();
@@ -39,10 +45,10 @@ export default function FormCreationPage() {
   const [formTitleMarkdown, setFormTitleMarkdown] = useState([]);
   const [formTopic, setFormTopic] = useState("topic");
   const [formTags, setFormTags] = useState([]);
-  const [formImage, setFormImage] = useState(false);
+  const [formImage, setFormImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isPublic, setIsPublic] = useState(true);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
   const [formQuestions, setFormQuestions] = useState([
     {
       question_text: "Untitled Question",
@@ -98,7 +104,6 @@ export default function FormCreationPage() {
         setFormTitle(data.title);
         setFormDescription(data.description);
         setFormTopic(data.topic);
-        setFormImage(data["image_url"]);
         setIsPublic(data["is_public"]);
         setFormQuestions(data.questions);
         setFormId(data.form_id);
@@ -106,10 +111,12 @@ export default function FormCreationPage() {
         setUsers(data.users_with_access);
         const file = await urlToFile(pageId, "uploaded-image.jpg");
         setFormImage(file);
-
-        setImagePreview(
-          `https://res.cloudinary.com/dmi1xxumf/image/upload/${pageId}`
-        );
+        if (data["image_url"]) {
+          setImagePreview(
+            `https://res.cloudinary.com/dmi1xxumf/image/upload/${pageId}`
+          );
+          setImageUrl(data["image_url"]);
+        }
       } catch (err) {
         console.error("Error fetching form:", err.message);
       } finally {
@@ -127,9 +134,19 @@ export default function FormCreationPage() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormImage(true);
-      setImagePreview(URL.createObjectURL(file));
+      setFormImage(file);
+      setImagePreview(window.URL.createObjectURL(file));
     }
+  };
+
+  const deleteImageFromCLoudinary = async () => {
+    await deleteImageInCloud(imageUrl);
+  };
+
+  const handleRemoveImage = () => {
+    setFormImage(null);
+    setImagePreview(null);
+    deleteImageFromCLoudinary();
   };
 
   const handleAddQuestion = () => {
@@ -247,7 +264,7 @@ export default function FormCreationPage() {
         formDescriptionMarkdown,
         formQuestions,
         formTopic,
-        formImage,
+        imageUrl,
         isPublic,
         currentUserId,
         pageId,
@@ -260,18 +277,18 @@ export default function FormCreationPage() {
         if (!formImage) {
           return;
         }
+        const deletedImage = await deleteImageInCloud(imageUrl);
         const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
         console.log(uploadedImage);
       } catch (e) {
         console.error(e.message);
       }
-      alert("Form uploaded successfully!");
+      toast.success("Form updated successfully!");
     } catch (error) {
       console.error("Failed to upload form:", JSON.stringify(error.message));
-      alert("Failed to upload form.");
+      toast.error("Failed to update form.");
     }
   };
-
   const handleDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id) return;
 
@@ -295,121 +312,138 @@ export default function FormCreationPage() {
     navigate("/");
   }
 
+  console.log(formImage);
+
   return (
-    <div className="flex flex-col items-center mt-16">
-      {currentUser && (
-        <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
-          <div className="self-center">
-            <button
-              onClick={() => setContent("form")}
-              className={`px-4 py-2 rounded ${
-                content === "form"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 dark:bg-gray-700"
-              }`}
-            >
-              {t("formEditingPage.form")}
-            </button>
-            <button
-              onClick={() => setContent("responses")}
-              className={`px-4 py-2 rounded ml-2 ${
-                content === "responses"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 dark:bg-gray-700"
-              }`}
-            >
-              {t("formEditingPage.responses")}
-            </button>
-          </div>
-
-          {/* Shared Header */}
-          <h1 className="text-center text-xl border-b border-black pb-2">
-            {content === "form" ? t("formEditingPage.form") : t("formEditingPage.responses")}
-          </h1>
-          <h1 className="text-2xl lg:text-3xl font-semibold">{t("formEditingPage.header")}</h1>
-
-          {content === "form" ? (
-            <>
-              <NewFormHeader
-                title={formTitle}
-                setTitle={setFormTitle}
-                description={formDescription}
-                setDescription={setFormDescription}
-                descriptionMarkdown={formDescriptionMarkdown}
-                setDescriptionMarkdown={setFormDescriptionMarkdown}
-                formTitleMarkdown={formTitleMarkdown}
-                setFormTitleMarkdown={setFormTitleMarkdown}
-                formTags={formTags}
-                setFormTags={setFormTags}
-                formTopic={formTopic}
-                setFormTopic={setFormTopic}
-                handleImageChange={handleImageChange}
-                imagePreview={imagePreview}
-                isPublic={isPublic}
-                setIsPublic={setIsPublic}
-                usersWithAccess={users}
-                setUsersWithAccess={setUsers}
-              />
-              <h1 className="text-2xl lg:text-3xl font-semibold">{t("formEditingPage.questions")}</h1>
-              <DndContext
-                onDragEnd={handleDragEnd}
-                collisionDetection={closestCorners}
+    <>
+      <div className="flex flex-col items-center mt-16 px-4">
+        {currentUser && (
+          <div
+            style={{
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(30, 58, 138, 0.15)`,
+            }}
+            className="w-full max-w-4xl border bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col"
+          >
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setContent("form")}
+                className={`transition px-6 py-2 rounded-md text-sm font-medium ${
+                  content === "form"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                }`}
               >
-                <NewFormQuestions
-                  questions={formQuestions}
-                  onDeleteQuestion={handleDeleteQuestion}
-                  onUpdateQuestion={handleUpdateQuestion}
-                  onUpdateOptions={handleUpdateOptions}
-                  onDeleteOption={handleDeleteOption}
-                  onDuplicateQuestion={handleDuplicateQuestion}
-                  setFormQuestions={setFormQuestions}
+                {t("formEditingPage.form")}
+              </button>
+              <button
+                onClick={() => setContent("responses")}
+                className={`transition px-6 py-2 rounded-md text-sm font-medium ${
+                  content === "responses"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                }`}
+              >
+                {t("formEditingPage.responses")}
+              </button>
+            </div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white text-center">
+              {t("formEditingPage.header")}
+            </h2>
+            {content === "form" ? (
+              <>
+                <NewFormHeader
+                  title={formTitle}
+                  setTitle={setFormTitle}
+                  description={formDescription}
+                  setDescription={setFormDescription}
+                  descriptionMarkdown={formDescriptionMarkdown}
+                  setDescriptionMarkdown={setFormDescriptionMarkdown}
+                  formTitleMarkdown={formTitleMarkdown}
+                  setFormTitleMarkdown={setFormTitleMarkdown}
+                  formTags={formTags}
+                  setFormTags={setFormTags}
+                  formTopic={formTopic}
+                  setFormTopic={setFormTopic}
+                  handleImageChange={handleImageChange}
+                  imagePreview={imagePreview}
+                  isPublic={isPublic}
+                  setIsPublic={setIsPublic}
+                  usersWithAccess={users}
+                  setUsersWithAccess={setUsers}
+                  onRemoveImage={handleRemoveImage}
                 />
-              </DndContext>
-              <div className="w-full">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleAddQuestion}
-                  sx={{
-                    textTransform: "none",
-                    width: "100%",
-                  }}
-                  startIcon={<AddIcon />}
+                <h1 className="text-2xl lg:text-3xl font-semibold">
+                  {t("formEditingPage.questions")}
+                </h1>
+                <DndContext
+                  onDragEnd={handleDragEnd}
+                  collisionDetection={closestCorners}
                 >
-                  Add Question
-                </Button>
-              </div>
-            </>
-          ) : (
-            <Responses form_id={formId} />
-          )}
+                  <NewFormQuestions
+                    questions={formQuestions}
+                    onDeleteQuestion={handleDeleteQuestion}
+                    onUpdateQuestion={handleUpdateQuestion}
+                    onUpdateOptions={handleUpdateOptions}
+                    onDeleteOption={handleDeleteOption}
+                    onDuplicateQuestion={handleDuplicateQuestion}
+                    setFormQuestions={setFormQuestions}
+                  />
+                </DndContext>
+                <div className="w-full">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddQuestion}
+                    sx={{
+                      textTransform: "none",
+                      width: "100%",
+                    }}
+                    startIcon={<AddIcon />}
+                  >
+                    Add Question
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <Responses form_id={formId} />
+            )}
 
-          <div className="flex flex-row justify-between items-center mt-4">
-            <Button variant="outlined">{t("formEditingPage.cancel")}</Button>
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-col sm:flex-row justify-between items-center mt-4">
               <Button
                 variant="outlined"
-                endIcon={<DeleteIcon />}
-                onClick={async () => {
-                  await deleteForm(formId);
-                  window.location.href = "/";
-                }}
+                className="w-full sm:w-auto mb-2 sm:mb-0"
               >
-                {t("formEditingPage.delete")}
+                {t("formEditingPage.cancel")}
               </Button>
-              <Button
-                type="button"
-                variant="contained"
-                endIcon={<SendIcon />}
-                onClick={handleUploadForm}
-              >
-                {t("formEditingPage.update")}
-              </Button>
+
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+                <Button
+                  variant="outlined"
+                  endIcon={<DeleteIcon />}
+                  onClick={async () => {
+                    await deleteForm(formId);
+                    window.location.href = "/";
+                  }}
+                  className="w-full sm:w-auto mb-2 sm:mb-0"
+                >
+                  {t("formEditingPage.delete")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  onClick={handleUploadForm}
+                  className="w-full sm:w-auto"
+                >
+                  {t("formEditingPage.update")}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+      {form && <Comments form_id={form.form_id} />}
+    </>
   );
 }
 
@@ -420,7 +454,7 @@ export async function action(formData) {
     formDescriptionMarkdown,
     formQuestions,
     formTopic,
-    formImage,
+    imageUrl,
     isPublic,
     currentUserId,
     pageId,
@@ -430,7 +464,7 @@ export async function action(formData) {
     usersWithAccess,
   } = formData;
 
-  const { URL: apiUrl } = externalContextReference
+  const { URL: apiUrl } = externalContextReference;
 
   if (!isPublic && usersWithAccess.length === 0) {
     throw new Error("Please provide at least one user for access control.");
@@ -442,7 +476,7 @@ export async function action(formData) {
     description: formDescription,
     descriptionmarkdown: formDescriptionMarkdown,
     topic: formTopic,
-    imageUrl: false,
+    imageUrl,
     isPublic,
     creatorId: currentUserId,
     questions: formQuestions.map((question, index) => ({
@@ -481,6 +515,6 @@ export async function action(formData) {
     return result;
   } catch (error) {
     console.error("Error updating form:", JSON.stringify(error.message));
-    throw error;
+    toast.error("Failed to update form.");
   }
 }

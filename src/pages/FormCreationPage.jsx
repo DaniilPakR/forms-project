@@ -31,11 +31,10 @@ export default function FormCreationPage() {
   const [formDescription, setFormDescription] = useState("");
   const [formDescriptionMarkdown, setFormDescriptionMarkdown] = useState([]);
   const [formTitleMarkdown, setFormTitleMarkdown] = useState([]);
-  const [formTopic, setFormTopic] = useState("topic");
+  const [formTopic, setFormTopic] = useState("");
   const [formTags, setFormTags] = useState([]);
   const [formImage, setFormImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
   const [isPublic, setIsPublic] = useState(true);
   const [formQuestions, setFormQuestions] = useState([
     {
@@ -94,6 +93,11 @@ export default function FormCreationPage() {
       setFormImage(file);
       setImagePreview(window.URL.createObjectURL(file));
     }
+  };
+
+  const handleRemoveImage = () => {
+    setFormImage(null);
+    setImagePreview(null);
   };
 
   const handleDeleteQuestion = (questionId) => {
@@ -182,6 +186,11 @@ export default function FormCreationPage() {
     } else if (users.length === 0) {
       usersWithAccess = [];
     }
+    let myImage = null;
+    if (formImage) {
+      const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
+      myImage = uploadedImage.public_id;
+    }
     try {
       await action({
         formTitle,
@@ -190,22 +199,13 @@ export default function FormCreationPage() {
         formDescriptionMarkdown,
         formQuestions,
         formTopic,
-        formImage,
+        myImage,
         isPublic,
         currentUserId,
         pageId,
         tags,
         usersWithAccess,
       });
-      try {
-        if (!formImage) {
-          return;
-        }
-        const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
-        console.log(uploadedImage);
-      } catch (e) {
-        console.error(e.message);
-      }
       toast.success("Form uploaded successfully!");
       return navigate("/");
     } catch (error) {
@@ -235,7 +235,12 @@ export default function FormCreationPage() {
   return (
     <div className="flex flex-col items-center mt-16">
       {currentUser && (
-        <div className="w-11/12 lg:w-1/2 border border-solid bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md border-black py-4 px-5 gap-3 flex flex-col">
+        <div
+          style={{
+            boxShadow: `0 2px 6px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(30, 58, 138, 0.15)`,
+          }}
+          className="w-full max-w-4xl border bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col"
+        >
           <h1 className="text-center text-xl border-b border-black pb-2">
             {t("form.title")}
           </h1>
@@ -261,6 +266,8 @@ export default function FormCreationPage() {
             setIsPublic={setIsPublic}
             usersWithAccess={users}
             setUsersWithAccess={setUsers}
+            onRemoveImage={handleRemoveImage}
+            formImage={formImage}
           />
           <h1 className="text-2xl lg:text-3xl font-semibold">
             {t("form.questions")}
@@ -295,7 +302,11 @@ export default function FormCreationPage() {
             </Button>
           </div>
           <div className="flex flex-row justify-between items-center">
-            <Button onClick={() => navigate("/")} variant="outlined" startIcon={<DeleteIcon />}>
+            <Button
+              onClick={() => navigate("/")}
+              variant="outlined"
+              startIcon={<DeleteIcon />}
+            >
               {t("form.cancelButton")}
             </Button>
             <Button
@@ -320,7 +331,7 @@ export async function action(formData) {
     formDescriptionMarkdown,
     formQuestions,
     formTopic,
-    formImage,
+    myImage,
     isPublic,
     currentUserId,
     pageId,
@@ -339,7 +350,7 @@ export async function action(formData) {
     description: formDescription,
     descriptionmarkdown: formDescriptionMarkdown,
     topic: formTopic,
-    imageUrl: formImage ? "true" : "false",
+    imageUrl: myImage,
     isPublic,
     creatorId: currentUserId,
     questions: formQuestions.map((question, index) => ({

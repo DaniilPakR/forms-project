@@ -18,7 +18,7 @@ export default function FilledForms() {
           `${URL}/filled-forms/${currentUser.id}`
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch filled forms.");
+          return;
         }
 
         const result = await response.json();

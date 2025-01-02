@@ -31,6 +31,8 @@ function QuestionStats({ questions, answers, answerOptions }) {
   const questionTypeLabels = Object.keys(questionTypeCounts);
   const questionTypeValues = Object.values(questionTypeCounts);
 
+  console.log(answers)
+
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold mb-4">{t("questionStats.formStatistics")}</h2>
@@ -42,7 +44,7 @@ function QuestionStats({ questions, answers, answerOptions }) {
             labels: questionTypeLabels,
             datasets: [
               {
-                label: "Question Count",
+                label: t("questionStats.questionCount"),
                 data: questionTypeValues,
                 backgroundColor: "rgba(54, 162, 235, 0.6)",
                 borderColor: "rgba(54, 162, 235, 1)",
@@ -54,7 +56,7 @@ function QuestionStats({ questions, answers, answerOptions }) {
             responsive: true,
             plugins: {
               legend: { display: false },
-              title: { display: true, text: "Question Types" },
+              title: { display: true, text: t("questionStats.questionTypes") },
             },
             scales: { y: { beginAtZero: true } },
           }}
@@ -81,6 +83,7 @@ function QuestionStats({ questions, answers, answerOptions }) {
 }
 
 function QuestionVisualization({ question, answers, options }) {
+  const { t } = useContext(GlobalContext);
   const { question_type, question_text } = question;
 
   switch (question_type) {
@@ -88,7 +91,7 @@ function QuestionVisualization({ question, answers, options }) {
     case "paragraph":
       return (
         <div>
-          <h4 className="font-medium">Top Responses:</h4>
+          <h4 className="font-medium">{t("questionStats.topResponses")}:</h4>
           <ul className="list-disc list-inside text-sm">
             {answers.map((ans, idx) => (
               <li key={idx}>{ans.answer_text || "No response"}</li>
@@ -123,7 +126,7 @@ function QuestionVisualization({ question, answers, options }) {
     }
 
     default:
-      return <p>Unsupported question type</p>;
+      return <p>{t("questionStats.unsupportedQuestionType")}</p>;
   }
 }
 

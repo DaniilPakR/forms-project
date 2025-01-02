@@ -4,14 +4,18 @@ import { useContext } from "react";
 import ViewFormQuestions from "./ViewFormQuestions";
 import { GlobalContext } from "../context/GlobalProvider";
 
-export default function ViewFilledForm({ formData, answers, setAnswers }) {
-
+export default function ViewFilledForm({ formData, answers, setAnswers, questions }) {
   const { t } = useContext(GlobalContext);
 
-  console.log("Yo ", formData)
+  console.log("Yo ", formData);
 
   return (
-    <div className="flex flex-col w-4/5 lg:w-1/2 bg-background dark:bg-background-dark text-text dark:text-text-dark border border-border-dark shadow-md rounded-md p-6 space-y-5">
+    <div
+      style={{
+        boxShadow: `0 2px 6px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(30, 58, 138, 0.15)`,
+      }}
+      className="w-full max-w-4xl border bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col"
+    >
       <h1
         className={`text-center text-2xl lg:text-3xl font-semibold border-b border-border-dark pb-3`}
       >
@@ -22,7 +26,7 @@ export default function ViewFilledForm({ formData, answers, setAnswers }) {
       </p>
       <div>
         <ViewFormQuestions
-          questions={formData.questions}
+          questions={questions}
           answers={answers}
           setAnswers={setAnswers}
           onSetAnswers={setAnswers}
@@ -32,7 +36,7 @@ export default function ViewFilledForm({ formData, answers, setAnswers }) {
       <Link
         to={`/eform/${formData.page_id}`}
         className="mt-6 text-primary hover:text-primary-hover p-2 self-center"
-        >
+      >
         {t("viewFilledForm.goBack")}
       </Link>
     </div>

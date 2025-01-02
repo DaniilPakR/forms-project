@@ -17,6 +17,8 @@ export default function Navbar() {
     localStorage.removeItem("authSession");
   };
 
+  console.log(isAdmin)
+
   return (
     <header className="z-50 text-sm top-0 w-full fixed flex flex-row justify-around lg:justify-between bg-background dark:bg-background-dark h-14 items-center py-3 px-2 lg:px-4 lg:text-lg border-b border-solid border-gray-300 dark:border-gray-700">
       <div>

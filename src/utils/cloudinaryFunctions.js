@@ -39,3 +39,24 @@ export const urlToFile = async (url, filename = "image") => {
   const file = new File([blob], filename, { type: blob.type });
   return file;
 };
+
+export const deleteImageInCloud = async (publicId) => {
+  try {
+    const response = await fetch("https://forms-project-backend-p0dd.onrender.com/delete-image", {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ public_id: publicId }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      console.log('Image deleted:', data);
+    } else {
+      console.error('Error deleting image:', data);
+    }
+  } catch (error) {
+    console.error('Failed to delete image:', error);
+  }
+};

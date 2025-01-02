@@ -10,14 +10,19 @@ import {
   Legend,
   Title,
 } from "chart.js";
+import { useContext } from "react";
 
-// Register Chart.js components
+import { GlobalContext } from "../context/GlobalProvider";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend, Title);
 
 function QuestionStats({ questions, answers, answerOptions }) {
+
+  const { t } = useContext(GlobalContext);
+
   if (!questions || !answers || !answerOptions) return null;
 
-  // Calculate overall stats for question types
+
   const questionTypeCounts = questions.reduce((acc, question) => {
     acc[question.question_type] = (acc[question.question_type] || 0) + 1;
     return acc;
@@ -28,11 +33,10 @@ function QuestionStats({ questions, answers, answerOptions }) {
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-bold mb-4">Form Statistics</h2>
+      <h2 className="text-xl font-bold mb-4">{t("questionStats.formStatistics")}</h2>
       
-      {/* Overall Stats */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold">Question Type Distribution</h3>
+        <h3 className="text-lg font-semibold">{t("questionStats.questionTypeDistribution")}</h3>
         <Bar
           data={{
             labels: questionTypeLabels,
@@ -57,7 +61,6 @@ function QuestionStats({ questions, answers, answerOptions }) {
         />
       </div>
 
-      {/* Individual Question Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {questions.map((question) => (
           <div

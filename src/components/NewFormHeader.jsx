@@ -32,8 +32,6 @@ export default function NewFormHeader({
   setIsPublic,
   usersWithAccess,
   setUsersWithAccess,
-  formType,
-  setFormType,
 }) {
   const { URL, t } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
@@ -114,28 +112,6 @@ export default function NewFormHeader({
       ) : (
         <p>{t("newFormHeader.noImageSelected")}</p>
       )}
-      <FormControl sx={{ m: 1, minWidth: 100 }} className="z-10">
-        <InputLabel id="form-type">{t("newFormHeader.formType")}</InputLabel>
-        <Select
-          labelId="form-type"
-          id="form-type"
-          value={formType}
-          label={t("newFormHeader.formType")}
-          className="bg-white"
-          onChange={(e) => setFormType(e.target.value)}
-        >
-          <MenuItem value="form" className="flex items-center gap-2">
-            <span className="text-gray-800 ml-2">
-              {t("newFormHeader.form")}
-            </span>
-          </MenuItem>
-          <MenuItem value="quiz" className="flex items-center gap-2">
-            <span className="text-gray-800 ml-2">
-              {t("newFormHeader.quiz")}
-            </span>
-          </MenuItem>
-        </Select>
-      </FormControl>
       <p>
         <label htmlFor="">{t("newFormHeader.titleLabel")}</label>
         <input

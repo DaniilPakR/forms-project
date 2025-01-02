@@ -16,6 +16,7 @@ import {
 } from "../context/GlobalProvider";
 import { uploadImageToCloudinary } from "../utils/cloudinaryFunctions";
 import { convertTags } from "../utils/convertTags";
+import { toast } from "react-toastify";
 
 export default function FormCreationPage() {
   const navigate = useNavigate();
@@ -26,7 +27,6 @@ export default function FormCreationPage() {
     currentUserId = currentUser["id"];
   }
 
-  const [formType, setFormType] = useState("form");
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formDescriptionMarkdown, setFormDescriptionMarkdown] = useState([]);
@@ -35,6 +35,7 @@ export default function FormCreationPage() {
   const [formTags, setFormTags] = useState([]);
   const [formImage, setFormImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [isPublic, setIsPublic] = useState(true);
   const [formQuestions, setFormQuestions] = useState([
     {
@@ -75,9 +76,6 @@ export default function FormCreationPage() {
         is_required: false,
         position: prevFormQuestions.length + 1,
         show_in_results: true,
-        is_with_score: false,
-        score: 0,
-        correct_answer: "",
         options: [
           {
             option_text: "Option 1",
@@ -94,7 +92,7 @@ export default function FormCreationPage() {
     const file = e.target.files[0];
     if (file) {
       setFormImage(file);
-      setImagePreview(URL.createObjectURL(file));
+      setImagePreview(window.URL.createObjectURL(file));
     }
   };
 
@@ -127,21 +125,6 @@ export default function FormCreationPage() {
               ...question,
               options: question.options.map((option, index) =>
                 index === idx ? { ...option, option_text: value } : option
-              ),
-            }
-          : question
-      )
-    );
-  };
-
-  const handleUpdateCorrectOption = (id, idx, value) => {
-    setFormQuestions((prevFormQuestions) =>
-      prevFormQuestions.map((question) =>
-        question.question_id === id
-          ? {
-              ...question,
-              options: question.options.map((option, index) =>
-                index === idx ? { ...option, is_correct: value } : option
               ),
             }
           : question
@@ -213,7 +196,6 @@ export default function FormCreationPage() {
         pageId,
         tags,
         usersWithAccess,
-        formType,
       });
       try {
         if (!formImage) {
@@ -224,7 +206,8 @@ export default function FormCreationPage() {
       } catch (e) {
         console.error(e.message);
       }
-      alert("Form uploaded successfully!");
+      toast.success("Form uploaded successfully!");
+      return navigate("/");
     } catch (error) {
       alert("Failed to upload the form. Please try again.");
     }
@@ -248,8 +231,6 @@ export default function FormCreationPage() {
       }));
     });
   };
-
-  console.log(formQuestions);
 
   return (
     <div className="flex flex-col items-center mt-16">
@@ -280,8 +261,6 @@ export default function FormCreationPage() {
             setIsPublic={setIsPublic}
             usersWithAccess={users}
             setUsersWithAccess={setUsers}
-            formType={formType}
-            setFormType={setFormType}
           />
           <h1 className="text-2xl lg:text-3xl font-semibold">
             {t("form.questions")}
@@ -299,8 +278,6 @@ export default function FormCreationPage() {
               onDeleteOption={handleDeleteOption}
               onDuplicateQuestion={handleDuplicateQuestion}
               setFormQuestions={setFormQuestions}
-              formType={formType}
-              onCorrectChange={handleUpdateCorrectOption}
             />
           </DndContext>
           <div className="w-full">
@@ -318,7 +295,7 @@ export default function FormCreationPage() {
             </Button>
           </div>
           <div className="flex flex-row justify-between items-center">
-            <Button variant="outlined" startIcon={<DeleteIcon />}>
+            <Button onClick={() => navigate("/")} variant="outlined" startIcon={<DeleteIcon />}>
               {t("form.cancelButton")}
             </Button>
             <Button
@@ -349,7 +326,6 @@ export async function action(formData) {
     pageId,
     tags,
     usersWithAccess,
-    formType,
   } = formData;
 
   const { URL } = externalContextReference;
@@ -365,16 +341,12 @@ export async function action(formData) {
     topic: formTopic,
     imageUrl: formImage ? "true" : "false",
     isPublic,
-    formType,
     creatorId: currentUserId,
     questions: formQuestions.map((question, index) => ({
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
       showInResults: question.show_in_results,
-      is_with_score: question.is_with_score,
-      score: question.score,
-      correct_answer: question.correct_answer,
       options: question.options.map((option) => ({
         optionText: option.option_text,
         optionId: option.option_id,
@@ -406,7 +378,7 @@ export async function action(formData) {
 
     const result = await response.json();
     console.log("Form created successfully:", result);
-    return redirect(`/eform/${pageId}`);
+    return redirect(`/`);
   } catch (error) {
     console.error("Error uploading form:", error.message);
     throw error;

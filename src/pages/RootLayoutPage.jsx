@@ -1,5 +1,7 @@
 import { Outlet } from "react-router-dom"
 import { useContext } from "react"
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 import { GlobalContext } from "../context/GlobalProvider"
 import Navbar from "../components/Navbar"
@@ -15,6 +17,7 @@ export default function RootLayoutPage() {
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <Outlet />
     </>
   )

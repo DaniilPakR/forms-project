@@ -3,6 +3,7 @@ export default function FillFormQuestions({
   answers,
   onSetAnswers,
   currentUser,
+  t
 }) {
   if (!questions || questions.length === 0) {
     return <p className="text-center text-text-muted">No questions available</p>;
@@ -27,7 +28,7 @@ export default function FillFormQuestions({
                   onChange={(e) =>
                     onSetAnswers(question.question_id, "short-answer", e.target.value)
                   }
-                  placeholder="Your Answer"
+                  placeholder={t("fillFormQuestions.yourAnswer")}
                   className="w-full p-3 border rounded-md bg-background dark:bg-background-dark text-text dark:text-text-dark border-border focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -47,7 +48,7 @@ export default function FillFormQuestions({
                   onChange={(e) =>
                     onSetAnswers(question.question_id, "paragraph", e.target.value)
                   }
-                  placeholder="Your Answer"
+                  placeholder={t("fillFormQuestions.yourAnswer")}
                   className="w-full p-3 border rounded-md bg-background dark:bg-background-dark text-text dark:text-text-dark border-border focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -121,7 +122,7 @@ export default function FillFormQuestions({
                   className="w-full p-3 border rounded-md bg-background dark:bg-background-dark text-text dark:text-text-dark border-border focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="" disabled>
-                    Select an option
+                    {t("fillFormQuestions.selectAnOption")}
                   </option>
                   {question.options.map((option) => (
                     <option key={option.option_id} value={option.option_text}>

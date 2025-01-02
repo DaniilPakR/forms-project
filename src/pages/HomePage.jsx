@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 import CreatedForms from "../components/CreatedForms";
 import FilledForms from "../components/FilledForms";
@@ -17,27 +17,7 @@ export default function HomePage() {
     const id = uuidv4();
     console.log(id);
     navigate(`/cform/${id}`);
-  }
-
-  useEffect(() => {
-    async function fetchTables() {
-      try {
-        const response = await fetch(`${URL}/tables`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch form");
-        }
-
-        const data = await response.json();
-        console.log(data);
-      } catch (err) {
-        console.error("Error fetching form:", err.message);
-      }
-    }
-
-    fetchTables();
-  }, []);
-
-  console.log(currentUser)
+  };
 
   return (
     <div className="flex flex-col mt-16 bg-background dark:bg-background-dark">

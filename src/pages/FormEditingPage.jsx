@@ -25,14 +25,13 @@ export default function FormCreationPage() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState(null);
   const { id: pageId } = useParams();
-  const { currentUser, URL } = useContext(GlobalContext);
+  const { currentUser, URL, t } = useContext(GlobalContext);
   let currentUserId;
   if (currentUser) {
     currentUserId = currentUser["id"];
   }
 
   const [formId, setFormId] = useState();
-  const [formType, setFormType] = useState("form");
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formDescriptionMarkdown, setFormDescriptionMarkdown] =
@@ -43,6 +42,7 @@ export default function FormCreationPage() {
   const [formImage, setFormImage] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [isPublic, setIsPublic] = useState(true);
+  const [imageUrl, setImageUrl] = useState("");
   const [formQuestions, setFormQuestions] = useState([
     {
       question_text: "Untitled Question",
@@ -51,9 +51,6 @@ export default function FormCreationPage() {
       is_required: false,
       position: 1,
       show_in_results: true,
-      is_with_score: false,
-      score: 0,
-      correct_answer: "",
       options: [
         {
           option_text: "Option 1",
@@ -104,7 +101,6 @@ export default function FormCreationPage() {
         setFormImage(data["image_url"]);
         setIsPublic(data["is_public"]);
         setFormQuestions(data.questions);
-        setFormType(data.form_type);
         setFormId(data.form_id);
         setFormTags(convertTagsBack(data.tags));
         setUsers(data.users_with_access);
@@ -146,9 +142,6 @@ export default function FormCreationPage() {
         is_required: false,
         position: prevFormQuestions.length + 1,
         show_in_results: true,
-        is_with_score: false,
-        score: 0,
-        correct_answer: "",
         options: [
           {
             option_text: "Option 1",
@@ -212,21 +205,6 @@ export default function FormCreationPage() {
     );
   };
 
-  const handleUpdateCorrectOption = (id, idx, value) => {
-    setFormQuestions((prevFormQuestions) =>
-      prevFormQuestions.map((question) =>
-        question.question_id === id
-          ? {
-              ...question,
-              options: question.options.map((option, index) =>
-                index === idx ? { ...option, is_correct: value } : option
-              ),
-            }
-          : question
-      )
-    );
-  };
-
   const handleDuplicateQuestion = (questionId) => {
     setFormQuestions((prevFormQuestions) => {
       const questionToDuplicate = prevFormQuestions.find(
@@ -277,7 +255,6 @@ export default function FormCreationPage() {
         formTitleMarkdown,
         tags,
         usersWithAccess,
-        formType,
       });
       try {
         if (!formImage) {
@@ -290,7 +267,8 @@ export default function FormCreationPage() {
       }
       alert("Form uploaded successfully!");
     } catch (error) {
-      alert("Failed to upload the form. Please try again.");
+      console.error("Failed to upload form:", JSON.stringify(error.message));
+      alert("Failed to upload form.");
     }
   };
 
@@ -317,8 +295,6 @@ export default function FormCreationPage() {
     navigate("/");
   }
 
-  console.log("STATE", formQuestions);
-
   return (
     <div className="flex flex-col items-center mt-16">
       {currentUser && (
@@ -332,7 +308,7 @@ export default function FormCreationPage() {
                   : "bg-gray-200 dark:bg-gray-700"
               }`}
             >
-              Form
+              {t("formEditingPage.form")}
             </button>
             <button
               onClick={() => setContent("responses")}
@@ -342,15 +318,15 @@ export default function FormCreationPage() {
                   : "bg-gray-200 dark:bg-gray-700"
               }`}
             >
-              Responses
+              {t("formEditingPage.responses")}
             </button>
           </div>
 
           {/* Shared Header */}
           <h1 className="text-center text-xl border-b border-black pb-2">
-            {content === "form" ? "Form" : "Responses"}
+            {content === "form" ? t("formEditingPage.form") : t("formEditingPage.responses")}
           </h1>
-          <h1 className="text-2xl lg:text-3xl font-semibold">Header</h1>
+          <h1 className="text-2xl lg:text-3xl font-semibold">{t("formEditingPage.header")}</h1>
 
           {content === "form" ? (
             <>
@@ -373,10 +349,8 @@ export default function FormCreationPage() {
                 setIsPublic={setIsPublic}
                 usersWithAccess={users}
                 setUsersWithAccess={setUsers}
-                formType={formType}
-                setFormType={setFormType}
               />
-              <h1 className="text-2xl lg:text-3xl font-semibold">Questions</h1>
+              <h1 className="text-2xl lg:text-3xl font-semibold">{t("formEditingPage.questions")}</h1>
               <DndContext
                 onDragEnd={handleDragEnd}
                 collisionDetection={closestCorners}
@@ -389,8 +363,6 @@ export default function FormCreationPage() {
                   onDeleteOption={handleDeleteOption}
                   onDuplicateQuestion={handleDuplicateQuestion}
                   setFormQuestions={setFormQuestions}
-                  onCorrectChange={handleUpdateCorrectOption}
-                  formType={formType}
                 />
               </DndContext>
               <div className="w-full">
@@ -413,7 +385,7 @@ export default function FormCreationPage() {
           )}
 
           <div className="flex flex-row justify-between items-center mt-4">
-            <Button variant="outlined">Cancel</Button>
+            <Button variant="outlined">{t("formEditingPage.cancel")}</Button>
             <div className="flex flex-row items-center gap-2">
               <Button
                 variant="outlined"
@@ -423,14 +395,15 @@ export default function FormCreationPage() {
                   window.location.href = "/";
                 }}
               >
-                Delete
+                {t("formEditingPage.delete")}
               </Button>
               <Button
+                type="button"
                 variant="contained"
                 endIcon={<SendIcon />}
                 onClick={handleUploadForm}
               >
-                Update
+                {t("formEditingPage.update")}
               </Button>
             </div>
           </div>
@@ -455,7 +428,6 @@ export async function action(formData) {
     formTitleMarkdown,
     tags,
     usersWithAccess,
-    formType,
   } = formData;
 
   if (!isPublic && usersWithAccess.length === 0) {
@@ -471,16 +443,12 @@ export async function action(formData) {
     imageUrl: false,
     isPublic,
     creatorId: currentUserId,
-    form_type: formType,
     questions: formQuestions.map((question, index) => ({
       questionId: question.question_id,
       questionTitle: question.question_text,
       questionType: question.question_type,
       required: question.is_required,
       showInResults: question.show_in_results,
-      is_with_score: question.is_with_score,
-      score: question.score,
-      correct_answer: question.correct_answer,
       options: question.options.map((option) => ({
         optionId: option.option_id,
         optionText: option.option_text,
@@ -492,10 +460,8 @@ export async function action(formData) {
     accessControlUsers: usersWithAccess,
   };
 
-  console.log(updatedForm)
-
   try {
-    const response = await fetch(`${URL}/forms/edit/${formId}`, {
+    const response = await fetch(`http://localhost:5000/forms/edits/${formId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -512,7 +478,7 @@ export async function action(formData) {
     console.log("Form updated successfully:", result);
     return result;
   } catch (error) {
-    console.error("Error updating form:", error.message);
+    console.error("Error updating form:", JSON.stringify(error.message));
     throw error;
   }
 }

@@ -5,7 +5,7 @@ import QuestionStats from "./QuestionStats";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function Responses({ form_id }) {
-  const { URL } = useContext(GlobalContext);
+  const { URL, t } = useContext(GlobalContext);
   const [responses, setResponses] = useState(null);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function Responses({ form_id }) {
   }, [form_id]); // Include form_id as a dependency
 
   if (!responses) {
-    return <p>Loading responses...</p>; // Add a loading message or spinner
+    return <p>{t("loading.loading")}</p>; // Add a loading message or spinner
   }
 
   return (

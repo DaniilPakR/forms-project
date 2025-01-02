@@ -117,10 +117,82 @@ const resources = {
         duplicateQuestion: "Duplicate question",
         required: "Required",
         delete: "Delete",
-        untitledQuestion: "Untitled Question"
+        untitledQuestion: "Untitled Question",
       },
       newFormOptions: {
-        correctAnswerOption: "Select the correct answer option"
+        correctAnswerOption: "Select the correct answer option",
+      },
+      comments: {
+        leaveComment: "Leave Comment",
+        yourComment: "Your Comment...",
+        comments: "Comments:",
+        noCommentsFound: "No comments found.",
+        delete: "Delete",
+      },
+      fillForm: {
+        title: "Title",
+        description: "Description",
+        email: "Email (filled automatically)",
+        date: "Date (filled automatically)",
+        submit: "Submit",
+        editForm: "Edit Form",
+      },
+      fillFormQuestions: {
+        yourAnswer: "Your Answer",
+        selectAnOption: "Select an option",
+      },
+      latestTemplates: {
+        latestTemplates: "Latest Templates",
+        noTemplatesFound: "No templates found.",
+        fillForm: "Fill Form",
+      },
+      newFormOption: {
+        shortPlaceholder: "Short answer text",
+        paragraphPlaceholder: "Paragraph",
+        addOption: "Add Option",
+      },
+      popularForms: {
+        popularTemplates: "Popular Templates",
+        noTemplatesFound: "No templates found.",
+        fillForm: "Fill Form",
+      },
+      loading: {
+        loading: "Loading...",
+      },
+      sortableNewFormOption: {
+        optionTextPlaceholder: "Option text",
+        removeTooltip: "Remove",
+      },
+      viewFilledForm: {
+        goBack: "Go back",
+        readForms: "Read forms",
+        dateSubmitted: "Date Submitted",
+        viewInReadMode: "View in read mode",
+      },
+      notifications: {
+        loggedIn: "Logged in successfully.",
+        loggedOut: "Logged out successfully.",
+        signUp: "Signed up successfully.",
+        errorLoggingIn: "Error logging in.",
+        errorSigningUp: "Error signing up.",
+        wrongPasswordOrEmail: "Wrong password or email.",
+        userIsBlocked: "User is blocked.",
+      },
+      questionStats: {
+        formStatistics: "Form Statistics",
+        questionTypeDistribution: "Question Type Distribution",
+        questionCount: "Question Count",
+        questionTypes: "Question Types",
+        topResponses: "Top Responses",
+      },
+      formEditingPage: {
+        form: "Form",
+        responses: "Responses",
+        header: "Header",
+        questions: "Questions",
+        cancel: "Cancel",
+        delete: "Delete",
+        update: "Update",
       }
     },
   },
@@ -236,10 +308,82 @@ const resources = {
         duplicateQuestion: "Дублировать вопрос",
         required: "Обязательный",
         delete: "Удалить",
-        untitledQuestion: "Безымянный вопрос"
+        untitledQuestion: "Безымянный вопрос",
       },
       newFormOptions: {
-        correctAnswerOption: "Выберите правильный вариант ответа"
+        correctAnswerOption: "Выберите правильный вариант ответа",
+      },
+      comments: {
+        leaveComment: "Оставить комментарий",
+        yourComment: "Ваш комментарий...",
+        comments: "Комментарии:",
+        noCommentsFound: "Комментарии не найдены.",
+        delete: "Удалить",
+      },
+      fillForm: {
+        title: "Название",
+        description: "Описание",
+        email: "Электронная почта (заполняется автоматически)",
+        date: "Дата (заполняется автоматически)",
+        submit: "Отправить",
+        editForm: "Редактировать форму",
+      },
+      fillFormQuestions: {
+        yourAnswer: "Ваш ответ",
+        selectAnOption: "Выберите вариант",
+      },
+      latestTemplates: {
+        latestTemplates: "Последние Шаблоны",
+        noTemplatesFound: "Шаблоны не найдены.",
+        fillForm: "Заполнить Форму",
+      },
+      newFormOption: {
+        shortPlaceholder: "Короткий ответ",
+        paragraphPlaceholder: "Абзац",
+        addOption: "Добавить ответ",
+      },
+      popularForms: {
+        popularTemplates: "Популярные Шаблоны",
+        noTemplatesFound: "Шаблоны не найдены.",
+        fillForm: "Заполнить Форму",
+      },
+      loading: {
+        loading: "Загрузка...",
+      },
+      sortableNewFormOption: {
+        optionTextPlaceholder: "Текст ответа",
+        removeTooltip: "Удалить",
+      },
+      viewFilledForm: {
+        goBack: "Назад",
+        readForms: "Читать формы",
+        dateSubmitted: "Дата отправки",
+        viewInReadMode: "Просмотр в режиме чтения",
+      },
+      notifications: {
+        loggedIn: "Успешный вход.",
+        loggedOut: "Успешный выход.",
+        signUp: "Успешная регистрация.",
+        errorLoggingIn: "Ошибка входа.",
+        errorSigningUp: "Ошибка регистрации.",
+        wrongPasswordOrEmail: "Неверный пароль или электронная почта.",
+        userIsBlocked: "Пользователь заблокирован.",
+      },
+      questionStats: {
+        formStatistics: "Статистика Формы",
+        questionTypeDistribution: "Распределение Типов Вопросов",
+        questionCount: "Количество Вопросов",
+        questionTypes: "Типы Вопросов",
+        topResponses: "Лучшие Ответы",
+      },
+      formEditingPage: {
+        form: "Форма",
+        responses: "Ответы",
+        header: "Заголовок",
+        questions: "Вопросы",
+        cancel: "Отмена",
+        delete: "Удалить",
+        update: "Обновить",
       }
     },
   },

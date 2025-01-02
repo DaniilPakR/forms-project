@@ -13,8 +13,6 @@ export default function NewFormQuestions({
   onDeleteOption,
   onDuplicateQuestion,
   setFormQuestions,
-  formType,
-  onCorrectChange,
 }) {
   return (
     <>
@@ -31,8 +29,6 @@ export default function NewFormQuestions({
               index={index}
               key={index}
               setFormQuestions={setFormQuestions}
-              formType={formType}
-              onCorrectChange={onCorrectChange}
             />
           );
         })}

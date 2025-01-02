@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function LatestTemplates() {
-  const { URL } = useContext(GlobalContext);
+  const { URL, t } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,12 +26,12 @@ export default function LatestTemplates() {
       }
     }
     fetchLatestForms();
-  }, []);
+  }, [URL]);
 
   return (
     <div className="bg-background dark:bg-background-dark p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-text dark:text-text-dark mb-4">
-        Latest Templates
+        {t("latestTemplates.latestTemplates")}
       </h2>
 
       {isLoading ? (
@@ -52,14 +52,14 @@ export default function LatestTemplates() {
                 to={`/fform/${result.page_id}`}
                 className="text-primary dark:text-primary-light font-medium hover:underline"
               >
-                Fill Form
+                {t("latestTemplates.fillForm")}
               </Link>
             </div>
           ))}
         </div>
       ) : (
         <div className="text-muted dark:text-dark-muted">
-          No templates found.
+          {t("latestTemplates.noTemplatesFound")}
         </div>
       )}
     </div>

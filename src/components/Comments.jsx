@@ -4,7 +4,7 @@ import { GlobalContext } from "../context/GlobalProvider";
 import { formatDate } from "../utils/formateDate";
 
 export default function Comments({ form_id }) {
-  const { currentUser, URL } = useContext(GlobalContext);
+  const { currentUser, URL, t } = useContext(GlobalContext);
   const user_id = currentUser?.id || null;
   const user_name = currentUser?.name || null;
   const [commentInput, setCommentInput] = useState("");
@@ -26,7 +26,7 @@ export default function Comments({ form_id }) {
     const interval = setInterval(fetchComments, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [URL, form_id]);
 
   const handleLeaveComment = async () => {
     if (!user_id) {return}
@@ -46,7 +46,6 @@ export default function Comments({ form_id }) {
       if (!response.ok) {
         throw new Error("Failed to leave comment.");
       }
-      const result = response.json();
     } catch (err) {
       console.error("Error: ", err.message);
     }
@@ -66,8 +65,6 @@ export default function Comments({ form_id }) {
         throw new Error("Failed to delete comment.");
       }
   
-      const result = await response.json();
-  
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.comment_id !== comment_id)
       );
@@ -80,11 +77,11 @@ export default function Comments({ form_id }) {
     <div className="bg-background dark:bg-background-dark text-text dark:text-text-dark p-6 rounded-lg shadow-md">
       {currentUser && <div className="mb-6">
         <p className="text-lg font-semibold mb-2 text-primary dark:text-primary-light">
-          Leave Comment
+          {t("comments.leaveComment")}
         </p>
         <input
           type="text"
-          placeholder="Your Comment..."
+          placeholder={t("comments.yourComment")}
           value={commentInput}
           onChange={(e) => setCommentInput(e.target.value)}
           className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light dark:border-gray-600 dark:bg-background-dark dark:focus:ring-primary-hover"
@@ -94,13 +91,13 @@ export default function Comments({ form_id }) {
           onClick={handleLeaveComment}
           className="mt-3 px-4 py-2 bg-button hover:bg-button-hover text-button-text rounded-md shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-light dark:bg-button-dark dark:hover:bg-primary-dark"
         >
-          Leave Comment
+          {t("comments.leaveComment")}
         </button>
       </div>}
 
       <div>
         <h3 className="text-xl font-semibold mb-4 text-secondary dark:text-secondary-light">
-          Comments:
+          {t("comments.comments")}
         </h3>
         {comments.length > 0 ? (
           comments.map((comment) => (
@@ -125,14 +122,14 @@ export default function Comments({ form_id }) {
                   onClick={() => handleDeleteComment(comment.comment_id)}
                   className="mt-2 px-3 py-1 text-sm bg-secondary hover:bg-secondary-hover text-white rounded shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary-light dark:bg-secondary-dark dark:hover:bg-secondary-hover"
                 >
-                  Delete
+                  {t("comments.delete")}
                 </button>
               )}
             </div>
           ))
         ) : (
           <p className="text-text-muted dark:text-text-muted">
-            No comments found.
+            {t("comments.noCommentsFound")}
           </p>
         )}
       </div>

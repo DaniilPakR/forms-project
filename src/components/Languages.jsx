@@ -49,7 +49,7 @@ export default function Languages({ i18n }) {
         aria-pressed={language === "ru"}
         aria-label="Switch to Russian"
       >
-        RU
+        РУ
       </button>
     </div>
   );

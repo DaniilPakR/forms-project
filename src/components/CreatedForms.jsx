@@ -11,6 +11,7 @@ export default function CreatedForms({ createForm }) {
   const { currentUser, t, URL } = useContext(GlobalContext);
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -35,7 +36,7 @@ export default function CreatedForms({ createForm }) {
     };
 
     fetchForms();
-  }, [currentUser?.id]);
+  }, [currentUser?.id, refresh, URL]);
 
   if (loading)
     return (
@@ -84,7 +85,10 @@ export default function CreatedForms({ createForm }) {
               <div className="mt-4 flex justify-end">
                 <IconButton
                   className="text-red-500 hover:text-red-700"
-                  onClick={() => deleteForm(form.form_id)}
+                  onClick={() => {
+                    deleteForm(form.form_id);
+                    setRefresh((prev) => prev + 1);
+                  }}
                 >
                   <DeleteIcon />
                 </IconButton>

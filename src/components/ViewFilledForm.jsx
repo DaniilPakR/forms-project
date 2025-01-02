@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 
 import ViewFormQuestions from "./ViewFormQuestions";
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function ViewFilledForm({ formData, answers, setAnswers }) {
+
+  const { t } = useContext(GlobalContext);
 
   console.log("Yo ", formData)
 
@@ -29,7 +33,7 @@ export default function ViewFilledForm({ formData, answers, setAnswers }) {
         to={`/eform/${formData.page_id}`}
         className="mt-6 text-primary hover:text-primary-hover p-2 self-center"
         >
-        Go back
+        {t("viewFilledForm.goBack")}
       </Link>
     </div>
   );

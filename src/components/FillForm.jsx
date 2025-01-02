@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 
 import FillFormQuestions from "./FillFormQuestions";
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function FillForm({
   formData,
@@ -9,7 +11,11 @@ export default function FillForm({
   onSetAnswers,
   currentUser,
   onSubmit,
+  form_id,
 }) {
+
+  const { t } = useContext(GlobalContext);
+
   return (
     <div className="flex flex-col items-center mt-8">
       <div className="w-4/5 lg:w-1/2 bg-background dark:bg-background-dark text-text dark:text-text-dark border border-border-dark shadow-md rounded-md p-6 space-y-5">
@@ -18,6 +24,7 @@ export default function FillForm({
         >
           {formData.title}
         </h1>
+        {formData.image_url && (<img alt="" src={`https://res.cloudinary.com/dmi1xxumf/image/upload/${form_id}`} />)}
         <p className="text-lg lg:text-xl text-text-muted">
           {formData.description}
         </p>
@@ -26,7 +33,7 @@ export default function FillForm({
             <label
               className="text-gray-500 font-normal"
             >
-              Email (filled automatically)
+              {t("fillForm.email")}
             </label>
             <input
               disabled
@@ -39,7 +46,7 @@ export default function FillForm({
             <label
               className="text-gray-500 font-medium"
             >
-              Date (filled automatically)
+              {t("fillForm.date")}
             </label>
             <input
               disabled
@@ -55,6 +62,7 @@ export default function FillForm({
             onSetAnswers={onSetAnswers}
             currentUser={currentUser}
             read={false}
+            t={t}
           />
         </div>
       </div>
@@ -63,7 +71,7 @@ export default function FillForm({
           to={`/eform/${formData.page_id}`}
           className="mt-6 text-primary hover:text-primary-hover"
         >
-          Edit Form
+          {t("fillForm.editForm")}
         </Link>
       )}
       {currentUser && (
@@ -71,7 +79,7 @@ export default function FillForm({
           className="mt-6 bg-primary hover:bg-primary-hover text-button-text font-medium rounded-md w-3/4 lg:w-1/3 py-3"
           onClick={(e) => onSubmit(e)}
         >
-          Submit
+          {t("fillForm.submit")}
         </button>
       )}
     </div>

@@ -50,7 +50,7 @@ export default function FormsSearch({t}) {
     }
 
     search();
-  }, [debouncedSearchText]);
+  }, [debouncedSearchText, URL]);
 
   useEffect(() => {
     function handleClickOutside(event) {

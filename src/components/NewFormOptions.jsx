@@ -14,10 +14,9 @@ export default function NewFormOptions({
   onUpdateOptions,
   onDeleteOption,
   setFormQuestions,
-  onCorrectChange,
 }) {
   const { t } = useContext(GlobalContext);
-  const { question_id, options, question_type, is_with_score } = question;
+  const { question_id, options, question_type } = question;
 
   const handleDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id) return;
@@ -25,10 +24,10 @@ export default function NewFormOptions({
     setFormQuestions((prevFormQuestions) => {
       return prevFormQuestions.map((question) => {
         const activeOptionIndex = question.options.findIndex(
-          (option) => option.position === active.id
+          (option) => option.option_id === active.id
         );
         const overOptionIndex = question.options.findIndex(
-          (option) => option.position === over.id
+          (option) => option.option_id === over.id
         );
   
         if (activeOptionIndex !== -1 && overOptionIndex !== -1) {
@@ -52,11 +51,8 @@ export default function NewFormOptions({
     });
   };
 
-  console.log("D",question)
-
   return (
     <div className="flex flex-col">
-      {is_with_score && <p className="text-xs text-gray-500">{t("newFormOptions.correctAnswerOption")}</p>}
       <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
         <NewFormOption
           question={question}
@@ -64,7 +60,6 @@ export default function NewFormOptions({
           onUpdateOptions={onUpdateOptions}
           onDeleteOption={onDeleteOption}
           setFormQuestions={setFormQuestions}
-          onCorrectChange={onCorrectChange}
         />
       </DndContext>
       {(question_type === "multiple-choice" ||
@@ -79,6 +74,7 @@ export default function NewFormOptions({
               {
                 option_text: `Option ${options.length + 1}`,
                 option_id: uuidv4(),
+                is_correct: false,
                 position: options.length + 1
               },
             ])
@@ -91,7 +87,7 @@ export default function NewFormOptions({
           startIcon={<AddIcon />}
           className="self-start"
         >
-          Add Option
+          {t("newFormOption.addOption")}
         </Button>
       )}
     </div>

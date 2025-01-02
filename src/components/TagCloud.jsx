@@ -48,8 +48,8 @@ export default function TagCloud() {
     setActiveTag(null);
   };
 
-  const handleTagClick = (tagId) => {
-    setActiveTag(tagId);
+  const handleTagClick = (tagId, tagText) => {
+    setActiveTag(tagText);
     fetchForms(tagId);
   };
 
@@ -87,7 +87,7 @@ export default function TagCloud() {
               {tags.map((tag) => (
                 <li key={tag.id}>
                   <button
-                    onClick={() => handleTagClick(tag.tag_id)}
+                    onClick={() => handleTagClick(tag.tag_id, tag.tag_text)}
                     className={`px-3 py-1 rounded ${
                       tag.id === activeTag
                         ? "bg-primary text-button-text dark:bg-primary-dark"
@@ -102,7 +102,7 @@ export default function TagCloud() {
             {activeTag && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold text-text dark:text-text-dark">
-                  {t("tagCloud.formsFor")} {activeTag}
+                  {t("tagCloud.formsFor")} #{activeTag}
                 </h3>
                 <ul className="space-y-2 mt-2">
                   {forms.map((form) => (

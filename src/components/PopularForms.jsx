@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "../context/GlobalProvider";
 
 export default function PopularForms() {
-  const { URL } = useContext(GlobalContext);
+  const { URL, t } = useContext(GlobalContext);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,7 +31,7 @@ export default function PopularForms() {
   return (
     <div className="bg-background dark:bg-background-dark p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-text dark:text-text-dark mb-4">
-        Popular Templates
+        {t("popularForms.popularTemplates")}
       </h2>
 
       {isLoading ? (
@@ -52,14 +52,14 @@ export default function PopularForms() {
                 to={`/fform/${result.page_id}`}
                 className="text-primary dark:text-primary-light font-medium hover:underline"
               >
-                Fill Form
+                {t("popularForms.fillForm")}
               </Link>
             </div>
           ))}
         </div>
       ) : (
         <div className="text-muted dark:text-dark-muted">
-          No templates found.
+          {t("popularForms.noTemplatesFound")}
         </div>
       )}
     </div>

@@ -124,8 +124,6 @@ export default function FillFormPage() {
     return <p>No form data available.</p>;
   }
 
-  console.log("Suc",formData)
-
   return (
     <form className="mt-16">
       <FillForm
@@ -135,6 +133,7 @@ export default function FillFormPage() {
         setAnswers={setAnswers}
         formData={formData}
         onSetAnswers={handleSetAnswers}
+        form_id={form_id}
       />
       {formData && (
         <LikeButton user_id={currentUser?.id} form_id={formData.form_id} />

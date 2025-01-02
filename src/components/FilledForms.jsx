@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { GlobalContext } from "../context/GlobalProvider";
+import { toast } from "react-toastify";
 
 export default function FilledForms() {
   const { currentUser, t, URL } = useContext(GlobalContext);
   const [filledForms, setFilledForms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchFilledForms() {
@@ -25,14 +25,14 @@ export default function FilledForms() {
         setFilledForms(result.filledForms || []);
         console.log(result);
       } catch (err) {
-        setError(err.message);
+        toast.error(err.message);
       } finally {
         setLoading(false);
       }
     }
 
     fetchFilledForms();
-  }, [currentUser?.id]);
+  }, [currentUser?.id, URL]);
 
   if (loading) {
     return <div className="text-center mt-8">Loading...</div>;

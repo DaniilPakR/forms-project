@@ -28,7 +28,7 @@ export default function LikeButton({ user_id, form_id }) {
       }
     }
     fetchLike();
-  }, []);
+  }, [URL]);
 
   const handleLike = async () => {
     try {

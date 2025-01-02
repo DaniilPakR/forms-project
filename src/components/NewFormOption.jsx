@@ -2,8 +2,10 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useContext } from "react";
 
 import SortableNewFormOption from "./SortableNewFormOption";
+import { GlobalContext } from "../context/GlobalProvider";
 
 export default function NewFormOption({
   question,
@@ -11,10 +13,9 @@ export default function NewFormOption({
   onUpdateQuestion,
   onUpdateOptions,
   onDeleteOption,
-  setFormQuestions,
-  onCorrectChange,
 }) {
-  const { question_id, options, question_type, is_with_score } = question;
+  const { t } = useContext(GlobalContext);
+  const { question_id, options, question_type } = question;
 
   let content = null;
 
@@ -22,7 +23,7 @@ export default function NewFormOption({
     content = (
       <input
         type="text"
-        placeholder="Short answer text"
+        placeholder={t("newFormOption.shortPlaceholder")}
         disabled
         className="cursor-default bg-gray-200 border-b border-b-black"
       />
@@ -39,8 +40,6 @@ export default function NewFormOption({
           question_id={question_id}
           onUpdateOptions={onUpdateOptions}
           onDeleteOption={onDeleteOption}
-          onCorrectChange={onCorrectChange}
-          is_with_score={is_with_score}
         />
       );
     });
@@ -56,8 +55,6 @@ export default function NewFormOption({
         question_id={question_id}
         onUpdateOptions={onUpdateOptions}
         onDeleteOption={onDeleteOption}
-        onCorrectChange={onCorrectChange}
-        is_with_score={is_with_score}
       />
       );
     });
@@ -67,7 +64,7 @@ export default function NewFormOption({
     content = (
       <textarea
         type="text"
-        placeholder="Paragraph"
+        placeholder={t("newFormOption.paragraphPlaceholder")}
         disabled
         className="cursor-default bg-gray-200 border-b border-b-black"
       />
@@ -84,8 +81,6 @@ export default function NewFormOption({
         question_id={question_id}
         onUpdateOptions={onUpdateOptions}
         onDeleteOption={onDeleteOption}
-        onCorrectChange={onCorrectChange}
-        is_with_score={is_with_score}
       />
       );
     });

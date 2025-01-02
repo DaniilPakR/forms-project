@@ -33,8 +33,6 @@ export default function NewFormQuestion({
   onDeleteOption,
   onDuplicateQuestion,
   setFormQuestions,
-  formType,
-  onCorrectChange,
 }) {
   const { position } = question;
 
@@ -54,8 +52,6 @@ export default function NewFormQuestion({
       : undefined,
     pointerEvents: "auto",
   };
-
-  console.log(formType)
 
   return (
     <div
@@ -153,71 +149,12 @@ export default function NewFormQuestion({
           )
         }
       />
-      {formType === "quiz" && (
-        <div className="flex flex-row items-center">
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={question.is_with_score}
-                  onChange={() =>
-                    onUpdateQuestion(
-                      question.question_id,
-                      "is_with_score",
-                      !question.is_with_score
-                    )
-                  }
-                  color="primary"
-                />
-              }
-              label={t("newFormQuestion.withScore")}
-            />
-          </FormGroup>
-          {question.is_with_score && (
-            <div className="flex flex-row items-center gap-2">
-              <label className="block text-sm font-medium text-gray-400">
-              {t("newFormQuestion.scoreLabel")}
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={question.score || 0}
-                className="bg-background dark:bg-background-dark border-gray-400 border rounded-md text-text dark:text-text-dark p-2"
-                onChange={(e) =>
-                  onUpdateQuestion(
-                    question.question_id,
-                    "score",
-                    Number(e.target.value)
-                  )
-                }
-              />
-            </div>
-          )}
-          {(question.is_with_score && question.question_type === "short-answer") && (
-              <input
-                type="text"
-                placeholder={t("newFormQuestion.correctAnswerPlaceholder")}
-                value={question.correct_answer || ""}
-                className="ml-1 bg-background dark:bg-background-dark border-gray-400 border rounded-md text-text dark:text-text-dark p-2"
-                onChange={(e) =>
-                  onUpdateQuestion(
-                    question.question_id,
-                    "correct_answer",
-                    e.target.value
-                  )
-                }
-              />
-            )}
-        </div>
-      )}
-
       <NewFormOptions
         onDeleteOption={onDeleteOption}
         onUpdateOptions={onUpdateOptions}
         question={question}
         onUpdateQuestion={onUpdateQuestion}
         setFormQuestions={setFormQuestions}
-        onCorrectChange={onCorrectChange}
       />
       <div className="flex flex-row justify-end items-center">
         <Tooltip placement="top" title="Duplicate question">

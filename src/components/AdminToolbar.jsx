@@ -125,7 +125,7 @@ export default function AdminToolbar() {
           {t("userManagement.removeAdmin")}
         </button>
       </div>
-      <table className="hidden w-full table-auto border-collapse border border-gray-300 text-sm lg:table">
+      <table className="hidden w-full table-auto border-collapse border border-gray-300 text-sm lg:table rounded-lg">
         <thead>
           <tr>
             <th className="border border-gray-300 p-2">

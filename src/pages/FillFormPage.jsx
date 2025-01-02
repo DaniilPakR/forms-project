@@ -17,9 +17,9 @@ export default function FillFormPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
     async function fetchForm() {
       try {
+        setIsLoading(true);
         const response = await fetch(`${URL}/eform/${form_id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch form");
@@ -37,11 +37,11 @@ export default function FillFormPage() {
         if (!hasAccess) {
           throw new Error(t("fillForm.youDontHaveAccess"));
         }
-        console.log(data)
+        console.log(data);
         setFormData(data);
       } catch (err) {
         console.error("Error fetching form:", err.message);
-        toast.error(err.message)
+        toast.error(err.message);
       } finally {
         setIsLoading(false);
       }
@@ -86,26 +86,38 @@ export default function FillFormPage() {
     const missingRequiredAnswers = formData.questions.some((question) => {
       if (question.is_required) {
         const answer = answers[question.question_id]?.value;
-        
-        if (question.question_type === "short-answer" && (!answer || answer.trim() === "")) {
+
+        if (
+          question.question_type === "short-answer" &&
+          (!answer || answer.trim() === "")
+        ) {
           return true;
         }
-        
-        if (question.question_type === "multiple-choice" && (!answer || answer.length === 0)) {
+
+        if (
+          question.question_type === "multiple-choice" &&
+          (!answer || answer.length === 0)
+        ) {
           return true;
         }
-        
-        if (question.question_type === "checkboxes" && (!answer || answer.length === 0)) {
+
+        if (
+          question.question_type === "checkboxes" &&
+          (!answer || answer.length === 0)
+        ) {
           return true;
         }
-        
-        if (question.question_type === "dropdown" && (!answer || answer === "")) {
+
+        if (
+          question.question_type === "dropdown" &&
+          (!answer || answer === "")
+        ) {
           return true;
         }
       }
       return false;
     });
-  
+
     if (missingRequiredAnswers) {
       toast.error(t("fillFormQuestions.fillAllRequiredFields"));
       return;
@@ -127,16 +139,13 @@ export default function FillFormPage() {
     };
 
     try {
-      const response = await fetch(
-        `${URL}/filled-forms/submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(submissionPayload),
-        }
-      );
+      const response = await fetch(`${URL}/filled-forms/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(submissionPayload),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to submit form answers.");
@@ -145,7 +154,7 @@ export default function FillFormPage() {
       const result = await response.json();
       console.log("Submission successful:", result);
       toast.success(t("fillForm.formSubmitted"));
-      return navigate("/success")
+      return navigate("/success");
     } catch (err) {
       console.error("Error submitting form answers:", err.message);
     }
@@ -156,7 +165,11 @@ export default function FillFormPage() {
   }
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="absolute inset-0 flex justify-center items-center">
+        <div className="loader"></div>
+      </div>
+    );
   }
 
   if (!formData) {

@@ -41,7 +41,7 @@ export default function CreatedForms({ createForm }) {
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <p className="text-lg text-text dark:text-text-dark">Loading...</p>
+        <p className="text-lg text-text dark:text-text-dark loader"></p>
       </div>
     );
 

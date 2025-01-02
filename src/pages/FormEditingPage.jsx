@@ -70,9 +70,9 @@ export default function FormCreationPage() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    setLoading(true);
     async function fetchForm() {
       try {
+        setLoading(true);
         const response = await fetch(`${URL}/eform/${pageId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch form");
@@ -128,7 +128,12 @@ export default function FormCreationPage() {
   }, [pageId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="absolute inset-0 flex justify-center items-center">
+        <div className="loader">
+        </div>
+      </div>
+    );
   }
 
   const handleImageChange = (e) => {

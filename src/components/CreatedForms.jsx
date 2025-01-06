@@ -85,8 +85,8 @@ export default function CreatedForms({ createForm }) {
               <div className="mt-4 flex justify-end">
                 <IconButton
                   className="text-red-500 hover:text-red-700"
-                  onClick={() => {
-                    deleteForm(form.form_id);
+                  onClick={async () => {
+                    await deleteForm(form.form_id);
                     setRefresh((prev) => prev + 1);
                   }}
                 >

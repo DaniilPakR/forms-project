@@ -101,6 +101,7 @@ export default function NewFormHeader({
   return (
     <div className="flex flex-col gap-4">
       <div className="w-full">
+        <h1 className="text-xs text-gray-500 mb-5">{t("newFormHeader.imageHint")}</h1>
         <label
           htmlFor="imageUpload"
           className="m-2 cursor-pointer bg-button dark:bg-button-dark hover:bg-button-hover text-text dark:text-text-dark rounded-lg p-2"

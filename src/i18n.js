@@ -102,7 +102,8 @@ const resources = {
         accessLabel: "Access:",
         public: "Public",
         private: "Private",
-        imageLabel: "Upload Image"
+        imageLabel: "Upload Image",
+        imageHint: "If you have Image selected, delete it first and only then add new one.",
       },
       newFormQuestion: {
         questionTitle: "Question",
@@ -320,7 +321,8 @@ const resources = {
         accessLabel: "Доступ:",
         public: "Публичный",
         private: "Приватный",
-        imageLabel: "Загрузить Изображение"
+        imageLabel: "Загрузить Изображение",
+        imageHint: "Если у вас выбрано изображение, сначала удалите его, и только потом добавьте новое.",
       },
       newFormQuestion: {
         questionTitle: "Вопрос",

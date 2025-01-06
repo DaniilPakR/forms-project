@@ -376,6 +376,7 @@ export default function FormCreationPage() {
                   usersWithAccess={users}
                   setUsersWithAccess={setUsers}
                   onRemoveImage={handleRemoveImage}
+                  formImage={formImage}
                 />
                 <h1 className="text-2xl lg:text-3xl font-semibold">
                   {t("formEditingPage.questions")}

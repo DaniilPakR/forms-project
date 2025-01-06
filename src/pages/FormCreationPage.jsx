@@ -187,9 +187,11 @@ export default function FormCreationPage() {
       usersWithAccess = [];
     }
     let myImage = null;
+    let imageVersion;
     if (formImage) {
       const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
       myImage = uploadedImage.public_id;
+      imageVersion = uploadedImage.version;
     }
     try {
       await action({
@@ -205,6 +207,7 @@ export default function FormCreationPage() {
         pageId,
         tags,
         usersWithAccess,
+        imageVersion,
       });
       toast.success(t("form.createdSuccessfully"));
       return navigate("/");
@@ -337,6 +340,7 @@ export async function action(formData) {
     pageId,
     tags,
     usersWithAccess,
+    imageVersion,
   } = formData;
 
   const { URL } = externalContextReference;
@@ -369,6 +373,7 @@ export async function action(formData) {
     titlemarkdown: formTitleMarkdown,
     tags,
     usersWithAccess,
+    imageVersion,
   };
 
   console.log(newForm);

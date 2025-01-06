@@ -16,7 +16,7 @@ export default function FillForm({
 
   const isReadOnly = !currentUser;
 
-  console.log(formData);
+  console.log("A",formData);
 
   console.log(currentUser)
 
@@ -40,7 +40,7 @@ export default function FillForm({
         {formData.image_url && (
           <img
             alt=""
-            src={`https://res.cloudinary.com/dmi1xxumf/image/upload/${form_id}`}
+            src={`https://res.cloudinary.com/dmi1xxumf/image/upload/v${formData.image_version}/${form_id}`}
           />
         )}
         <p

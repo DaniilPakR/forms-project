@@ -113,7 +113,7 @@ export default function FormCreationPage() {
         setFormImage(file);
         if (data["image_url"]) {
           setImagePreview(
-            `https://res.cloudinary.com/dmi1xxumf/image/upload/${pageId}`
+            `https://res.cloudinary.com/dmi1xxumf/image/upload/v${data["image_version"]}/${pageId}`
           );
           setImageUrl(data["image_url"]);
         }
@@ -130,8 +130,7 @@ export default function FormCreationPage() {
   if (loading) {
     return (
       <div className="absolute inset-0 flex justify-center items-center">
-        <div className="loader">
-        </div>
+        <div className="loader"></div>
       </div>
     );
   }
@@ -262,6 +261,22 @@ export default function FormCreationPage() {
     } else if (users.length === 0) {
       usersWithAccess = [];
     }
+    let imageVersion;
+    let newImageUrl;
+    if (!formImage) {
+      if (imageUrl) {
+        await deleteImageInCloud(imageUrl);
+      }
+      imageVersion = "";
+    } else {
+      if (imageUrl) {
+        await deleteImageInCloud(imageUrl);
+      }
+      const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
+      newImageUrl = uploadedImage.public_id;
+      imageVersion = uploadedImage.version;
+    }
+
     try {
       await action({
         formTitle,
@@ -269,7 +284,7 @@ export default function FormCreationPage() {
         formDescriptionMarkdown,
         formQuestions,
         formTopic,
-        imageUrl,
+        imageUrl: newImageUrl,
         isPublic,
         currentUserId,
         pageId,
@@ -277,17 +292,8 @@ export default function FormCreationPage() {
         formTitleMarkdown,
         tags,
         usersWithAccess,
+        imageVersion,
       });
-      try {
-        if (!formImage) {
-          return;
-        }
-        const deletedImage = await deleteImageInCloud(imageUrl);
-        const uploadedImage = await uploadImageToCloudinary(formImage, pageId);
-        console.log(uploadedImage);
-      } catch (e) {
-        console.error(e.message);
-      }
       toast.success(t("formEditingPage.editedSuccessfully"));
     } catch (error) {
       console.error("Failed to upload form:", JSON.stringify(error.message));
@@ -468,6 +474,7 @@ export async function action(formData) {
     formTitleMarkdown,
     tags,
     usersWithAccess,
+    imageVersion,
   } = formData;
 
   const { URL: apiUrl } = externalContextReference;
@@ -500,6 +507,7 @@ export async function action(formData) {
     pageId,
     tags,
     accessControlUsers: usersWithAccess,
+    imageVersion,
   };
 
   try {

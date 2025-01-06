@@ -15,6 +15,7 @@ export default function FillFormPage() {
   const { id: form_id } = useParams();
   const [answers, setAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     async function fetchForm() {
@@ -49,6 +50,52 @@ export default function FillFormPage() {
 
     fetchForm();
   }, [form_id]);
+
+  useEffect(() => {
+    async function checkIsSubmitted() {
+      try {
+        const response = await fetch(
+          `${URL}/get-filled-forms-by-user/${currentUser.id}`
+        );
+  
+        if (!response.ok) {
+          return toast.error(t("fillForm.failedToCheckSubmission"));
+        }
+  
+        const data = await response.json();
+  
+        if (data.exists) {
+          setIsSubmitted(true);
+        } else {
+          setIsSubmitted(false);
+        }
+      } catch (err) {
+        console.error("Error checking submission status:", err);
+        return toast.error(t("fillForm.errorCheckingSubmission", err))
+      }
+    }
+  
+    if (currentUser) {
+      checkIsSubmitted();
+    }
+  }, [currentUser, URL]);
+
+  const refill = async () => {
+    try {
+      const response = await fetch(`${URL}/delete-filled-form/${currentUser.id}`, {
+        method: "DELETE",
+      });
+  
+      if (!response.ok) {
+        return toast.error(t("fillForm.failedToDelete"));
+      }
+  
+      toast.success(t("fillForm.deletedFilledForm"));
+      setIsSubmitted(false);
+    } catch (err) {
+      toast.error(err.message || t("fillForm.errorWhileDeleting"));
+    }
+  };  
 
   const handleSetAnswers = (
     questionId,
@@ -178,14 +225,43 @@ export default function FillFormPage() {
 
   return (
     <form className="mt-16">
-      <FillForm
-        onSubmit={handleSubmit}
-        answers={answers}
-        setAnswers={setAnswers}
-        formData={formData}
-        onSetAnswers={handleSetAnswers}
-        form_id={form_id}
-      />
+      {isSubmitted ? (
+        <div className="flex flex-col items-center mt-8">
+          <div
+            style={{
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(30, 58, 138, 0.15)`,
+            }}
+            className="w-full max-w-4xl border bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col items-center"
+          >
+            <h1 className="text-center text-2xl lg:text-3xl font-semibold text-primary">
+              {t("fillForm.alreadySubmitted")}
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400 text-center mt-4">
+              {t("fillForm.refillPrompt")}
+            </p>
+            <div className="flex justify-center mt-6 gap-4">
+              <button
+                className="bg-primary hover:bg-primary-hover text-white font-medium py-2 px-6 rounded-md"
+                type="button"
+                onClick={refill}
+                >
+                {t("fillForm.refillButton")}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <FillForm
+          onSubmit={handleSubmit}
+          answers={answers}
+          setAnswers={setAnswers}
+          formData={formData}
+          onSetAnswers={handleSetAnswers}
+          form_id={form_id}
+          isSubmitted={isSubmitted}
+        />
+      )}
+
       {formData && (
         <LikeButton user_id={currentUser?.id} form_id={formData.form_id} />
       )}

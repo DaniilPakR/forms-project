@@ -13,7 +13,12 @@ export default function AuthPage() {
 }
 
 export async function action({ request }) {
-  const { setCurrentUser, setIsAdmin, URL: apiBaseURL, t } = externalContextReference; // Rename URL to apiBaseURL
+  const {
+    setCurrentUser,
+    setIsAdmin,
+    URL: apiBaseURL,
+    t,
+  } = externalContextReference; // Rename URL to apiBaseURL
   const searchParams = new URL(request.url).searchParams;
   const mode = searchParams.get("mode") || "signup";
 
@@ -62,14 +67,28 @@ export async function action({ request }) {
     };
 
     if (result.user.is_blocked) {
-      toast.error(t("notifications.userIsBlocked"))
+      toast.error(t("notifications.userIsBlocked"));
     }
 
-    localStorage.setItem("authSession", JSON.stringify(userInfo));
+    localStorage.setItem(
+      "authSession",
+      JSON.stringify({
+        id: userInfo.id,
+        email: userInfo.email,
+        name: userInfo.name,
+      })
+    );
+    localStorage.setItem("isAdmin", userInfo.is_admin);
     console.log(result);
-    mode === "signup" ? toast.success(t("notifications.signUp")) : toast.success(t("notifications.loggedIn"));
-    setCurrentUser(userInfo);
-    setIsAdmin(result.user.is_admin);
+    mode === "signup"
+      ? toast.success(t("notifications.signUp"))
+      : toast.success(t("notifications.loggedIn"));
+    setCurrentUser({
+      id: result.user.id,
+      email: result.user.email,
+      name: result.user.name,
+    });
+    setIsAdmin(userInfo.is_admin);
     return redirect("/");
   } catch (e) {
     console.error("Error in action:", e?.message || "Unknown error");

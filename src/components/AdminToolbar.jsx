@@ -1,9 +1,11 @@
 import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { GlobalContext } from "../context/GlobalProvider";
 import { formatDate } from "../utils/formateDate";
 
 export default function AdminToolbar() {
+  const navigate = useNavigate();
   const { currentUser, t, URL, setIsAdmin, setCurrentUser, isAdmin } = useContext(GlobalContext);
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -31,11 +33,13 @@ export default function AdminToolbar() {
         if (user.is_blocked) {
           setCurrentUser(null);
           localStorage.removeItem("authSession");
+          localStorage.removeItem("isAdmin");
         }
         setIsAdmin(user.is_admin);
         if (!user.is_admin) {
-          setCurrentUser(null);
-          localStorage.removeItem("authSession");
+          setIsAdmin(false);
+          localStorage.setItem("isAdmin", false);
+          navigate("/")
         }
       }
     })

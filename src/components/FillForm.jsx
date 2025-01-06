@@ -12,9 +12,13 @@ export default function FillForm({
   onSubmit,
   form_id,
 }) {
-  const { t, currentUser } = useContext(GlobalContext);
+  const { t, currentUser, isAdmin } = useContext(GlobalContext);
 
   const isReadOnly = !currentUser;
+
+  console.log(formData);
+
+  console.log(currentUser)
 
   return (
     <div className="flex flex-col items-center mt-8">
@@ -89,7 +93,7 @@ export default function FillForm({
           />
         </div>
       </div>
-      {currentUser.is_admin && (
+      {(isAdmin || (currentUser && formData.creator_id === currentUser.id)) && (
         <Link
           to={`/eform/${formData.page_id}`}
           className="mt-6 text-primary hover:text-primary-hover"

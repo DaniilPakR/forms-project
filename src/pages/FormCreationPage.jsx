@@ -206,10 +206,10 @@ export default function FormCreationPage() {
         tags,
         usersWithAccess,
       });
-      toast.success("Form uploaded successfully!");
+      toast.success(t("form.createdSuccessfully"));
       return navigate("/");
     } catch (error) {
-      alert("Failed to upload the form. Please try again.");
+      toast.error(t("form.failedToCreate"));
     }
   };
 

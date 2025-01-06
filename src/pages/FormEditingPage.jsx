@@ -288,10 +288,10 @@ export default function FormCreationPage() {
       } catch (e) {
         console.error(e.message);
       }
-      toast.success("Form updated successfully!");
+      toast.success(t("formEditingPage.editedSuccessfully"));
     } catch (error) {
       console.error("Failed to upload form:", JSON.stringify(error.message));
-      toast.error("Failed to update form.");
+      toast.error(t("formEditingPage.failedEditing"));
     }
   };
   const handleDragEnd = ({ active, over }) => {

@@ -79,6 +79,8 @@ const resources = {
         addQuestionButton: "Add Question",
         cancelButton: "Cancel",
         uploadButton: "Upload",
+        createdSuccessfully: "Form uploaded successfully!",
+        failedToCreate: "Failed to upload the form. Please try again.",
       },
       newFormHeader: {
         imagePreview: "Preview:",
@@ -208,6 +210,8 @@ const resources = {
         cancel: "Cancel",
         delete: "Delete",
         update: "Update",
+        editedSuccessfully: "Form updated successfully!",
+        failedEditing: "Failed to update form.",
       },
       responses: {
         amountUsersLiked: "Users liked this form",
@@ -293,6 +297,8 @@ const resources = {
         addQuestionButton: "Добавить вопрос",
         cancelButton: "Отмена",
         uploadButton: "Загрузить",
+        createdSuccessfully: "Форма успешно создана!",
+        failedToCreate: "Не удалось создать форму. Пожалуйста попробуйте еще раз.",
       },
       newFormHeader: {
         imagePreview: "Предпросмотр:",
@@ -421,6 +427,8 @@ const resources = {
         cancel: "Отмена",
         delete: "Удалить",
         update: "Обновить",
+        editedSuccessfully: "Форма успешно обновлена!",
+        failedEditing: "Не удалось обновить форму.",
       },
       responses: {
         amountUsersLiked: "Пользователей оценили эту форму",

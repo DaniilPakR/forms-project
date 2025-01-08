@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "../../context/GlobalProvider";
 
-import darkFormImg from "../../images/forms/dark-form.png"
-import lightFormImg from "../../images/forms/light-form.png"
+import darkFormImg from "../../images/forms/dark-form.png";
+import lightFormImg from "../../images/forms/light-form.png";
 
 export default function LatestTemplates() {
   const { URL, t } = useContext(GlobalContext);
@@ -23,29 +23,29 @@ export default function LatestTemplates() {
         const data = await response.json();
         console.log(data);
 
-        // Add screenshot URLs using ScreenshotOne API
         const formsWithScreenshots = await Promise.all(
           data.forms.map(async (form) => {
+            console.log("TEST", form);
             try {
               const screenshotResponse = await fetch(
                 `https://api.screenshotone.com/take?access_key=qDi0nWJbeiIECQ&url=${encodeURIComponent(
                   `https://forms-project-c77c1.web.app/fform/${form.page_id}`
-                )}`,
+                )}&wait_for=5000`,
                 {
                   method: "GET",
                 }
               );
               if (!screenshotResponse.ok) {
-                throw new Error(`Screenshot API failed for form ${form.id}`);
+                throw new Error(`Screenshot API failed for form ${form.title}`);
               }
               const screenshotData = await screenshotResponse.json();
-              return { ...form, screenshotUrl: screenshotData.url }; // Adjust based on actual response structure
+              return { ...form, screenshotUrl: screenshotData.url };
             } catch (error) {
               console.error(
-                `Error fetching screenshot for form ${form.id}:`,
+                `Error fetching screenshot for form ${form.title}:`,
                 error.message
               );
-              return { ...form, screenshotUrl: null }; // Fallback if screenshot fails
+              return { ...form, screenshotUrl: null };
             }
           })
         );

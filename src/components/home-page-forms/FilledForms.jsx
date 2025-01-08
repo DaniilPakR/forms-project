@@ -63,7 +63,7 @@ export default function FilledForms() {
                 </p>
               </div>
               <Link
-                to={`/fform/${form.page_id}`}
+                to={`/vform/${form.filled_form_id}?mode=non`}
                 className="block mt-4 bg-primary text-button-text text-center py-2 px-4 rounded hover:bg-primary-hover dark:bg-primary-dark dark:hover:bg-primary"
               >
                 {t("forms.viewForm")}

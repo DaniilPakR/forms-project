@@ -1,10 +1,12 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 import { GlobalContext } from "../context/GlobalProvider";
 import ViewFilledForm from "../components/form-viewing/ViewFilledForm";
 
 export default function ViewFormPage() {
+  const [ searchParams ] = useSearchParams();
+  const mode = searchParams.get('mode')
   const { currentUser, URL } = useContext(GlobalContext);
   const [formData, setFormData] = useState(null);
   const { id: filled_form_id } = useParams();
@@ -41,7 +43,7 @@ export default function ViewFormPage() {
 
   return (
     <div className="flex flex-col items-center mt-16">
-      {formData && <ViewFilledForm formData={formData.form} answers={formData.answers} questions={formData.questions} />}
+      {formData && <ViewFilledForm mode={mode} formData={formData.form} answers={formData.answers} questions={formData.questions} />}
     </div>
   );
 }

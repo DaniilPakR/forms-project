@@ -4,7 +4,7 @@ import { useContext } from "react";
 import ViewFormQuestions from "./ViewFormQuestions";
 import { GlobalContext } from "../../context/GlobalProvider";
 
-export default function ViewFilledForm({ formData, answers, setAnswers, questions }) {
+export default function ViewFilledForm({ formData, answers, setAnswers, questions, mode }) {
   const { t } = useContext(GlobalContext);
 
   console.log("Yo ", formData);
@@ -17,11 +17,19 @@ export default function ViewFilledForm({ formData, answers, setAnswers, question
       className="w-full max-w-4xl border-t-4 border-b bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col"
     >
       <h1
-        className={`text-center text-2xl lg:text-3xl font-semibold border-b border-border-dark pb-3`}
+        className={`text-center text-2xl lg:text-3xl font-semibold border-b border-border-dark pb-3 ${
+            formData.titlemarkdown.includes("bold") ? "font-bold" : ""
+          } ${formData.titlemarkdown.includes("italic") ? "italic" : ""} ${
+            formData.titlemarkdown.includes("underlined") ? "underline" : ""
+          }`}
       >
         {formData.title}
       </h1>
-      <p className="text-lg lg:text-xl text-text-muted">
+      <p className={`text-lg lg:text-xl text-text-muted ${
+            formData.descriptionmarkdown.includes("bold") ? "font-bold" : ""
+          } ${formData.descriptionmarkdown.includes("italic") ? "italic" : ""} ${
+            formData.descriptionmarkdown.includes("underlined") ? "underline" : ""
+          }`}>
         {formData.description}
       </p>
       <div>
@@ -33,12 +41,12 @@ export default function ViewFilledForm({ formData, answers, setAnswers, question
           read={true}
         />
       </div>
-      <Link
+      {(mode !== "non") && <Link
         to={`/eform/${formData.page_id}`}
         className="mt-6 text-primary hover:text-primary-hover p-2 self-center"
       >
         {t("viewFilledForm.goBack")}
-      </Link>
+      </Link>}
     </div>
   );
 }

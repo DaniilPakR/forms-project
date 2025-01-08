@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 
 import { GlobalContext } from "../../context/GlobalProvider";
@@ -8,6 +8,7 @@ import formimg from "../../images/logos/logo64.png";
 import { deleteForm } from "../../utils/form-utils/deleteForm";
 
 export default function CreatedForms({ createForm }) {
+  const navigate = useNavigate();
   const { currentUser, t, URL } = useContext(GlobalContext);
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,6 +89,7 @@ export default function CreatedForms({ createForm }) {
                   onClick={async () => {
                     await deleteForm(form.form_id);
                     setRefresh((prev) => prev + 1);
+                    if (forms.length <= 1) {navigate(0)}
                   }}
                 >
                   <DeleteIcon />

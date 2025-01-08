@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 
 import { GlobalContext } from "../../context/GlobalProvider";
+import darkFormImg from "../../images/forms/dark-form.png";
+import lightFormImg from "../../images/forms/light-form.png";
 
 export default function PopularForms() {
   const { URL, t } = useContext(GlobalContext);
@@ -43,9 +45,19 @@ export default function PopularForms() {
           {results.map((result) => (
             <div
               key={result.id}
-              className="bg-background-accent dark:bg-background-dark-accent p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200"
+              className="bg-background-accent dark:bg-background-dark-accent p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 group"
             >
-              <h3 className="text-lg font-medium text-text dark:text-text-dark mb-2">
+                            <img
+                src={lightFormImg}
+                alt={`${result.title} preview`}
+                className="dark:hidden w-full h-32 object-cover rounded-md mb-2 transform transition-transform duration-200 group-hover:scale-105"
+              />
+              <img
+                src={darkFormImg}
+                alt={`${result.title} preview`}
+                className="hidden dark:block w-full h-32 object-cover rounded-md mb-2 transform transition-transform duration-200 group-hover:scale-105"
+              />
+              <h3 className="text-lg font-medium text-text dark:text-text-dark mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors">
                 {result.title}
               </h3>
               <Link

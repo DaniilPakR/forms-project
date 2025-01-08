@@ -15,7 +15,7 @@ export default function Footer() {
               href="https://t.me/sanvxzl"
               className="text-primary-light hover:text-primary-DEFAULT transition-colors duration-300"
             >
-              @sanv1zl
+              @sanvxzl
             </a>
           </div>
           <div>

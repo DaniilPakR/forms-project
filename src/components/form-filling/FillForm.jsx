@@ -29,7 +29,7 @@ export default function FillForm({
         className="w-full max-w-4xl border-t-4 border-b bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col"
       >
         <h1
-          className={`text-center text-2xl lg:text-3xl font-semibold border-b border-border-dark pb-3 ${
+          className={`text-center text-2xl lg:text-3xl border-b border-border-dark pb-3 ${
             formData.titleMarkdown.includes("bold") ? "font-bold" : ""
           } ${formData.titleMarkdown.includes("italic") ? "italic" : ""} ${
             formData.titleMarkdown.includes("underlined") ? "underline" : ""

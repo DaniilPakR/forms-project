@@ -103,24 +103,34 @@ export default function NewFormHeader({
   return (
     <div className="flex flex-col gap-4">
       <FormControl sx={{ m: 1, minWidth: 100 }} className="z-10">
-        <InputLabel id="question-type">Form Type</InputLabel>
+        <InputLabel id="question-type">
+          {t("newFormHeader.formType")}
+        </InputLabel>
         <Select
           labelId="form-type"
           id="form-type"
           value={formType}
-          label="Type"
+          label={t("newFormHeader.type")}
           className="bg-white"
           onChange={(e) => setFormType(e.target.value)}
         >
           <MenuItem value="form" className="flex items-center gap-2">
-            <span className="text-gray-800 ml-2">Form</span>
+            <span className="text-gray-800 ml-2">
+              {t("newFormHeader.formTypeForm")}
+            </span>
           </MenuItem>
           <MenuItem value="quiz" className="flex items-center gap-2">
-            <span className="text-gray-800 ml-2">Quiz</span>
+            <span className="text-gray-800 ml-2">
+              {t("newFormHeader.formTypeQuiz")}
+            </span>
           </MenuItem>
         </Select>
+        {formType === "quiz" && (
+          <h1 className="text-xs text-gray-500 mt-2">
+            {t("newFormHeader.formTypeHint")}
+          </h1>
+        )}
       </FormControl>
-      {formType === "quiz" && <h1>For quiz form, questions sum up to 100 points</h1>}
       <div className="w-full">
         <label
           htmlFor="imageUpload"
@@ -133,7 +143,7 @@ export default function NewFormHeader({
             className="m-2 cursor-pointer bg-button dark:bg-button-dark hover:bg-button-hover text-text dark:text-text-dark rounded-lg p-2"
             onClick={onRemoveImage}
           >
-            Remove Image
+            {t("newFormHeader.imageDelete")}
           </button>
         )}
         <input

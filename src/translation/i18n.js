@@ -103,7 +103,14 @@ const resources = {
         public: "Public",
         private: "Private",
         imageLabel: "Upload Image",
-        imageHint: "If you have Image selected, delete it first and only then add new one.",
+        imageHint:
+          "If you have Image selected, delete it first and only then add new one.",
+        imageDelete: "Remove Image",
+        formType: "Form Type",
+        formTypeForm: "Form",
+        formTypeQuiz: "Quiz",
+        type: "Type",
+        formTypeHint: "For quiz form, questions sum up to 100 points.",
       },
       newFormQuestion: {
         questionTitle: "Question",
@@ -299,7 +306,8 @@ const resources = {
         cancelButton: "Отмена",
         uploadButton: "Загрузить",
         createdSuccessfully: "Форма успешно создана!",
-        failedToCreate: "Не удалось создать форму. Пожалуйста попробуйте еще раз.",
+        failedToCreate:
+          "Не удалось создать форму. Пожалуйста попробуйте еще раз.",
       },
       newFormHeader: {
         imagePreview: "Предпросмотр:",
@@ -322,7 +330,14 @@ const resources = {
         public: "Публичный",
         private: "Приватный",
         imageLabel: "Загрузить Изображение",
-        imageHint: "Если у вас выбрано изображение, сначала удалите его, и только потом добавьте новое.",
+        imageHint:
+          "Если у вас выбрано изображение, сначала удалите его, и только потом добавьте новое.",
+        imageDelete: "Удалить Изображение",
+        formType: "Тип формы",
+        formTypeForm: "Форма",
+        formTypeQuiz: "Тест",
+        type: "Тип",
+        formTypeHint: "Для типа формы Тест, очки вопросов набираются до 100.",
       },
       newFormQuestion: {
         questionTitle: "Вопрос",

@@ -14,31 +14,37 @@ export default function FormatButtons({ state, setState }) {
   };
 
   return (
-    <div className="flex flex-row gap-3">
-      <button
-        className={`transition-all rounded-md text-center ${
-          state.includes("bold") ? "text-black bg-gray-300" : "text-gray-500 "
-        }`}
-        onClick={() => handleFormatChange("bold")}
-      >
-        <FormatBoldIcon />
-      </button>
-      <button
-        className={`transition-all rounded-md text-center ${
-          state.includes("italic") ? "text-black bg-gray-300" : "text-gray-500 "
-        }`}
-        onClick={() => handleFormatChange("italic")}
-      >
-        <FormatItalicIcon />
-      </button>
-      <button
-        className={`transition-all rounded-md text-center ${
-          state.includes("underlined") ? "text-black bg-gray-300" : "text-gray-500 "
-        }`}
-        onClick={() => handleFormatChange("underlined")}
-      >
-        <FormatUnderlinedIcon />
-      </button>
-    </div>
+<div className="flex flex-row gap-3">
+  <button
+    className={`transition-all duration-300 ease-in-out rounded-md p-2 text-center ${
+      state.includes("bold")
+        ? "text-white bg-black shadow-md"
+        : "text-gray-500 hover:text-black hover:bg-gray-200"
+    }`}
+    onClick={() => handleFormatChange("bold")}
+  >
+    <FormatBoldIcon className="transition-transform duration-300 hover:scale-110" />
+  </button>
+  <button
+    className={`transition-all duration-300 ease-in-out rounded-md p-2 text-center ${
+      state.includes("italic")
+        ? "text-white bg-black shadow-md"
+        : "text-gray-500 hover:text-black hover:bg-gray-200"
+    }`}
+    onClick={() => handleFormatChange("italic")}
+  >
+    <FormatItalicIcon className="transition-transform duration-300 hover:scale-110" />
+  </button>
+  <button
+    className={`transition-all duration-300 ease-in-out rounded-md p-2 text-center ${
+      state.includes("underlined")
+        ? "text-white bg-black shadow-md"
+        : "text-gray-500 hover:text-black hover:bg-gray-200"
+    }`}
+    onClick={() => handleFormatChange("underlined")}
+  >
+    <FormatUnderlinedIcon className="transition-transform duration-300 hover:scale-110" />
+  </button>
+</div>
   );
 }

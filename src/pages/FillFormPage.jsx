@@ -210,6 +210,7 @@ export default function FillFormPage() {
       user_id: currentUser.id,
       user_name: currentUser.name,
       user_email: currentUser.email,
+      score,
       answers: Object.entries(answers).map(
         ([questionId, { question_type, value }]) => ({
           question_id: parseInt(questionId, 10),

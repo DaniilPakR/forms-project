@@ -112,6 +112,7 @@ export default function FormCreationPage() {
         setFormQuestions(data.questions);
         setFormId(data.form_id);
         setFormTags(convertTagsBack(data.tags));
+        setFormType(data.form_type)
         setUsers(data.users_with_access);
         if (data["image_url"]) {
           const file = await urlToFile(pageId, "uploaded-image.jpg");

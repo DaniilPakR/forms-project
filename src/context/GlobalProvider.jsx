@@ -1,7 +1,21 @@
 import { createContext, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const GlobalContext = createContext({});
+const GlobalContext = createContext({
+  isLogged: false,
+  setIsLogged: () => {},
+  currentUser: null,
+  setCurrentUser: () => {},
+  isAdmin: false,
+  setIsAdmin: () => {},
+  theme: "",
+  toggleTheme: () => {},
+  t: (key) => key,
+  i18n: null,
+  URL: "",
+  languageInitialized: false,
+  isReady: false,
+});
 
 let externalContextReference = null;
 
@@ -45,7 +59,7 @@ export default function GlobalContextProvider({ children }) {
   }, [theme]);
 
   useEffect(() => {
-    console.log(currentUser)
+    console.log(currentUser);
     if (currentUser) {
       async function fetchLatestUserData() {
         try {
@@ -57,14 +71,14 @@ export default function GlobalContextProvider({ children }) {
           }
           const data = await response.json();
           setIsAdmin(data.is_admin);
-          localStorage.setItem("isAdmin", data.is_admin)
+          localStorage.setItem("isAdmin", data.is_admin);
           if (data.is_blocked) {
             setCurrentUser(null);
             setIsAdmin(false);
             localStorage.removeItem("authSession");
             localStorage.removeItem("isAdmin");
-            localStorage.removeItem("isBlocked")
-          };
+            localStorage.removeItem("isBlocked");
+          }
         } catch (err) {
           console.error(err.message);
         }

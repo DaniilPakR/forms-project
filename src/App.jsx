@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./i18n";
+import "./translation/i18n";
 
 import GlobalContextProvider from "./context/GlobalProvider";
 import HomePage from "./pages/HomePage";
-import RootLayoutPage from "./pages/RootLayoutPage";
+import RootLayoutPage from "./pages/root-page/RootLayoutPage";
 import AuthPage, { action as authAction } from "./pages/AuthPage";
 import FormCreationPage from "./pages/FormCreationPage";
 import FormEditingPage from "./pages/FormEditingPage";

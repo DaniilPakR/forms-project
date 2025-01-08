@@ -19,9 +19,9 @@ module.exports = {
         },
         background: {
           DEFAULT: "#FFFFFF", // White background for light mode
-          dark: "#1E293B", // Dark blue-gray for dark mode
+          dark: "#231d33", // Dark blue-gray for dark mode
           accent: "#F1F5F9", // Light gray accent background for light mode
-          "dark-accent": "#334155", // Dark gray accent background for dark mode
+          "dark-accent": "#1F2737", // Dark gray accent background for dark mode
         },
         text: {
           DEFAULT: "#374151", // Gray for primary text in light mode

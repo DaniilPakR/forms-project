@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react"
 import { redirect, useNavigate } from "react-router-dom"
 
 import { GlobalContext } from "../context/GlobalProvider"
-import AdminToolbar from "../components/AdminToolbar"
+import AdminToolbar from "../components/admin/AdminToolbar";
 
 export default function AdminPage() {
   const navigate = useNavigate();

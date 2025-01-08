@@ -1,7 +1,7 @@
 import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import AuthForm from "../components/AuthForm";
+import AuthForm from "../components/auth/AuthForm";
 import { externalContextReference } from "../context/GlobalProvider";
 
 export default function AuthPage() {

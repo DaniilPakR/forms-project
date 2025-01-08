@@ -2,12 +2,12 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 
-import CreatedForms from "../components/CreatedForms";
-import FilledForms from "../components/FilledForms";
+import CreatedForms from "../components/home-page-forms/CreatedForms";
+import FilledForms from "../components/home-page-forms/FilledForms";
 import { GlobalContext } from "../context/GlobalProvider";
-import LatestTemplates from "../components/LatestTemplates";
-import PopularForms from "../components/PopularForms";
-import TagCloud from "../components/TagCloud";
+import LatestTemplates from "../components/home-page-forms/LatestTemplates";
+import PopularForms from "../components/home-page-forms/PopularForms";
+import TagCloud from "../components/ui/TagCloud";
 
 export default function HomePage() {
   const { currentUser, t, URL } = useContext(GlobalContext);

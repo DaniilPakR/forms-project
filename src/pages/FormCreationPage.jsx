@@ -8,14 +8,14 @@ import { redirect, useParams, useNavigate } from "react-router-dom";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
-import NewFormHeader from "../components/NewFormHeader";
-import NewFormQuestions from "../components/NewFormQuestions";
+import NewFormHeader from "../components/form-uploading/NewFormHeader";
+import NewFormQuestions from "../components/form-uploading/NewFormQuestions";
 import {
   GlobalContext,
   externalContextReference,
 } from "../context/GlobalProvider";
-import { uploadImageToCloudinary } from "../utils/cloudinaryFunctions";
-import { convertTags } from "../utils/convertTags";
+import { uploadImageToCloudinary } from "../utils/cloudinary/cloudinaryFunctions";
+import { convertTags } from "../utils/tags-utils/convertTags";
 import { toast } from "react-toastify";
 
 export default function FormCreationPage() {
@@ -36,6 +36,7 @@ export default function FormCreationPage() {
   const [formImage, setFormImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isPublic, setIsPublic] = useState(true);
+  const [formType, setFormType] = useState("form");
   const [formQuestions, setFormQuestions] = useState([
     {
       question_text: t("newFormQuestion.untitledQuestion"),
@@ -75,6 +76,9 @@ export default function FormCreationPage() {
         is_required: false,
         position: prevFormQuestions.length + 1,
         show_in_results: true,
+        is_with_score: false,
+        correct_answer: "",
+        score: 0,
         options: [
           {
             option_text: "Option 1",
@@ -173,6 +177,21 @@ export default function FormCreationPage() {
     });
   };
 
+  const handleUpdateOptionCorrect = (questionId, optionId) => {
+    setFormQuestions((prevFormQuestions) =>
+      prevFormQuestions.map((question) =>
+        question.question_id === questionId
+          ? {
+              ...question,
+              options: question.options.map((option, index) =>
+                option.option_id === optionId ? { ...option, is_correct: !option.is_correct } : option
+              ),
+            }
+          : question
+      )
+    );
+  }
+
   const handleUploadForm = async () => {
     let tags;
     if (formTags === "") {
@@ -208,6 +227,7 @@ export default function FormCreationPage() {
         tags,
         usersWithAccess,
         imageVersion,
+        formType,
       });
       toast.success(t("form.createdSuccessfully"));
       return navigate("/");
@@ -242,7 +262,7 @@ export default function FormCreationPage() {
           style={{
             boxShadow: `0 2px 6px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(30, 58, 138, 0.15)`,
           }}
-          className="w-full max-w-4xl border bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col"
+          className="w-full max-w-4xl border-t-4 border-b bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col"
         >
           <h1 className="text-center text-xl border-b border-black pb-2">
             {t("form.title")}
@@ -271,6 +291,8 @@ export default function FormCreationPage() {
             setUsersWithAccess={setUsers}
             onRemoveImage={handleRemoveImage}
             formImage={formImage}
+            formType={formType}
+            setFormType={setFormType}
           />
           <h1 className="text-2xl lg:text-3xl font-semibold">
             {t("form.questions")}
@@ -288,6 +310,8 @@ export default function FormCreationPage() {
               onDeleteOption={handleDeleteOption}
               onDuplicateQuestion={handleDuplicateQuestion}
               setFormQuestions={setFormQuestions}
+              onUpdateOptionCorrect={handleUpdateOptionCorrect}
+              formType={formType}
             />
           </DndContext>
           <div className="w-full">
@@ -341,6 +365,7 @@ export async function action(formData) {
     tags,
     usersWithAccess,
     imageVersion,
+    formType,
   } = formData;
 
   const { URL } = externalContextReference;
@@ -362,6 +387,9 @@ export async function action(formData) {
       questionType: question.question_type,
       required: question.is_required,
       showInResults: question.show_in_results,
+      is_with_score: question.is_with_score,
+      score: question.score,
+      correct_answer: question.correct_answer,
       options: question.options.map((option) => ({
         optionText: option.option_text,
         optionId: option.option_id,
@@ -374,6 +402,7 @@ export async function action(formData) {
     tags,
     usersWithAccess,
     imageVersion,
+    formType,
   };
 
   console.log(newForm);

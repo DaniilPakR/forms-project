@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { GlobalContext } from "../context/GlobalProvider";
-import FillForm from "../components/FillForm";
-import LikeButton from "../components/LikeButton";
-import Comments from "../components/Comments";
+import FillForm from "../components/form-filling/FillForm";
+import LikeButton from "../components/social-actions/LikeButton";
+import Comments from "../components/social-actions/Comments";
 import { toast } from "react-toastify";
+import { TonalitySharp } from "@mui/icons-material";
 
 export default function FillFormPage() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function FillFormPage() {
   const [answers, setAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     async function fetchForm() {
@@ -79,6 +81,36 @@ export default function FillFormPage() {
       checkIsSubmitted();
     }
   }, [currentUser, URL]);
+
+  const calculateScore = () => {
+    if (!formData || !formData.questions || !answers) return 0;
+  
+    let totalScore = 0;
+  
+    formData.questions.forEach((question) => {
+      const userAnswer = answers[question.question_id]?.value;
+  
+      if (!userAnswer) return;
+  
+      if (question.question_type === "short-answer" || question.question_type === "dropdown") {
+        if (userAnswer === question.correct_answer) {
+          totalScore += question.is_with_score ? question.score : 1;
+        }
+      } else if (question.question_type === "checkboxes" || question.question_type === "multiple-choice") {
+        const correctOptions = question.options.filter((option) => option.is_correct).map((opt) => opt.option_text);
+        if (
+          Array.isArray(userAnswer) &&
+          userAnswer.length === correctOptions.length &&
+          userAnswer.every((answer) => correctOptions.includes(answer))
+        ) {
+          totalScore += question.is_with_score ? question.score : 1;
+        }
+      }
+    });
+  
+    return totalScore;
+  };
+  
 
   const refill = async () => {
     try {
@@ -170,6 +202,9 @@ export default function FillFormPage() {
       return;
     }
 
+    const score = calculateScore();
+    setScore(score);
+
     const submissionPayload = {
       form_id: formData.form_id,
       user_id: currentUser.id,
@@ -201,7 +236,8 @@ export default function FillFormPage() {
       const result = await response.json();
       console.log("Submission successful:", result);
       toast.success(t("fillForm.formSubmitted"));
-      return navigate("/success");
+      setIsSubmitted(true);
+      return;
     } catch (err) {
       console.error("Error submitting form answers:", err.message);
     }
@@ -231,8 +267,9 @@ export default function FillFormPage() {
             style={{
               boxShadow: `0 2px 6px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(30, 58, 138, 0.15)`,
             }}
-            className="w-full max-w-4xl border bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col items-center"
+            className="w-full max-w-4xl border-t-4 border-b bg-white dark:bg-gray-800 rounded-lg p-6 gap-6 flex flex-col items-center"
           >
+            {formData.form_type === "quiz" && <p>Your score is: {score}</p>}
             <h1 className="text-center text-2xl lg:text-3xl font-semibold text-primary">
               {t("fillForm.alreadySubmitted")}
             </h1>

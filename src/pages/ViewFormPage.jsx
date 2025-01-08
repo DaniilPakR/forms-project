@@ -2,8 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 
 import { GlobalContext } from "../context/GlobalProvider";
-import FillForm from "../components/FillForm";
-import ViewFilledForm from "../components/ViewFilledForm";
+import ViewFilledForm from "../components/form-viewing/ViewFilledForm";
 
 export default function ViewFormPage() {
   const { currentUser, URL } = useContext(GlobalContext);

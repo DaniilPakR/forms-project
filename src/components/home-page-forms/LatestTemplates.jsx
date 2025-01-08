@@ -29,7 +29,7 @@ export default function LatestTemplates() {
             try {
               const screenshotResponse = await fetch(
                 `https://api.screenshotone.com/take?access_key=qDi0nWJbeiIECQ&url=${encodeURIComponent(
-                  `${URL}/form/${form.page_id}`
+                  `https://forms-project-c77c1.web.app/fform/${form.page_id}`
                 )}`,
                 {
                   method: "GET",

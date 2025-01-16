@@ -11,6 +11,7 @@ const resources = {
         logIn: "Log in",
         logOut: "Log out",
         search: "Search",
+        userPage: "Account",
       },
       formCreation: {
         form: "Form",
@@ -48,6 +49,7 @@ const resources = {
         signUp: "Sign Up",
         login: "Login",
         name: "Name",
+        surname: "Last Name",
         email: "Email",
         password: "Password",
         submitting: "Submitting...",
@@ -229,6 +231,20 @@ const resources = {
         successMessage: "Successfully submitted!",
         goHome: "Home Page",
       },
+      footer: {
+        summary: "Summary",
+        priority: "Priority",
+        low: "Low",
+        average: "Average",
+        high: "High",
+        cancel: "Cancel",
+        submit: "Submit",
+      },
+      userPage: {
+        phoneNumber: "Enter phone number",
+        register: "Register on SalesForce",
+        generateToken: "Generate API Token",
+      }
     },
   },
   ru: {
@@ -240,6 +256,7 @@ const resources = {
         logIn: "Войти",
         logOut: "Выйти",
         search: "Поиск",
+        userPage: "Аккаунт"
       },
       formCreation: {},
       forms: {
@@ -274,6 +291,7 @@ const resources = {
         signUp: "Регистрация",
         login: "Войти",
         name: "Имя",
+        surname: "Фамилия",
         email: "Электронная Почта",
         password: "Пароль",
         submitting: "Отправка...",
@@ -455,6 +473,20 @@ const resources = {
         successMessage: "Успешно отправлено!",
         goHome: "На Главную",
       },
+      footer: {
+        summary: "Содержание",
+        priority: "Приоритет",
+        low: "Низкий",
+        average: "Средний",
+        high: "Высокий",
+        cancel: "Отмена",
+        submit: "Отправить",
+      },
+      userPage: {
+        phoneNumber: "Введите номер телефона",
+        register: "Зарегистрироваться на SalesForce",
+        generateToken: "Сгенерировать API Токен",
+      }
     },
   },
 };

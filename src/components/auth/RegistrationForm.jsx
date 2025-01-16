@@ -10,25 +10,32 @@ export default function RegistrationForm({ isSubmitting, t }) {
         {t("auth.signUp")}
       </h2>
       <div className="space-y-4">
+        <div className="flex flex-row justify-between gap-4">
+          <p>
+            <label htmlFor="name" className="block text-sm font-medium mb-1">
+              {t("auth.name")}
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="w-full p-2 border bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            />
+          </p>
+          <p>
+            <label htmlFor="surname" className="block text-sm font-medium mb-1">
+              {t("auth.surname")}
+            </label>
+            <input
+              type="text"
+              id="surname"
+              name="surname"
+              className="w-full p-2 border bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            />
+          </p>
+        </div>
         <p>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium mb-1"
-          >
-            {t("auth.name")}
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            className="w-full p-2 border bg-background dark:bg-background-dark text-text dark:text-text-dark rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </p>
-        <p>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium mb-1"
-          >
+          <label htmlFor="email" className="block text-sm font-medium mb-1">
             {t("auth.email")}
           </label>
           <input
@@ -39,10 +46,7 @@ export default function RegistrationForm({ isSubmitting, t }) {
           />
         </p>
         <p>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium mb-1"
-          >
+          <label htmlFor="password" className="block text-sm font-medium mb-1">
             {t("auth.password")}
           </label>
           <input

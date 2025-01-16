@@ -13,13 +13,6 @@ export default function Navbar() {
   const { currentUser, setCurrentUser, theme, toggleTheme, isAdmin, t, i18n } =
     useContext(GlobalContext);
 
-  const logout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem("authSession");
-  };
-
-  console.log(isAdmin);
-
   return (
     <header className="z-50 text-sm top-0 w-full fixed flex flex-row justify-around lg:justify-between bg-background dark:bg-background-dark h-14 items-center py-3 px-2 lg:px-4 lg:text-lg border-b border-solid border-gray-200 dark:border-gray-900">
       <div>
@@ -68,19 +61,12 @@ export default function Navbar() {
           </Link>
         )}
         {currentUser ? (
-          <>
-            <button
-              className="hidden lg:block transition-colors duration-300 hover:text-red-500"
-              onClick={logout}
-            >
-              {t("header.logOut")}
-            </button>
-            <FontAwesomeIcon
-              className="text-red-500 p-2 sm:hidden transition-transform duration-300 hover:scale-110"
-              icon={faRightFromBracket}
-              size="lg"
-            />
-          </>
+          <Link
+            className="inline-block text-blue-500 hover:underline whitespace-nowrap"
+            to="/user"
+          >
+            {t("header.userPage")}
+          </Link>
         ) : (
           <Link
             className="inline-block text-blue-500 hover:underline whitespace-nowrap"

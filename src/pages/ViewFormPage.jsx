@@ -39,7 +39,7 @@ export default function ViewFormPage() {
     return <div>Loading...</div>;
   }
 
-  console.log(formData);
+  console.log("yo",formData);
 
   return (
     <div className="flex flex-col items-center mt-16">

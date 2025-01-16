@@ -11,6 +11,7 @@ import FillFormPage from "./pages/FillFormPage";
 import AdminPage from "./pages/AdminPage";
 import ViewFormPage from "./pages/ViewFormPage";
 import SuccessPage from "./pages/SucessPage";
+import UserPage from "./pages/UserPage";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: "/admin", element: <AdminPage /> },
       { path: "/vform/:id", element: <ViewFormPage /> },
       { path: "/success", element: <SuccessPage /> },
+      { path: "/user", element: <UserPage /> }
     ],
   },
 ]);

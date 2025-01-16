@@ -31,6 +31,7 @@ export async function action({ request }) {
   if (mode === "signup") {
     authData = {
       name: data.get("name"),
+      surname: data.get("surname"),
       email: data.get("email"),
       password: data.get("password"),
     };
@@ -62,6 +63,7 @@ export async function action({ request }) {
       id: result.user.id,
       email: result.user.email,
       name: result.user.name,
+      surname: result.user.surname,
       is_blocked: result.user.is_blocked,
       is_admin: result.user.is_admin,
     };
@@ -76,6 +78,7 @@ export async function action({ request }) {
         id: userInfo.id,
         email: userInfo.email,
         name: userInfo.name,
+        surname: userInfo.surname,
       })
     );
     localStorage.setItem("isAdmin", userInfo.is_admin);
@@ -87,6 +90,7 @@ export async function action({ request }) {
       id: result.user.id,
       email: result.user.email,
       name: result.user.name,
+      surname: result.user.surname,
     });
     setIsAdmin(userInfo.is_admin);
     return redirect("/");

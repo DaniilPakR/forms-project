@@ -19,9 +19,9 @@ const GlobalContext = createContext({
 
 let externalContextReference = null;
 
-const URL = "https://forms-project-backend-p0dd.onrender.com";
+// const URL = "https://forms-project-backend-p0dd.onrender.com";
 
-// const URL = "http://localhost:5000";
+const URL = "http://localhost:5000";
 
 export default function GlobalContextProvider({ children }) {
   const [isReady, setIsReady] = useState(false);
